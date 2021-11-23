@@ -1,0 +1,27 @@
+#!/bin/sh
+
+set -euo pipefail
+
+
+#======================================================================================================================
+# Check arguments.
+#   1   User and Group name
+#   2   User ID (optional - default is 1000)
+#   3   Group ID (optional - default is to use UID)
+#======================================================================================================================
+
+[[ -z "${1-}" ]] && bf-error "You must provide a name for the user and group." "bf-adduser"
+NAME=${1}
+
+UID=${2:-1000}
+GID=${3:-${UID}}
+
+
+#======================================================================================================================
+# Add a user and group without home directory or password.
+#======================================================================================================================
+
+bf-echo "Adding user and group '${NAME}'..." "bf-adduser"
+addgroup --gid "${GID}" "${NAME}"
+adduser --uid "${UID}" --no-create-home --disabled-password --ingroup "${NAME}" "${NAME}"
+bf-done "bf-adduser"
