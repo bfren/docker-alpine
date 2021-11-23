@@ -1,0 +1,17 @@
+#!/bin/sh
+
+set -euo pipefail
+export BF_E=`basename ${0}`
+
+
+#======================================================================================================================
+# Run install script in /tmp and then perform cleanup.
+#======================================================================================================================
+
+INSTALL=/tmp/install
+[[ ! -f ${INSTALL} ]] && bf-error "${INSTALL} does not exist."
+
+chmod +x ${INSTALL} && ${INSTALL}
+bf-done
+
+bf-clear
