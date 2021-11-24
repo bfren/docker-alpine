@@ -63,6 +63,7 @@ jobs:
             bfren/alpine:alpine3.12-${{ steps.version_minor.outputs.contents }}
             bfren/alpine:alpine3.12-${{ steps.version.outputs.contents }}
             bfren/alpine:alpine${{ steps.alpine_revision.outputs.contents }}
+            bfren/alpine:alpine${{ steps.alpine_revision.outputs.contents }}-${{ steps.version.outputs.contents }}
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
