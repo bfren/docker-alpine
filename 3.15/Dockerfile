@@ -1,4 +1,4 @@
-FROM alpine:3.15
+FROM alpine:3.15.0
 
 ENV \
     # set to 0 to disable additional log output
