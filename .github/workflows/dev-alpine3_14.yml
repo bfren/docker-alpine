@@ -64,7 +64,6 @@ jobs:
           push: ${{ startsWith(github.ref, 'refs/heads/') }}
           platforms: linux/amd64,linux/arm/v7,linux/arm64
           tags: |
-            bfren/alpine:dev
             bfren/alpine:alpine3.14-dev
             bfren/alpine:alpine3.14-${{ steps.version_minor.outputs.contents }}-beta
             bfren/alpine:alpine3.14-${{ steps.version.outputs.contents }}-beta
