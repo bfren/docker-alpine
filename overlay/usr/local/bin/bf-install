@@ -10,7 +10,7 @@ export BF_E=`basename ${0}`
 
 echo "${BF_IMAGE/docker-/}" >> BF_IMAGE
 echo "${BF_VERSION}" >> /BF_VERSION
-bf-version
+bf-image
 
 
 #======================================================================================================================
