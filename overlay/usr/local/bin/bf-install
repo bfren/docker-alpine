@@ -8,6 +8,8 @@ export BF_E=`basename ${0}`
 # Run install script in /tmp and then perform cleanup.
 #======================================================================================================================
 
+echo "VERSION: ${BF_VERSION}"
+
 INSTALL=/tmp/install
 [[ ! -f ${INSTALL} ]] && bf-error "${INSTALL} does not exist."
 
