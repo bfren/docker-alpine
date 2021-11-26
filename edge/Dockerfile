@@ -1,5 +1,6 @@
 FROM alpine:edge
 
+ARG BF_IMAGE
 ARG BF_VERSION
 
 ENV \

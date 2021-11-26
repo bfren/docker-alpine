@@ -1,5 +1,6 @@
 FROM alpine:3.13.7
 
+ARG BF_IMAGE
 ARG BF_VERSION
 
 ENV \
