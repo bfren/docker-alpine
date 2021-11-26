@@ -8,7 +8,7 @@ export BF_E=`basename ${0}`
 # Store image version.
 #======================================================================================================================
 
-bf-echo "${BF_IMAGE} v${BF_VERSION}"
+bf-echo "${BF_IMAGE/docker-/} v${BF_VERSION}"
 echo "${BF_VERSION}" >> /BF_VERSION
 
 

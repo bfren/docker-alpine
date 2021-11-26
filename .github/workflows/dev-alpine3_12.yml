@@ -31,6 +31,7 @@ jobs:
         name: Checkout code
         uses: actions/checkout@v2
       -
+        name: Get repository name
         run: echo "REPOSITORY_NAME=$(echo '${{ github.repository }}' | awk -F '/' '{print $2}')" >> $GITHUB_ENV
         shell: bash
       -
