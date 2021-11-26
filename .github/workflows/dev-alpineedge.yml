@@ -61,6 +61,8 @@ jobs:
         with:
           context: .
           file: ./edge/Dockerfile
+          build-args: |
+            BF_VERSION=${{ steps.version.outputs.contents }}
           push: ${{ startsWith(github.ref, 'refs/heads/') }}
           platforms: linux/amd64,linux/arm/v7,linux/arm64
           tags: |
