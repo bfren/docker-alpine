@@ -1,12 +1,11 @@
 #!/bin/sh
 
 set -euo pipefail
-export BF_E=`basename ${0}`
 
 
 #======================================================================================================================
 # Output image version.
 #======================================================================================================================
 
-bf-echo "bfren `cat /BF_IMAGE` v`cat /BF_VERSION`"
-bf-echo "https://github.com/bfren/docker-`cat /BF_IMAGE`"
+bf-echo "bfren `cat /BF_IMAGE` v`cat /BF_VERSION`" "bf-image"
+bf-echo "https://github.com/bfren/docker-`cat /BF_IMAGE`" "bf-image"
