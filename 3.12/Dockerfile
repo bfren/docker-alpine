@@ -1,5 +1,8 @@
 FROM alpine:3.12.9
 
+ARG BF_IMAGE
+ARG BF_VERSION
+
 ENV \
     # set to 0 to disable additional log output
     BF_DEBUG=1
