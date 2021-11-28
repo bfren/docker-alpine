@@ -9,3 +9,4 @@ export BF_E=`basename ${0}`
 #======================================================================================================================
 
 bf-echo "bfren `cat /BF_IMAGE` v`cat /BF_VERSION`"
+bf-echo "https://github.com/bfren/docker-`cat /BF_IMAGE`"
