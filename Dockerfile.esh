@@ -1,4 +1,4 @@
-FROM alpine:edge
+FROM alpine:<%= ${ALPINE_REVISION} %>
 
 ARG BF_IMAGE
 ARG BF_VERSION
@@ -8,7 +8,7 @@ ENV \
     BF_DEBUG=1
 
 COPY ./overlay /
-COPY ./edge/repositories /etc/apk/repositories
+COPY ./<%= ${ALPINE_VERSION} %>/repositories /etc/apk/repositories
 
 RUN chmod +x /usr/local/bin/bf-*
 RUN bf-install
