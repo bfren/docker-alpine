@@ -42,4 +42,12 @@ ROOT_DIR="${1-}"
 # Run delete.
 #======================================================================================================================
 
+case "${TYPE}" in
+    d) bf-echo "Deleting directories older than ${DAYS} days." "bf-rm-old" ;;
+    f) bf-echo "Deleting files older than ${DAYS} days." "bf-rm-old" ;;
+esac
 
+MIN=$((60*24*${DAYS}))
+DELETED=$(find "$3" -type ${TYPE} -mmin +${MIN} | xargs rm -rf)
+
+bf-debug "Deleted:\n${DELETED}" "bf-rm-old"
