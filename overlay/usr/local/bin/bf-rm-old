@@ -42,12 +42,13 @@ ROOT_DIR="${1-}"
 # Run delete.
 #======================================================================================================================
 
-case "${TYPE}" in
-    d) bf-echo "Deleting directories older than ${DAYS} days." "bf-rm-old" ;;
-    f) bf-echo "Deleting files older than ${DAYS} days." "bf-rm-old" ;;
-esac
-
 MIN=$((60*24*${DAYS}))
-DELETED=$(find "$3" -type ${TYPE} -mmin +${MIN} | xargs rm -rf)
+if [[ "${TYPE}" = "d" ]] ; then
+    bf-echo "Deleting sub-directories of ${ROOT_DIR} older than ${DAYS} days." "bf-rm-old"
+    DELETED=$(find ${ROOT_DIR}/* -type d -mmin +${MIN} | xargs rm -rf)
+elif [[ "${TYPE}" = "f" ]] ; then
+    bf-echo "Deleting files in ${ROOT_DIR} older than ${DAYS} days." "bf-rm-old"
+    DELETED=$(find "${ROOT_DIR}" -type f -mmin +${MIN} -delete)
+fi
 
 bf-debug "Deleted:\n${DELETED}" "bf-rm-old"
