@@ -1,4 +1,4 @@
 http://dl-cdn.alpinelinux.org/alpine/v3.8/main
 http://dl-cdn.alpinelinux.org/alpine/v3.8/community
-@edgemain https://dl-cdn.alpinelinux.org/alpine/edge/main
-@edgecomm https://dl-cdn.alpinelinux.org/alpine/edge/community
+@edgemain http://dl-cdn.alpinelinux.org/alpine/edge/main
+@edgecomm http://dl-cdn.alpinelinux.org/alpine/edge/community
