@@ -24,6 +24,8 @@ done
 
 shift $(($OPTIND -1))
 
+[[ -z "${MODE-}" ]] && MODE="simple"
+
 URL="${1-}"
 [[ -z "${URL-}" ]] && bf-error "You must provide the URL to test." "bf-test-url"
 
