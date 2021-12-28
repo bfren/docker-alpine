@@ -38,7 +38,7 @@ URL="${1-}"
 if [ "${MODE}" = "simple" ] ; then
 
     bf-debug "Loading ${URL}." "bf-test-url"
-    wget --no-verbose --spider --tries=1 "${URL}" || exit 1
+    wget --no-verbose --spider --timeout=10 --tries=1 "${URL}" || exit 1
 
 elif [ "${MODE}" = "full" ] ; then
 
