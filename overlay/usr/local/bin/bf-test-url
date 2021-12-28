@@ -47,7 +47,7 @@ elif [ "${MODE}" = "full" ] ; then
 
     # if STATUS is not a number, something went wrong loading the URL
     if echo "${STATUS}" | grep -q '[^0-9]' ; then
-        bf-error "Unable to load ${URL}." "bf-test-url"
+        bf-error "Invalid or inaccessible URL: ${URL}." "bf-test-url"
     fi
 
     # output the status and result
