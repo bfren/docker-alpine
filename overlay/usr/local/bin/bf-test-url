@@ -17,6 +17,7 @@ usage () {
 
 while getopts ":hm:" C ; do
     case ${C} in
+        h) usage ;;
         m) MODE="${OPTARG}" ;;
         ?) bf-notok "Invalid option: -${OPTARG}" "bf-test-url" && usage ;;
     esac
@@ -34,12 +35,12 @@ URL="${1-}"
 # Attempt to load the URL using wget.
 #======================================================================================================================
 
-if [ "${MODE-}" = "simple" ] ; then
+if [ "${MODE}" = "simple" ] ; then
 
     bf-debug "Loading ${URL}." "bf-test-url"
     wget --no-verbose --spider --tries=1 "${URL}" || exit 1
 
-elif [ "${MODE-}" = "full" ] ; then
+elif [ "${MODE}" = "full" ] ; then
 
     # get status
     STATUS=$(bf-http-status "${URL}" || true)
@@ -50,7 +51,7 @@ elif [ "${MODE-}" = "full" ] ; then
     fi
 
     # output the status and result
-    bf-debug "Status ${STATUS}:"
+    bf-debug "Status ${STATUS}:" "bf-test-url"
     if [ "${STATUS}" -ge 200 ] && [ "${STATUS}" -le 399 ] ; then
         bf-debug "  OK." "bf-test-url"
     elif [ "${STATUS}" -ge 400 ] && [ "${STATUS}" -le 499 ] ; then
