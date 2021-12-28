@@ -45,11 +45,6 @@ elif [ "${MODE}" = "full" ] ; then
     # get status
     STATUS=$(bf-http-status "${URL}" || true)
 
-    # if STATUS is 'bad' the URL is incorrect
-    if [ "${STATUS}" = "bad" ] ; then
-        bf-error "Invalid URL: ${URL}." "bf-test-url"
-    fi
-
     # if STATUS is not a number, something went wrong loading the URL
     if echo "${STATUS}" | grep -q '^[0-9]+$' ; then
         bf-error "Unable to load ${URL}." "bf-test-url"
