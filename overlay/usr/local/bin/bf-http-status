@@ -1,0 +1,20 @@
+#!/bin/sh
+
+set -euo pipefail
+
+
+#======================================================================================================================
+# Check argument.
+#   1   URL to test
+#======================================================================================================================
+
+[[ -z "${1-}" ]] && bf-error "You must provide a URL to load." "bf-http-status"
+URL=${1}
+
+
+#======================================================================================================================
+# Attempt to load a URL using wget and print the final HTTP status code.
+#   (wget follows redirects, so we end with tail -1 to return the final code.)
+#======================================================================================================================
+
+wget --quiet --server-response --spider --timeout=10 --tries=1 "${URL}" 2>&1 | awk 'NR==1{print $2}' | tail -1
