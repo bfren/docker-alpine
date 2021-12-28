@@ -46,7 +46,7 @@ elif [ "${MODE}" = "full" ] ; then
     STATUS=$(bf-http-status "${URL}" || true)
 
     # if STATUS is not a number, something went wrong loading the URL
-    if echo "${STATUS}" | grep -q '^[0-9]+$' ; then
+    if echo "${STATUS}" | grep -q '[^0-9]' ; then
         bf-error "Unable to load ${URL}." "bf-test-url"
     fi
 
@@ -57,7 +57,7 @@ elif [ "${MODE}" = "full" ] ; then
     elif [ "${STATUS}" -ge 400 ] && [ "${STATUS}" -le 499 ] ; then
         bf-error "  content error." "bf-test-url"
     else
-        bf-error "  error." "bf-test-url"
+        bf-error "  unknown error." "bf-test-url"
     fi
 
 else
