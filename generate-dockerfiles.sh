@@ -22,4 +22,5 @@ for V in ${ALPINE_VERSIONS} ; do
 
 done
 
+docker system prune -f
 echo "Done."
