@@ -13,4 +13,4 @@
 
 ## Copyright
 
-> Copyright (c) 2021 [bfren](https://bfren.dev) (unless otherwise stated)
+> Copyright (c) 2021-2022 [bfren](https://bfren.dev) (unless otherwise stated)
