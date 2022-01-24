@@ -8,7 +8,7 @@ ENV \
     BF_DEBUG=1
 
 COPY ./overlay /
-COPY ./edge/repositories /etc/apk/repositories
+COPY ./edge/overlay /
 
 RUN chmod +x /usr/local/bin/bf-*
 RUN bf-install
