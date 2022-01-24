@@ -10,5 +10,5 @@ ENV \
 COPY ./overlay /
 COPY ./3.12/overlay /
 
-RUN chmod +x /usr/local/bin/bf-*
+RUN chmod +x /usr/local/bin/bf-install
 RUN bf-install
