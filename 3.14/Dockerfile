@@ -8,6 +8,7 @@ ENV \
     BF_DEBUG=1
 
 COPY ./overlay /
+COPY ./ESH_BUILD /tmp/
 COPY ./3.14/overlay /
 
 RUN chmod +x /usr/local/bin/bf-install
