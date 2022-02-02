@@ -7,7 +7,7 @@ ENV \
     # debug log output
     #   0: disable
     #   1: enable
-    BF_DEBUG=1 \
+    BF_DEBUG=0 \
     # path to bf executables
     BF_BIN=/usr/bin/bf
 
