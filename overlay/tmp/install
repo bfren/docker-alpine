@@ -38,5 +38,5 @@ bf-echo "Removing .empty files..."
 rm /etc/bf/init.d/.empty
 rm /etc/bf/src/.empty
 rm /etc/bf/templates/.empty
-rm /usr/lib/bf/.empty
+rm /usr/lib/bf/inc/.empty
 bf-done
