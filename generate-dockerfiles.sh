@@ -12,6 +12,7 @@ for V in ${ALPINE_VERSIONS} ; do
 
     DOCKERFILE=$(docker run \
         -v ${PWD}:/ws \
+        -e BF_DEBUG=0 \
         bfren/alpine esh \
         "/ws/Dockerfile.esh" \
         ALPINE_VERSION=${V} \
