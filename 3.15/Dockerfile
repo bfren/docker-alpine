@@ -4,7 +4,9 @@ ARG BF_IMAGE
 ARG BF_VERSION
 
 ENV \
-    # set to 0 to disable additional log output
+    # debug log output
+    #   0: disable
+    #   1: enable
     BF_DEBUG=1 \
     # path to bf executables
     BF_BIN=/usr/bin/bf
@@ -18,3 +20,5 @@ COPY ./ESH_BUILD /tmp/
 COPY ./3.15/overlay /
 
 RUN chmod +x ${BF_BIN}/bf-install && bf-install
+
+ENTRYPOINT [ "bf-init" ]
