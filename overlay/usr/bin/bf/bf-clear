@@ -7,11 +7,12 @@ set -euo pipefail
 # Clear temporary directories and caches.
 #======================================================================================================================
 
-bf-echo "Clearing /tmp..." "bf-clear"
+bf-debug "Clearing /tmp..." "bf-clear"
 rm -rf /tmp/*
 bf-done "bf-clear"
 
-bf-echo "Clearing caches..." "bf-clear"
+bf-debug "Clearing caches..." "bf-clear"
 rm -rf /var/cache/apk/*
 rm -rf /var/cache/misc/*
-bf-done "bf-clear"
+
+bf-debug "Done." "bf-clear"
