@@ -16,4 +16,4 @@ COPY ./ESH_BUILD /tmp/
 COPY ./edge/overlay /
 
 RUN chmod +x ${BF_BIN}/bf-install
-RUN bf-install
+RUN ${BF_BIN}/bf-install
