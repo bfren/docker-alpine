@@ -9,7 +9,7 @@ ENV \
     # set to 0 to disable additional log output
     BF_DEBUG=1 \
     # add bf executables to PATH
-    PATH=/bin:/usr/bin:${BF_BIN} \
+    PATH=/bin:/usr/bin:${BF_BIN}
 
 COPY ./overlay /
 COPY ./ESH_BUILD /tmp/
