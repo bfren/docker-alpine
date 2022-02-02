@@ -7,7 +7,7 @@ ENV \
     # debug log output
     #   0: disable
     #   1: enable
-    BF_DEBUG=0 \
+    BF_DEBUG=1 \
     # path to bf executables
     BF_BIN=/usr/bin/bf
 
@@ -21,4 +21,4 @@ COPY ./<%= ${ALPINE_VERSION} %>/overlay /
 
 RUN chmod +x ${BF_BIN}/bf-install && bf-install
 
-ENTRYPOINT bf-init
+ENTRYPOINT [ "bf-init" ]

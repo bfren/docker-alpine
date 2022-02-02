@@ -12,7 +12,9 @@ bf-debug "Executing container initialisation."
 
 INIT=/etc/bf/init.d
 for FILE in `ls ${INIT} | sort` ; do
+    bf-debug "${FILE} running."
     chmod +x ${INIT}/${FILE} && ${INIT}/${FILE}
+    bf-debug "${FILE} done."
 done
 
 
