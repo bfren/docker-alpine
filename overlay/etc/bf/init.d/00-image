@@ -1,17 +1,11 @@
 #!/bin/sh
 
 set -euo pipefail
+export BF_E=`basename ${0}`
 
 
 #======================================================================================================================
-# Clear temporary directories and caches.
+# Output image version.
 #======================================================================================================================
 
-bf-echo "Clearing /tmp..." "bf-clear"
-rm -rf /tmp/*
-bf-done "bf-clear"
-
-bf-echo "Clearing caches..." "bf-clear"
-rm -rf /var/cache/apk/*
-rm -rf /var/cache/misc/*
-bf-done "bf-clear"
+bf-image
