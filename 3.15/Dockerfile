@@ -8,13 +8,17 @@ ENV \
     #   0: disable
     #   1: enable
     BF_DEBUG=1 \
+    # path to bf executables
+    BF_BIN=/usr/bin/bf
+
+ENV \
     # add bf executables to PATH
-    PATH=/usr/bin/bf:${PATH}
+    PATH=${BF_BIN}:${PATH}
 
 COPY ./overlay /
 COPY ./ESH_BUILD /tmp/
 COPY ./3.15/overlay /
 
-RUN chmod +x /usr/local/bin/bf-install && bf-install
+RUN chmod +x ${BF_BIN}/bf-install && bf-install
 
 ENTRYPOINT [ "bf-init" ]
