@@ -20,6 +20,8 @@ for V in ${ALPINE_VERSIONS} ; do
         /out/Dockerfile
     )
 
+    chown 1000:1000 ./${V}/Dockerfile
+
 done
 
 docker system prune -f
