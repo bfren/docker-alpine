@@ -8,7 +8,7 @@ export BF_E=`basename ${0}`
 # Set permissions.
 #======================================================================================================================
 
-chmod +x /usr/bin/bf/*
+chmod +x ${BF_BIN}/*
 
 bf-ch -o root:root -m 1777 /etc/bf/src
 bf-ch -o root:root -r /etc/bf/templates && \
@@ -43,4 +43,3 @@ bf-done
 #======================================================================================================================
 
 bf-clear
-rm /usr/local/bin/bf-install
