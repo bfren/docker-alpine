@@ -8,12 +8,13 @@ export BF_E=`basename ${0}`
 # Set permissions.
 #======================================================================================================================
 
+chmod +x ${BF_BIN}/*
+
 bf-ch -o root:root -m 1777 /etc/bf/src
 bf-ch -o root:root -r /etc/bf/templates && \
     bf-ch -m 0444 -t f /etc/bf/templates && \
     bf-ch -m 0555 -t d /etc/bf/templates
 bf-ch -o root:root -m 1777 /tmp
-bf-ch -o root:root -m 0500 -t f ${BF_BIN}
 bf-ch -o root:root -m 0555 -t f /usr/lib/bf
 
 
