@@ -34,7 +34,9 @@ bf-tz "Europe/London"
 # Cleanup.
 #======================================================================================================================
 
-rm /bf/etc/init.d/.empty
-rm /bf/etc/src/.empty
-rm /bf/etc/templates/.empty
+bf-echo "Removing .empty files..."
+rm /etc/bf/init.d/.empty
+rm /etc/bf/src/.empty
+rm /etc/bf/templates/.empty
 rm /usr/lib/bf/.empty
+bf-done
