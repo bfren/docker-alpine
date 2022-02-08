@@ -9,14 +9,7 @@ export BF_E=`basename ${0}`
 #======================================================================================================================
 
 bf-debug "Initialising container."
-
-INIT=/etc/bf/init.d
-for FILE in `ls ${INIT} | sort` ; do
-    bf-debug "${FILE} running."
-    chmod +x ${INIT}/${FILE} && ${INIT}/${FILE}
-    bf-debug "${FILE} done."
-done
-
+${BF_LIB}/init
 bf-debug "Done."
 
 
