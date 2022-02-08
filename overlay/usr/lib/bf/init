@@ -1,17 +1,13 @@
 #!/bin/sh
 
-set -euo pipefail
-
 
 #======================================================================================================================
-# Clear temporary directories and caches.
+# Run custom initialisation files.
 #======================================================================================================================
 
-bf-debug "Clearing /tmp..." "bf-clear"
-rm -rf /tmp/*
-
-bf-debug "Clearing caches..." "bf-clear"
-rm -rf /var/cache/apk/*
-rm -rf /var/cache/misc/*
-
-bf-debug "Done." "bf-clear"
+INIT=/etc/bf/init.d
+for FILE in `ls ${INIT} | sort` ; do
+    bf-debug "${FILE} running."
+    chmod +x ${INIT}/${FILE} && ${INIT}/${FILE}
+    bf-debug "${FILE} done."
+done
