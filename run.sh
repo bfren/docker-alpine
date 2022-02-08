@@ -2,7 +2,8 @@
 
 VERSION=`cat VERSION`
 
-git pull || true
+git pull || exit 1
+chmod +x run.sh
 
 docker buildx build \
     --build-arg BF_IMAGE=alpine \
