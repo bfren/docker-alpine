@@ -9,7 +9,9 @@ ENV \
     #   1: enable
     BF_DEBUG=1 \
     # path to bf executables
-    BF_BIN=/usr/bin/bf
+    BF_BIN=/usr/bin/bf \
+    # path to bf library executables
+    BF_LIB=/usr/lib/bf
 
 ENV \
     # add bf executables to PATH
