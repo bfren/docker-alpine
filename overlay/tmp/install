@@ -11,7 +11,7 @@ export BF_E=`basename ${0}`
 cd /tmp
 
 ESH_VERSION=$(cat ESH_BUILD)
-bf-debug "esh version ${ESH_VERSION}."
+bf-echo "esh version ${ESH_VERSION}."
 
 
 #======================================================================================================================
