@@ -23,7 +23,7 @@ while read GLOB OWNER FMODE DMODE ; do
 
     [[ -z "${GLOB-}" ]] && continue
 
-    bf-ch -o ${OWNER} ${GLOB}
+    bf-ch -o ${OWNER} -r ${GLOB}
     [[ -n "${FMODE}" ]] && bf-ch -m ${FMODE} -t f ${GLOB}
     [[ -n "${DMODE}" ]] && bf-ch -m ${DMODE} -t d ${GLOB}
 
