@@ -22,7 +22,7 @@ bf-ch -o root:root -m 0555 -t f /usr/lib/bf
 # Store image version.
 #======================================================================================================================
 
-echo "${BF_IMAGE/docker-/}" > BF_IMAGE
+echo "${BF_IMAGE/docker-/}" > /BF_IMAGE
 echo "${BF_VERSION}" > /BF_VERSION
 bf-image
 

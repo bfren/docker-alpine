@@ -1,4 +1,4 @@
-FROM alpine:3.15.0
+FROM alpine:3.9.6
 
 LABEL org.opencontainers.image.source="https://github.com/bfren/docker-alpine"
 
@@ -21,7 +21,7 @@ ENV \
 
 COPY ./overlay /
 COPY ./ESH_BUILD /tmp/
-COPY ./3.15/overlay /
+COPY ./3.9/overlay /
 
 RUN chmod +x ${BF_BIN}/bf-install && bf-install
 
