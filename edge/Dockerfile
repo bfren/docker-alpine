@@ -1,5 +1,7 @@
 FROM alpine:edge
 
+LABEL org.opencontainers.image.source="https://github.com/bfren/docker-alpine"
+
 ARG BF_IMAGE
 ARG BF_VERSION
 
