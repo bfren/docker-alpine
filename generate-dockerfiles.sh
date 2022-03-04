@@ -21,6 +21,20 @@ for V in ${ALPINE_VERSIONS} ; do
 
     echo "${DOCKERFILE}" > ./${V}/Dockerfile
 
+    if [ "${V}" = "3.8" ] || [ "${V}" = "edge" ] ; then
+        continue
+    fi
+
+    REPOS=$(docker run \
+        -v ${PWD}:/ws \
+        -e BF_DEBUG=0 \
+        bfren/alpine esh \
+        "/ws/repositories.esh" \
+        ALPINE_MINOR=${V}
+    )
+
+    echo "${REPOS}" > ./${V}/overlay/etc/apk/repositories
+
 done
 
 docker system prune -f
