@@ -20,7 +20,6 @@ ENV \
     PATH=${BF_BIN}:${PATH}
 
 COPY ./overlay /
-COPY ./ESH_BUILD /tmp/
 COPY ./3.11/overlay /
 
 RUN chmod +x ${BF_BIN}/bf-install && bf-install
