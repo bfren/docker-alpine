@@ -1,4 +1,4 @@
-name: Auto PR
+name: auto-pr
 
 on:
   create
