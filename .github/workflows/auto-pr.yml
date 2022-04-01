@@ -15,7 +15,7 @@ jobs:
       name: Create Pull Request
       uses: bfren/pull-request@v2
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+        github_token: ${{ secrets.PAT }}
         destination_branch: main
         pr_title: ${{ github.ref_name }}
         pr_body: "Merging branch to create ${{ github.ref_name }}."
