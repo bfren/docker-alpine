@@ -14,3 +14,5 @@ jobs:
       uses: bfren/create-release@v1
       with:
         token: ${{ secrets.PAT }}
+        repo: ${{ github.repository }}
+        pr_title: ${{ github.event.pull_request.title }}
