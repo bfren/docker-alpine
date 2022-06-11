@@ -1,7 +1,7 @@
 #!/bin/sh
 
 IMAGE=`cat VERSION`
-ALPINE=${1:-3.15}
+ALPINE=${1:-3.16}
 
 docker buildx build \
     --build-arg BF_IMAGE=alpine \
