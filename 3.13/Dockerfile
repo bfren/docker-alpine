@@ -1,4 +1,4 @@
-FROM alpine:3.13.11
+FROM alpine:3.13.12
 
 LABEL org.opencontainers.image.source="https://github.com/bfren/docker-alpine"
 
