@@ -17,4 +17,16 @@ URL=${1}
 #   (wget follows redirects, so we end with tail -1 to return the final code.)
 #======================================================================================================================
 
-wget --quiet --server-response --spider --timeout=10 --tries=1 "${URL}" 2>&1 | awk 'NR==1{print $2}' | tail -1
+RESULT=$( \
+    wget --quiet --server-response --spider --timeout=10 --tries=1 "${URL}" 2>&1 \
+    | grep "HTTP/" \
+    | awk '{print $2}' \
+    | tail -1 \
+    || true \
+)
+
+if [ -z "${RESULT}" ] ; then
+    echo "400"
+else
+    echo "${RESULT}"
+fi
