@@ -14,7 +14,7 @@ bf-debug "Clearing caches..." "bf-clear"
 rm -rf /var/cache/apk/*
 rm -rf /var/cache/misc/*
 
-bf-echo "Removing .empty files..."
+bf-debug "Removing .empty files..."
 find / -type f -name ".empty" -delete
 
 bf-debug "Done." "bf-clear"
