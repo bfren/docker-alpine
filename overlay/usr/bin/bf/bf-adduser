@@ -18,10 +18,10 @@ GID=${3:-${UID}}
 
 
 #======================================================================================================================
-# Add a user and group without home directory or password.
+# Add a user and group without a password
 #======================================================================================================================
 
 bf-echo "Adding user and group '${NAME}'..." "bf-adduser"
 addgroup --gid "${GID}" "${NAME}"
-adduser --uid "${UID}" --no-create-home --disabled-password --ingroup "${NAME}" "${NAME}"
+adduser --uid "${UID}" --home "/home/${NAME}" --disabled-password --ingroup "${NAME}" "${NAME}"
 bf-done "bf-adduser"
