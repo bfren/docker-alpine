@@ -1,4 +1,4 @@
-name: publish-alpine3_16
+name: publish-alpine3_17
 
 on:
   release:
@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  publish-alpine3_16:
+  publish-alpine3_17:
     runs-on: ubuntu-latest
     steps:
       -
@@ -20,7 +20,7 @@ jobs:
         name: Read Alpine version - revision
         uses: bfren/read-file@v2
         with:
-          file: ./3.16/ALPINE_REVISION
+          file: ./3.17/ALPINE_REVISION
         id: alpine_revision
       -
         name: Read image version
@@ -65,23 +65,31 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: ./3.16/Dockerfile
+          file: ./3.17/Dockerfile
           build-args: |
             BF_IMAGE=${{ env.REPOSITORY_NAME }}
             BF_VERSION=${{ steps.version.outputs.contents }}
           push: true
           platforms: linux/amd64,linux/arm/v7,linux/arm64
           tags: |
-            bfren/alpine:alpine3.16
-            bfren/alpine:alpine3.16-${{ steps.version_major.outputs.contents }}
-            bfren/alpine:alpine3.16-${{ steps.version_minor.outputs.contents }}
-            bfren/alpine:alpine3.16-${{ steps.version.outputs.contents }}
+            bfren/alpine:latest
+            bfren/alpine:${{ steps.version_major.outputs.contents }}
+            bfren/alpine:${{ steps.version_minor.outputs.contents }}
+            bfren/alpine:${{ steps.version.outputs.contents }}
+            bfren/alpine:alpine3.17
+            bfren/alpine:alpine3.17-${{ steps.version_major.outputs.contents }}
+            bfren/alpine:alpine3.17-${{ steps.version_minor.outputs.contents }}
+            bfren/alpine:alpine3.17-${{ steps.version.outputs.contents }}
             bfren/alpine:alpine${{ steps.alpine_revision.outputs.contents }}
             bfren/alpine:alpine${{ steps.alpine_revision.outputs.contents }}-${{ steps.version.outputs.contents }}
-            ghcr.io/bfren/alpine:alpine3.16
-            ghcr.io/bfren/alpine:alpine3.16-${{ steps.version_major.outputs.contents }}
-            ghcr.io/bfren/alpine:alpine3.16-${{ steps.version_minor.outputs.contents }}
-            ghcr.io/bfren/alpine:alpine3.16-${{ steps.version.outputs.contents }}
+            ghcr.io/bfren/alpine:latest
+            ghcr.io/bfren/alpine:${{ steps.version_major.outputs.contents }}
+            ghcr.io/bfren/alpine:${{ steps.version_minor.outputs.contents }}
+            ghcr.io/bfren/alpine:${{ steps.version.outputs.contents }}
+            ghcr.io/bfren/alpine:alpine3.17
+            ghcr.io/bfren/alpine:alpine3.17-${{ steps.version_major.outputs.contents }}
+            ghcr.io/bfren/alpine:alpine3.17-${{ steps.version_minor.outputs.contents }}
+            ghcr.io/bfren/alpine:alpine3.17-${{ steps.version.outputs.contents }}
             ghcr.io/bfren/alpine:alpine${{ steps.alpine_revision.outputs.contents }}
             ghcr.io/bfren/alpine:alpine${{ steps.alpine_revision.outputs.contents }}-${{ steps.version.outputs.contents }}
       -
