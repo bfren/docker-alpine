@@ -89,7 +89,7 @@ jobs:
       -
         name: Build and push default tags
         id: docker_build_default
-        if: matrix.alpine == "3.17"
+        if: matrix.alpine == '3.17'
         uses: docker/build-push-action@v3
         with:
           file: ./${{ matrix.alpine }}/Dockerfile
