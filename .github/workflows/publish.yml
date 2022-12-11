@@ -1,4 +1,4 @@
-name: publish-alpine3_14
+name: publish
 
 on:
   release:
@@ -6,7 +6,10 @@ on:
   workflow_dispatch:
 
 jobs:
-  publish-alpine3_14:
+  publish:
+    strategy:
+      matrix:
+        alpine: [ "3.8", "3.9", "3.10", "3.11", "3.12", "3.13", "3.14", "3.15", "3.16", "3.17", "edge" ]
     runs-on: ubuntu-latest
     steps:
       -
@@ -20,7 +23,7 @@ jobs:
         name: Read Alpine version - revision
         uses: bfren/read-file@v2
         with:
-          file: ./3.14/ALPINE_REVISION
+          file: ./${{ matrix.alpine }}/ALPINE_REVISION
         id: alpine_revision
       -
         name: Read image version
@@ -65,25 +68,47 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: ./3.14/Dockerfile
+          file: ./${{ matrix.alpine }}/Dockerfile
           build-args: |
             BF_IMAGE=${{ env.REPOSITORY_NAME }}
             BF_VERSION=${{ steps.version.outputs.contents }}
           push: true
           platforms: linux/amd64,linux/arm/v7,linux/arm64
           tags: |
-            bfren/alpine:alpine3.14
-            bfren/alpine:alpine3.14-${{ steps.version_major.outputs.contents }}
-            bfren/alpine:alpine3.14-${{ steps.version_minor.outputs.contents }}
-            bfren/alpine:alpine3.14-${{ steps.version.outputs.contents }}
+            bfren/alpine:alpine${{ matrix.alpine }}
+            bfren/alpine:alpine${{ matrix.alpine }}-${{ steps.version_major.outputs.contents }}
+            bfren/alpine:alpine${{ matrix.alpine }}-${{ steps.version_minor.outputs.contents }}
+            bfren/alpine:alpine${{ matrix.alpine }}-${{ steps.version.outputs.contents }}
             bfren/alpine:alpine${{ steps.alpine_revision.outputs.contents }}
             bfren/alpine:alpine${{ steps.alpine_revision.outputs.contents }}-${{ steps.version.outputs.contents }}
-            ghcr.io/bfren/alpine:alpine3.14
-            ghcr.io/bfren/alpine:alpine3.14-${{ steps.version_major.outputs.contents }}
-            ghcr.io/bfren/alpine:alpine3.14-${{ steps.version_minor.outputs.contents }}
-            ghcr.io/bfren/alpine:alpine3.14-${{ steps.version.outputs.contents }}
+            ghcr.io/bfren/alpine:alpine${{ matrix.alpine }}
+            ghcr.io/bfren/alpine:alpine${{ matrix.alpine }}-${{ steps.version_major.outputs.contents }}
+            ghcr.io/bfren/alpine:alpine${{ matrix.alpine }}-${{ steps.version_minor.outputs.contents }}
+            ghcr.io/bfren/alpine:alpine${{ matrix.alpine }}-${{ steps.version.outputs.contents }}
             ghcr.io/bfren/alpine:alpine${{ steps.alpine_revision.outputs.contents }}
             ghcr.io/bfren/alpine:alpine${{ steps.alpine_revision.outputs.contents }}-${{ steps.version.outputs.contents }}
+      -
+        name: Build and push default tags
+        id: docker_build_default
+        if: matrix.alpine == '3.17'
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: ./${{ matrix.alpine }}/Dockerfile
+          build-args: |
+            BF_IMAGE=${{ env.REPOSITORY_NAME }}
+            BF_VERSION=${{ steps.version.outputs.contents }}
+          push: true
+          platforms: linux/amd64,linux/arm/v7,linux/arm64
+          tags: |
+            bfren/alpine:latest
+            bfren/alpine:${{ steps.version_major.outputs.contents }}
+            bfren/alpine:${{ steps.version_minor.outputs.contents }}
+            bfren/alpine:${{ steps.version.outputs.contents }}
+            ghcr.io/bfren/alpine:latest
+            ghcr.io/bfren/alpine:${{ steps.version_major.outputs.contents }}
+            ghcr.io/bfren/alpine:${{ steps.version_minor.outputs.contents }}
+            ghcr.io/bfren/alpine:${{ steps.version.outputs.contents }}
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
