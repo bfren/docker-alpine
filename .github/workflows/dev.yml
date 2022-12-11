@@ -1,4 +1,4 @@
-name: dev-alpine3_13
+name: dev
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  test-alpine3_13:
+  test:
     runs-on: ubuntu-latest
     steps:
       -
@@ -24,7 +24,10 @@ jobs:
         name: Run tests
         run: |
           RUN=./tests/run-git.sh && chmod +x ${RUN} && ${RUN}
-  build-alpine3_13:
+  build:
+    strategy:
+      matrix:
+        alpine: [ 3.8, 3.9, 3.10, 3.11, 3.12, 3.13, 3.14, 3.15, 3.16, 3.17, edge ]
     runs-on: ubuntu-latest
     steps:
       -
@@ -70,20 +73,40 @@ jobs:
         id: docker_build
         uses: docker/build-push-action@v3
         with:
-          context: .
-          file: ./3.13/Dockerfile
+          file: ./${{ matrix.alpine }}/Dockerfile
           build-args: |
             BF_IMAGE=${{ env.REPOSITORY_NAME }}
             BF_VERSION=${{ steps.version.outputs.contents }}
           push: ${{ startsWith(github.ref, 'refs/heads/') }}
           platforms: linux/amd64,linux/arm/v7,linux/arm64
           tags: |
-            bfren/alpine:alpine3.13-dev
-            bfren/alpine:alpine3.13-${{ steps.version_minor.outputs.contents }}-beta
-            bfren/alpine:alpine3.13-${{ steps.version.outputs.contents }}-beta
-            ghcr.io/bfren/alpine:alpine3.13-dev
-            ghcr.io/bfren/alpine:alpine3.13-${{ steps.version_minor.outputs.contents }}-beta
-            ghcr.io/bfren/alpine:alpine3.13-${{ steps.version.outputs.contents }}-beta
+            bfren/alpine:alpine${{ matrix.alpine }}-dev
+            bfren/alpine:alpine${{ matrix.alpine }}-${{ steps.version_minor.outputs.contents }}-beta
+            bfren/alpine:alpine${{ matrix.alpine }}-${{ steps.version.outputs.contents }}-beta
+            ghcr.io/bfren/alpine:alpine${{ matrix.alpine }}-dev
+            ghcr.io/bfren/alpine:alpine${{ matrix.alpine }}-${{ steps.version_minor.outputs.contents }}-beta
+            ghcr.io/bfren/alpine:alpine${{ matrix.alpine }}-${{ steps.version.outputs.contents }}-beta
+      -
+        name: Build and push default tags
+        id: docker_build_default
+        if: matrix.alpine == 3.17
+        uses: docker/build-push-action@v3
+        with:
+          file: ./${{ matrix.alpine }}/Dockerfile
+          build-args: |
+            BF_IMAGE=${{ env.REPOSITORY_NAME }}
+            BF_VERSION=${{ steps.version.outputs.contents }}
+          push: ${{ startsWith(github.ref, 'refs/heads/') }}
+          platforms: linux/amd64,linux/arm/v7,linux/arm64
+          tags: |
+            bfren/alpine:dev
+            bfren/alpine:${{ steps.version_major.outputs.contents }}-beta
+            bfren/alpine:${{ steps.version_minor.outputs.contents }}-beta
+            bfren/alpine:${{ steps.version.outputs.contents }}-beta
+            ghcr.io/bfren/alpine:dev
+            ghcr.io/bfren/alpine:${{ steps.version_major.outputs.contents }}-beta
+            ghcr.io/bfren/alpine:${{ steps.version_minor.outputs.contents }}-beta
+            ghcr.io/bfren/alpine:${{ steps.version.outputs.contents }}-beta
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
