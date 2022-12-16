@@ -6,6 +6,9 @@ ARG BF_IMAGE
 ARG BF_VERSION
 
 ENV \
+    # Alpine versions
+    ALPINE_MINOR=3.14 \
+    ALPINE_REVISION=3.14.8 \
     # debug log output
     #   0: disable
     #   1: enable
