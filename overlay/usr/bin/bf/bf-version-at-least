@@ -1,0 +1,24 @@
+#!/bin/sh
+
+set -euo pipefail
+
+
+#======================================================================================================================
+# Check arguments.
+#   1   Version to compare
+#   2   Version should be at least this
+#======================================================================================================================
+
+[[ -z "${1-}" ]] && bf-error "You must define the version to compare." "bf-version-at-least"
+VERSION=${1}
+
+[[ -z "${2-}" ]] && bf-error "You must define the 'at least' version." "bf-version-at-least"
+MINIMUM=${2}
+
+
+#======================================================================================================================
+# Sort version strings and compare the lowest to the minimum.
+#======================================================================================================================
+
+LOWEST=$(printf '%s\n%s' "${VERSION}" "${MINIMUM}" | sort -V | head -n 1)
+[[ "${LOWEST}" = "${MINIMUM}" ]]
