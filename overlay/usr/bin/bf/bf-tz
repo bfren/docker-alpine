@@ -17,7 +17,7 @@ TZ=/usr/share/zoneinfo/${1}
 #======================================================================================================================
 
 # remove timezone packages and clear zone info
-clear() {
+clear_tz () {
     bf-debug "Removing tzdata packages." "bf-tz"
     apk del .tz
     rm -rf /usr/share/zoneinfo/*
@@ -29,12 +29,12 @@ apk add --no-cache --virtual .tz tzdata
 
 # check the specified timezone exists
 if [ ! -f "${TZ}" ] ; then
-    clear
+    clear_tz
     bf-error "${1} is not a recognised timezone." "bf-tz"
 fi
 
 # copy timezone info
 bf-echo "Setting timezone to ${1}..." "bf-tz"
 cp "${TZ}" /etc/localtime
-clear
+clear_tz
 bf-done "bf-tz"
