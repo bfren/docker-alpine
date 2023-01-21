@@ -1,5 +1,6 @@
 FROM alpine:3.8.5
 
+LABEL org.opencontainers.image.description="Alpine base image with various custom executables."
 LABEL org.opencontainers.image.source="https://github.com/bfren/docker-alpine"
 
 ARG BF_IMAGE
