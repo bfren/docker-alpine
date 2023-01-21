@@ -90,9 +90,6 @@ jobs:
             bfren/alpine:alpine${{ matrix.alpine }}-dev
             bfren/alpine:alpine${{ matrix.alpine }}-${{ steps.version_minor.outputs.contents }}-beta
             bfren/alpine:alpine${{ matrix.alpine }}-${{ steps.version.outputs.contents }}-beta
-            ghcr.io/bfren/alpine:alpine${{ matrix.alpine }}-dev
-            ghcr.io/bfren/alpine:alpine${{ matrix.alpine }}-${{ steps.version_minor.outputs.contents }}-beta
-            ghcr.io/bfren/alpine:alpine${{ matrix.alpine }}-${{ steps.version.outputs.contents }}-beta
       -
         name: Build and push default tags
         id: docker_build_default
@@ -110,10 +107,6 @@ jobs:
             bfren/alpine:${{ steps.version_major.outputs.contents }}-beta
             bfren/alpine:${{ steps.version_minor.outputs.contents }}-beta
             bfren/alpine:${{ steps.version.outputs.contents }}-beta
-            ghcr.io/bfren/alpine:dev
-            ghcr.io/bfren/alpine:${{ steps.version_major.outputs.contents }}-beta
-            ghcr.io/bfren/alpine:${{ steps.version_minor.outputs.contents }}-beta
-            ghcr.io/bfren/alpine:${{ steps.version.outputs.contents }}-beta
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
