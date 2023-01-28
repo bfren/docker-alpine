@@ -7,5 +7,6 @@ set -euo pipefail
 # Output image version.
 #======================================================================================================================
 
+printf "bfren | %s" `cat /BF_IMAGE` | figlet
 bf-echo "bfren `cat /BF_IMAGE` v`cat /BF_VERSION`" "bf-image"
 bf-echo "https://github.com/bfren/docker-`cat /BF_IMAGE`" "bf-image"
