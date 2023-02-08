@@ -26,4 +26,4 @@ jobs:
         name: Push README
         uses: christian-korneck/update-container-description-action@v1
         with:
-          destination_container_repo: ${{ env.REPOSITORY_NAME }}
+          destination_container_repo: bfren/${{ env.REPOSITORY_NAME }}
