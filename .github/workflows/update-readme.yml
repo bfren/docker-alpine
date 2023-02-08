@@ -11,7 +11,7 @@ jobs:
     steps:
       -
         name: Get repository name
-        run: echo "REPOSITORY_NAME=$(echo '${{ github.repository }}' | sed -En "s/(.*)docker-(.*)/\2/p)"  >> $GITHUB_ENV
+        run: echo "REPOSITORY_NAME=$(echo '${{ github.repository }}' | sed "s/bfren\/docker-//")"  >> $GITHUB_ENV
         shell: bash
       -
         name: Checkout code
