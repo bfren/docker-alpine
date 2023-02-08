@@ -24,9 +24,6 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
         name: Push README
-        run: |
-          jq -n --arg msg "$(<${README.md})" '{"registry":"registry-1.docker.io","full_description": $msg }' | \
-          curl https://hub.docker.com/v2/repositories/${{ env.REPOSITORY_NAME }}/ \
-          -d @- -X PATCH \
-          -H "Content-Type: application/json"
-
+        uses: christian-korneck/update-container-description-action@v1
+        with:
+          destination_container_repo: ${{ env.REPOSITORY_NAME }}
