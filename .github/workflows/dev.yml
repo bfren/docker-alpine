@@ -71,7 +71,7 @@ jobs:
       -
         name: Build and push
         id: docker_build
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           file: ./${{ matrix.alpine }}/Dockerfile
           build-args: |
@@ -87,7 +87,7 @@ jobs:
         name: Build and push default tags
         id: docker_build_default
         if: matrix.alpine == '3.17'
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           file: ./${{ matrix.alpine }}/Dockerfile
           build-args: |
