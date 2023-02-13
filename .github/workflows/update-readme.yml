@@ -17,22 +17,15 @@ jobs:
         name: Checkout code
         uses: actions/checkout@v3
       -
-        name: Push README
-        run: |
-          TOKEN=$(curl -s -X POST \
-            -H "Content-Type: application/json" \
-            -d '{"username": "${{ secrets.DOCKERHUB_USERNAME }}", "password": "${{ secrets.DOCKERHUB_TOKEN }}"}' \
-            https://hub.docker.com/v2/users/login/ | jq -r .token) ; \
-          CODE=$(jq -n --arg MSG "$(< README.md)" \
-            '{"registry":"registry-1.docker.io","full_description": $MSG }' | \
-                curl -s -o /dev/null  -L -w "%{http_code}" \
-                  https://hub.docker.com/v2/repositories/${{ env.REPOSITORY_NAME }}/ \
-                  -d @- -X PATCH \
-                  -H "Content-Type: application/json" \
-                  -H "Authorization: JWT ${TOKEN}") ; \
-          if [[ "${CODE}" = "200" ]] ;
-          then \
-            echo "Successfully pushed README.md to Docker Hub" ; \
-          else \
-            printf "Unable to push README.md to Docker Hub, the response code was: %s\n" "${CODE}" && exit 1 ; \
-          fi
+        name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      -
+        name: Update repo description
+        uses: peter-evans/dockerhub-description@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          repository: bfren/${{ env.REPOSITORY_NAME }}
