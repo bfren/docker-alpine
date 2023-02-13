@@ -26,7 +26,7 @@ jobs:
           CODE=$(jq -n --arg MSG "$(< README.md)" \
             '{"registry":"registry-1.docker.io","full_description": $MSG }' | \
                 curl -s -o /dev/null  -L -w "%{http_code}" \
-                  https://hub.docker.com/v2/repositories/"${{ env.REPOSITORY_NAME }}"/ \
+                  https://hub.docker.com/v2/repositories/${{ env.REPOSITORY_NAME }}/ \
                   -d @- -X PATCH \
                   -H "Content-Type: application/json" \
                   -H "Authorization: JWT ${TOKEN}") ; \
