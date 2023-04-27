@@ -8,5 +8,5 @@ set -euo pipefail
 #======================================================================================================================
 
 printf "bfren | %s" `cat /BF_IMAGE` | figlet
-bf-echo "bfren `cat /BF_IMAGE` v`cat /BF_VERSION` (Alpine `cat /BF_ALPINE`)" "bf-image"
+bf-echo "bfren `cat /BF_IMAGE` v`cat /BF_VERSION` (alpine/`cat /BF_ALPINE`)" "bf-image"
 bf-echo "https://github.com/bfren/docker-`cat /BF_IMAGE`" "bf-image"
