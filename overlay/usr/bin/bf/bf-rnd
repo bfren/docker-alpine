@@ -26,4 +26,4 @@ fi
 
 RND=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w ${LEN} | head -n 1 || true)
 [[ "${LEN}" -eq "${#RND}" ]] && echo "${RND}" \
-    || bf-error "Unable to generate random characters."
+    || bf-error "Unable to generate random characters." "bf-rnd"
