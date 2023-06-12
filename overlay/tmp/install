@@ -18,8 +18,9 @@ bf-echo "esh version ${ESH_VERSION}."
 # Upgrade to latest possible version of busybox.
 #======================================================================================================================
 
-apk upgrade --no-cache \
-    busybox
+bf-echo "Upgrading binaries..."
+apk upgrade --no-cache
+bf-done
 
 
 #======================================================================================================================
@@ -35,10 +36,9 @@ apk add --no-cache esh=${ESH_VERSION} && bf-done \
 # Install other packages.
 #======================================================================================================================
 
-bf-echo "Installing other packages..."
-apk add --no-cache \
-    figlet
-bf-done
+bf-echo "Installing additional packages..."
+apk add --no-cache figlet && bf-done \
+    || bf-error "Unable to install additional packages."
 
 
 #======================================================================================================================
