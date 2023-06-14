@@ -1,4 +1,4 @@
-FROM alpine:3.15.8
+FROM alpine:3.15.9
 
 LABEL org.opencontainers.image.description="Alpine base image with various custom executables."
 LABEL org.opencontainers.image.source="https://github.com/bfren/docker-alpine"
@@ -9,7 +9,7 @@ ARG BF_VERSION
 ENV \
     # Alpine versions
     ALPINE_MINOR=3.15 \
-    ALPINE_REVISION=3.15.8 \
+    ALPINE_REVISION=3.15.9 \
     # debug log output
     #   0: disable
     #   1: enable
@@ -19,7 +19,7 @@ ENV \
     # path to bf library executables
     BF_LIB=/usr/lib/bf \
     # upgrade packages during installation
-    BF_UPGRADE_PACKAGES=1
+    BF_UPGRADE_PACKAGES=0
 
 ENV \
     # add bf executables to PATH
