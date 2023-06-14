@@ -19,7 +19,7 @@ ENV \
     # path to bf library executables
     BF_LIB=/usr/lib/bf \
     # upgrade packages during installation
-    BF_UPGRADE_PACKAGES=1
+    BF_UPGRADE_PACKAGES=0
 
 ENV \
     # add bf executables to PATH
