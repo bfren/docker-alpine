@@ -1,4 +1,4 @@
-FROM alpine:3.16.6
+FROM alpine:3.16.7
 
 LABEL org.opencontainers.image.description="Alpine base image with various custom executables."
 LABEL org.opencontainers.image.source="https://github.com/bfren/docker-alpine"
@@ -9,7 +9,7 @@ ARG BF_VERSION
 ENV \
     # Alpine versions
     ALPINE_MINOR=3.16 \
-    ALPINE_REVISION=3.16.6 \
+    ALPINE_REVISION=3.16.7 \
     # debug log output
     #   0: disable
     #   1: enable
