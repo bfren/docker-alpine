@@ -25,14 +25,8 @@ ENV \
     # add bf executables to PATH
     PATH=${BF_BIN}:${PATH}
 
-COPY ./overlay /
-COPY ./3.15/overlay /
+COPY overlay/ 3.15/overlay/ /
 
-RUN chmod +x /install && /install
-
-FROM scratch
-COPY --from=build / /
-
-ARG PATH
+RUN chmod +x install && install
 
 ENTRYPOINT [ "/init" ]
