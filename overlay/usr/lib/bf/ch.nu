@@ -32,6 +32,8 @@ export def main [
     if $mode != null {
         set_mode $mode $recurse $filtered
     }
+
+    print debug_done
 }
 
 def set_ownership [
