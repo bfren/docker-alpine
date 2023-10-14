@@ -76,6 +76,11 @@ export def apply_file [
     print debug_done "ch/apply_file"
 }
 
+# Apply permissions for a row container in a ch.d file:
+#   1. file / directory glob
+#   2. owner (for chown)
+#   3. optional: file mode (for chmod)
+#   4. optional: directory mode (for chmod)
 def apply_row [] {
     # we need at least two values: glob and owner
     let row = $in
