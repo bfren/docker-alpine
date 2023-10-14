@@ -6,5 +6,5 @@ use ../../lib/bf/
 def main [
     glob: string    # Glob to match
 ] {
-    bf util rmrf $glob
+    bf util rmrf $"($glob)"
 }
