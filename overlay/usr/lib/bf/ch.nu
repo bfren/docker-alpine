@@ -50,33 +50,32 @@ export def apply [
 ] {
     # check file exists
     if ($path | path type) != "file" {
-        print notok $"File ($path) does not exist." "ch/apply"
+        print notok $"File ($path) does not exist or is not a file." "ch/apply"
         return
-    }
-
-    # closure to apply changes
-    let apply = { |x|
-        # split row by space
-        let val = $x | split row -r " "
-        if ($val | length) < 2 {
-            return
-        }
-
-        # get values - glob and owner are required, fmode and dmode are optional
-        let glob = $val | get 0
-        let owner = $val | get 1
-        let fmode = $val | get -i 2
-        let dmode = $val | get -i 3
-
-        # apply changes
-        main --owner $owner $glob
-        if $fmode != null { main --mode $fmode --type f $glob }
-        if $dmode != null { main --mode $dmode --type d $glob }
     }
 
     # split by row and apply changes row by row
     print debug $"Applying ($path)..." "ch/apply"
-    open $path | split row -r "\n" | where { |x| $x != "" } | each { |x| do $apply $x }
+    open $path | split row -r "\n" | where { |x| $x != "" } | each { |x| $x | split row " " | apply_values }
 
     print debug_done "ch/apply"
+}
+
+def apply_values [
+    ...values: string
+] {
+    if ($values | length) < 2 {
+        return
+    }
+
+    # get values - glob and owner are required, fmode and dmode are optional
+    let glob = $values | get 0
+    let owner = $values | get 1
+    let fmode = $values | get -i 2
+    let dmode = $values | get -i 3
+
+    # apply changes
+    main --owner $owner $glob
+    if $fmode != null { main --mode $fmode --type f $glob }
+    if $dmode != null { main --mode $dmode --type d $glob }
 }
