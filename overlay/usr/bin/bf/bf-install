@@ -1,60 +1,36 @@
-#!/bin/sh
+#!/usr/bin/env nu
 
-set -euo pipefail
-export BF_E=`basename ${0}`
+use ../../lib/bf/
+bf env set_executable
 
+def main [] {
+    # set permissions
+    bf ch -o root:root -m 0400 -t f /init $env.BF_BIN
+    bf ch -o root:root -m 1777 /etc/bf/src /tmp
+    bf ch -o root:root -r /etc/bf/templates
+    bf ch -m 0444 -t f /etc/bf/templates
+    bf ch -m 0555 -t d /etc/bf/templates
+    bf-ch -o root:root -m 0555 -t f /usr/lib/bf
 
-#======================================================================================================================
-# Set permissions.
-#======================================================================================================================
+    # make sure apk is working correctly (fixes some strange 'no such file or directory errors' on apk FETCH)
+    apk fix
+    apk verify
 
-chmod +x /init
-chmod +x ${BF_BIN}/*
+    # run install script in /tmp
+    let install = "/tmp/install"
+    if ($install | path type) != "file" {
+        bf print notok_error $"($install) does not exist."
+    }
 
-bf-ch -o root:root -m 1777 /etc/bf/src /tmp
-bf-ch -o root:root -r /etc/bf/templates && \
-    bf-ch -m 0444 -t f /etc/bf/templates && \
-    bf-ch -m 0555 -t d /etc/bf/templates
-bf-ch -o root:root -m 0555 -t f /usr/lib/bf
+    chmod +x $install; $install
+    bf print ok_done
 
+    # store versions
+    $env.ALPINE_REVISION | save /BF_ALPINE
+    $env.BF_IMAGE | replace "docker-" "" | save /BF_IMAGE
+    $env.BF_VERSION | save /BF_VERSION
+    bf-image
 
-#======================================================================================================================
-# Make sure apk is working correctly (fixes some strange 'no such file or directory errors' on apk FETCH).
-#======================================================================================================================
-
-apk fix
-apk verify
-
-
-#======================================================================================================================
-# Run install script in /tmp.
-#======================================================================================================================
-
-INSTALL=/tmp/install
-[[ ! -f ${INSTALL} ]] && bf-error "${INSTALL} does not exist."
-
-chmod +x ${INSTALL} && ${INSTALL}
-bf-done
-
-
-#======================================================================================================================
-# Store Alpine version.
-#======================================================================================================================
-
-echo "${ALPINE_REVISION}" > /BF_ALPINE
-
-
-#======================================================================================================================
-# Store image version.
-#======================================================================================================================
-
-echo "${BF_IMAGE/docker-/}" > /BF_IMAGE
-echo "${BF_VERSION}" > /BF_VERSION
-bf-image
-
-
-#======================================================================================================================
-# Perform cleanup.
-#======================================================================================================================
-
-bf-clear
+    # cleanup
+    bf-cleanup
+}
