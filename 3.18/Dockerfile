@@ -2,7 +2,7 @@ FROM alpine:3.18.4 as build
 
 COPY overlay/ 3.18/overlay/ /
 
-RUN chmod +x /preinstall && /preinstall && \
+RUN chmod +x /preinstall && /preinstall
 
 FROM scratch
 

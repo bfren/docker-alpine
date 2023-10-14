@@ -2,7 +2,7 @@ FROM alpine:<%= ${ALPINE_REVISION} %> as build
 
 COPY overlay/ <%= ${ALPINE_VERSION} %>/overlay/ /
 
-RUN chmod +x /preinstall && /preinstall && \
+RUN chmod +x /preinstall && /preinstall
 
 FROM scratch
 
