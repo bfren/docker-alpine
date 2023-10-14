@@ -41,17 +41,10 @@ def set_ownership [
 ] {
     print debug $"Applying chown ($owner)..." "ch/set_ownership"
 
-    if $recurse {
-        print debug $" .. recursively to ($paths)" "ch/set_ownership"
-        chown -R $owner $paths
-    } else {
-        $paths | each { |x|
-            print debug $" .. to ($x)" "ch/set_ownership"
-            chown $owner $x
-        }
+    $paths | each { |x|
+        print debug $" .. ($x)" "ch/set_ownership"
+        if $recurse { chown -R $owner $x } else { chown $owner $x }
     }
-
-    print debug_done "ch/set_ownership"
 }
 
 def set_mode [
@@ -61,15 +54,8 @@ def set_mode [
 ] {
     print debug $"Applying chmod ($mode)..." "ch/set_mode"
 
-    if $recurse {
-        print debug " .. recursively" "ch/set_mode"
-        chmod -R $mode $paths
-    } else {
-        $paths | each { |x|
-            print debug $" .. ($x)" "ch/set_mode"
-            chmod $mode $x
-        }
+    $paths | each { |x|
+        print debug $" .. ($x)" "ch/set_mode"
+        if $recurse { chmod -R $mode $x } else { chmod $mode $x }
     }
-
-    print debug_done "ch/set_mode"
 }
