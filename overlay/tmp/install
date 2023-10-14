@@ -24,8 +24,7 @@ def main [] {
     try {
         apk add --no-cache figlet
         bf print ok_done "/tmp/install"
-    }
-    catch {
+    } catch {
         bf print notok_error "Unable to install additional packages." "/tmp/install"
     }
 

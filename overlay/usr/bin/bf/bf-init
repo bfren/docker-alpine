@@ -11,12 +11,12 @@ def main [] {
     bf print debug "Init complete."
 }
 
-# Execute a file within the init.d directory
+# Execute a script within the init.d directory
 def execute [
-    name: string    # Name of file (within init.d directory)
+    filename: string    # Name of script file (within init.d directory)
 ] {
-    bf print $"($name): Running..."
-    let path = $"($init_d)/($name)"
-    chmod +x $path; $path
-    bf print debug $"($name): Done."
+    bf print $"($filename): Running..."
+    let path = $"($init_d)/($filename)"
+    nu $path
+    bf print debug $"($filename): Done."
 }
