@@ -7,8 +7,12 @@ export def main [
     ...glob: string             # The paths to which to apply ch operations
     --mode (-m): string         # Use chmod: Set permissions to this mode
     --owner (-o): string        # Use chown: Set ownership to this user & group
-    --recurse (-r): bool        # If type is not specified, adds -R to recurse
+    --recurse (-r)              # Overrides type to recurse whatever is matched by glob
     --type (-t): string = "a"   # Apply to all (a), files only (f) or directories only (d)
 ] {
-    bf ch --mode $mode --owner $owner --recurse $recurse --type $type ...$glob
+    if $recurse {
+        bf ch --mode $mode --owner $owner --recurse ...$glob
+    } else {
+        bf ch --mode $mode --owner $owner --type $type ...$glob
+    }
 }
