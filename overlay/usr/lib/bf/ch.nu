@@ -42,11 +42,11 @@ def set_ownership [
     print debug $"Applying chown ($owner)..." "ch/set_ownership"
 
     if $recurse {
-        print debug " .. recursively" "ch/set_ownership"
+        print debug $" .. recursively to ($paths)" "ch/set_ownership"
         chown -R $owner $paths
     } else {
         $paths | each { |x|
-            print debug $" .. ($x)" "ch/set_ownership"
+            print debug $" .. to ($x)" "ch/set_ownership"
             chown $owner $x
         }
     }
