@@ -4,6 +4,6 @@ use print.nu
 export def rmrf [
     glob: string    # Glob to match
 ] {
-    print debug $"Force deleting files and directories matching ($glob)."
-    (glob $glob | each { rm -rf $in } | length) == 0
+    print debug $"Force deleting files and directories matching ($glob)..."
+    glob $glob | sort | each { print debug $" .. ($in)"; rm -rf $in }
 }
