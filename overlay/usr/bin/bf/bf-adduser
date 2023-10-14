@@ -2,7 +2,7 @@
 
 use ../../lib/bf/
 
-# Add a user and group of the specified name, optionally specifying UID and GID
+# Add a non-login user and group of the specified name, optionally specifying UID and GID
 def main [
     name: string      # The name of the user and group to add
     --uid: int = 1000 # The UID
@@ -10,6 +10,6 @@ def main [
 ] {
     bf print debug $"Adding user ($name) with UID ($uid) and GID ($gid | $uid)." "bf-adduser"
     addgroup --gid ($gid | $uid) $name
-    adduser --uid $uid --home $"/home/($name)" --disabled-password --ingroup $name $name
+    adduser --uid $uid --home $"/home/($name)" --disabled-login --disabled-password --ingroup $name $name
     bf print debug "Done." "bf-adduser"
 }
