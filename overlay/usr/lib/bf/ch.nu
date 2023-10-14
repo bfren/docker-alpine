@@ -61,18 +61,16 @@ export def apply [
     print debug_done "ch/apply"
 }
 
-def apply_values [
-    ...values: string
-] {
-    if ($values | length) < 2 {
+def apply_values [] {
+    if ($in | length) < 2 {
         return
     }
 
     # get values - glob and owner are required, fmode and dmode are optional
-    let glob = $values | get 0
-    let owner = $values | get 1
-    let fmode = $values | get -i 2
-    let dmode = $values | get -i 3
+    let glob = $in | get 0
+    let owner = $in | get 1
+    let fmode = $in | get -i 2
+    let dmode = $in | get -i 3
 
     # apply changes
     main --owner $owner $glob
