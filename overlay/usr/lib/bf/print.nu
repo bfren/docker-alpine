@@ -9,10 +9,10 @@ def p [
     script?: string # The name of the calling script or executable
 ] {
     # get the name of the base executable
-    let $bf_e = $env | get -i BF_E
+    let bf_e = $env | get -i BF_E
 
     # use BF_E or the calling script as the prefix
-    let $prefix = if $script != null {
+    let prefix = if $script != null {
         if $bf_e != null {
             $"($bf_e): "
         } else {
@@ -23,14 +23,14 @@ def p [
     }
 
     # if script and BF_E are both set, BF_E is the prefix, so use script as the suffix
-    let $suffix = if $script != null {
+    let suffix = if $script != null {
         if $bf_e != null {
             $" \(($script)\)"
         }
     }
 
     # format date and print text
-    let $date = date now | format date "%Y-%m-%d %H:%M:%S"
+    let date = date now | format date "%Y-%m-%d %H:%M:%S"
     print $"[bf] ($date) | (ansi $colour)($prefix)($text)($suffix)(ansi reset)"
 }
 
@@ -77,7 +77,7 @@ export def notok_error [
     error: string   # The error text to print
     script?: string # The name of the calling script or executable
 ] {
-    let $output = notok $error $script
+    let output = notok $error $script
     print --no-newline --stderr $output
     exit 1
 }
@@ -88,8 +88,8 @@ export def debug [
     script?: string # The name of the calling script or executable
 ] {
     if (env check BF_DEBUG) {
-        let $colour = "grey"
-        let $output = p $text $colour $script
+        let colour = "grey"
+        let output = p $text $colour $script
         print --no-newline $"(ansi $colour)($output)(ansi reset)"
     }
 }
