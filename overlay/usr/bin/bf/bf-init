@@ -1,20 +1,22 @@
-#!/bin/sh
+#!/usr/bin/env nu
 
-set -euo pipefail
-export BF_E=`basename ${0}`
+use ../../lib/bf/
 
+const $init_d = "/etc/bf/init.d"
 
-#======================================================================================================================
-# Run container initialisation.
-#======================================================================================================================
+# Initialise the container by running all scripts contained in /etc/bf/init.d
+def main [] {
+    bf print "Initialising container."
+    if ($init_d | path exists) { ls $init_d | get name | sort | each { run $in } }
+    bf print debug "Init complete."
+}
 
-bf-debug "Initialising container."
-${BF_LIB}/init
-bf-debug "Done."
-
-
-#======================================================================================================================
-# Execute.
-#======================================================================================================================
-
-exec "$@"
+# Mark a file as executable and run it.
+def run [
+    name: string    # Name of file (within init.d directory).
+] {
+    let $path = $"($init_d)/($name)"
+    bf print $"($name): Running..."
+    chmod +x $path; $path
+    bf print debug $"($name): Done."
+}
