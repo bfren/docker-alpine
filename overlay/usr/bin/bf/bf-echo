@@ -1,14 +1,11 @@
-#!/bin/sh
+#!/usr/bin/env nu
 
-set -euo pipefail
+use ../../lib/bf/
 
-
-#======================================================================================================================
-# Echo text in standard colour.
-#
-# Arguments
-#   1   Text to echo
-#   2   Script / executable name (optional)
-#======================================================================================================================
-
-bf-e "bf" "\e[39m" "${1-}" "${2-}"
+# Print text in standard colour with the current date / time
+def main [
+    text: string    # The text to print
+    script?: string # The name of the calling script or executable
+] {
+    bf print $text $script
+}

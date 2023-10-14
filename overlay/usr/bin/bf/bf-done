@@ -1,13 +1,10 @@
-#!/bin/sh
+#!/usr/bin/env nu
 
-set -euo pipefail
+use ../../lib/bf/
 
-
-#======================================================================================================================
-# Echo 'done' in green text.
-#
-# Arguments
-#   1   Script / executable name (optional)
-#======================================================================================================================
-
-bf-ok "done." "${1-}"
+# Print 'done.' in green with the current date / time
+def main [
+    script?: string # The name of the calling script or executable
+] {
+    bf print ok "done." $script
+}
