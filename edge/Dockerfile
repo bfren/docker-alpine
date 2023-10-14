@@ -28,11 +28,9 @@ ENV \
 COPY ./overlay /
 COPY ./edge/overlay /
 
-RUN chmod +x /install
+RUN chmod +x /install && /install
 
 FROM scratch
 COPY --from=build / /
-
-RUN /install
 
 ENTRYPOINT [ "/init" ]
