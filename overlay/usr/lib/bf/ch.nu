@@ -29,21 +29,21 @@ export def apply [
         "a" => { $paths }
         "d" => { filesystem only_dirs $paths }
         "f" => { filesystem only_files $paths }
-        _ => { print notok_error $"Unknown type: ($type)." "ch" }
+        _ => { print notok_error $"Unknown type: ($type)." "ch/apply" }
     }
 
     # if everything has been filtered out, return
     if ($filtered | length) == 0 {
-        print debug "Nothing found to change." "ch"
+        print debug "Nothing found to change." "ch/apply"
         return
     }
 
-    print debug "Applying..." "ch"
+    print debug "Applying..." "ch/apply"
 
     # set ownership
     if $owner != null {
         $filtered | each { |x|
-            print debug $" .. chown ($owner) to ($x)" "ch"
+            print debug $" .. chown ($owner) to ($x)" "ch/apply"
             if $recurse { chown -R $owner $x } else { chown $owner $x }
         }
     }
@@ -51,12 +51,12 @@ export def apply [
     # set mode
     if $mode != null {
         $filtered | each { |x|
-            print debug $" .. chmod ($mode) to ($x)" "ch"
+            print debug $" .. chmod ($mode) to ($x)" "ch/apply"
             if $recurse { chmod -R $mode $x } else { chmod $mode $x }
         }
     }
 
-    print debug_done "ch"
+    print debug_done "ch/apply"
 }
 
 # Apply permissions using a ch.d file
@@ -65,15 +65,15 @@ export def apply_file [
 ] {
     # check file exists
     if ($path | path type) != "file" {
-        print notok $"File ($path) does not exist or is not a file." "ch/apply"
+        print notok $"File ($path) does not exist or is not a file." "ch/apply_file"
         return
     }
 
     # split by row and apply changes row by row
-    print debug $"Applying ($path)..." "ch/apply"
+    print debug $"Applying ($path)..." "ch/apply_file"
     open $path | split row -r "\n" | where { |x| $x != "" } | each { |x| split_and_apply $x }
 
-    print debug_done "ch/apply"
+    print debug_done "ch/apply_file"
 }
 
 def split_and_apply [
