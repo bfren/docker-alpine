@@ -9,7 +9,7 @@ def main [
     --gid: int        # The GID (default: UID)
 ] {
     bf print debug $"Adding user ($name) with UID ($uid) and GID ($gid | $uid)." "bf-adduser"
-    addgroup --gid $gid $name
+    addgroup --gid ($gid | $uid) $name
     adduser --uid $uid --home $"/home/($name)" --disabled-password --ingroup $name $name
     bf print debug "Done." "bf-adduser"
 }
