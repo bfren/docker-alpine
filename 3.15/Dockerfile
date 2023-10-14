@@ -1,4 +1,4 @@
-FROM alpine:3.15.10 as build
+FROM alpine:3.15.10
 
 LABEL org.opencontainers.image.description="Alpine base image with various custom executables."
 LABEL org.opencontainers.image.source="https://github.com/bfren/docker-alpine"
@@ -27,6 +27,6 @@ ENV \
 
 COPY overlay/ 3.15/overlay/ /
 
-RUN chmod +x install && install
+RUN chmod +x /install && /install
 
 ENTRYPOINT [ "/init" ]
