@@ -56,21 +56,25 @@ export def apply [
 
     # split by row and apply changes row by row
     print debug $"Applying ($path)..." "ch/apply"
-    open $path | split row -r "\n" | where { |x| $x != "" } | each { |x| $x | split row " " | apply_values }
+    open $path | split row -r "\n" | where { |x| $x != "" } | each { |x| split_and_apply $x }
 
     print debug_done "ch/apply"
 }
 
-def apply_values [] {
-    if ($in | length) < 2 {
+def split_and_apply [
+    row: string
+] {
+    # split row by space
+    let a = $row | split row -r " "
+    if ($a | length) < 2 {
         return
     }
 
     # get values - glob and owner are required, fmode and dmode are optional
-    let glob = $in | get 0
-    let owner = $in | get 1
-    let fmode = $in | get -i 2
-    let dmode = $in | get -i 3
+    let glob = $a | get 0
+    let owner = $a | get 1
+    let fmode = $a | get -i 2
+    let dmode = $a | get -i 3
 
     # apply changes
     main --owner $owner $glob
