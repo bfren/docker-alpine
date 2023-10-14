@@ -5,17 +5,17 @@ use ../../lib/bf/
 # Clear temporary directories, caches and installation files.
 def main [] {
     bf print debug "Deleting /install" "bf-clear"
-    bf util rmrf /install
+    bf rm force /install
 
     bf print debug "Clearing /tmp" "bf-clear"
-    bf util rmrf /tmp/*
+    bf rm force /tmp/*
 
     bf print debug "Clearing caches..." "bf-clear"
-    bf util rmrf /var/cache/apk/*
-    bf util rmrf /var/cache/misc/*
+    bf rm force /var/cache/apk/*
+    bf rm force /var/cache/misc/*
 
     bf print debug "Removing .empty files..." "bf-clear"
-    glob --no-dir /**/.empty | each { rm -f $in }
+    bf rm force --files-only .empty
 
-    bf print debug "Done." "bf-clear"
+    bf print debug_done "bf-clear"
 }
