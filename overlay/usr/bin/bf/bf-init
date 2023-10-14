@@ -4,18 +4,18 @@ use ../../lib/bf/
 
 const $init_d = "/etc/bf/init.d"
 
-# Initialise the container by running all scripts contained in /etc/bf/init.d
+# Initialise the container by executing all scripts contained in /etc/bf/init.d
 def main [] {
     bf print debug "Initialising container."
-    if ($init_d | path exists) { ls $init_d | get name | sort | each { run $in } }
+    if ($init_d | path exists) { ls $init_d | get name | sort | each { |x| execute $x } }
     bf print debug "Init complete."
 }
 
-# Mark a file as executable and run it.
-def run [
-    name: string    # Name of file (within init.d directory).
+# Execute a file within the init.d directory
+def execute [
+    name: string    # Name of file (within init.d directory)
 ] {
-    let $path = $"($init_d)/($name)"
+    let path = $"($init_d)/($name)"
     bf print $"($name): Running..."
     chmod +x $path; $path
     bf print debug $"($name): Done."
