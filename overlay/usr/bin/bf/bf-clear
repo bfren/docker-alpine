@@ -1,20 +1,21 @@
-#!/bin/sh
+#!/usr/bin/env nu
 
-set -euo pipefail
+use ../../lib/bf/
 
+# Clear temporary directories, caches and installation files.
+def main [] {
+    bf print debug "Deleting /install" "bf-clear"
+    bf util rmrf /install
 
-#======================================================================================================================
-# Clear temporary directories and caches.
-#======================================================================================================================
+    bf print debug "Clearing /tmp" "bf-clear"
+    bf util rmrf /tmp/*
 
-bf-debug "Clearing /tmp..." "bf-clear"
-rm -rf /tmp/*
+    bf print debug "Clearing caches..." "bf-clear"
+    bf util rmrf /var/cache/apk/*
+    bf util rmrf /var/cache/misc/*
 
-bf-debug "Clearing caches..." "bf-clear"
-rm -rf /var/cache/apk/*
-rm -rf /var/cache/misc/*
+    bf print debug "Removing .empty files..." "bf-clear"
+    glob --no-dir /**/.empty | each { rm -f $in }
 
-bf-debug "Removing .empty files..."
-find / -type f -name ".empty" -delete 2>/dev/null
-
-bf-debug "Done." "bf-clear"
+    bf print debug "Done." "bf-clear"
+}
