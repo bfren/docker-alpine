@@ -1,5 +1,7 @@
 use env.nu
 
+const $done = "Done."
+
 # Print text, optionally in a specified colour, with the current date / time and script name
 def p [
     text: string    # The text to print
@@ -40,6 +42,13 @@ export def main [
     p $text "reset" $script
 }
 
+# Print 'Done.' in standard colour with the current date / time
+export def done [
+    script?: string # The name of the calling script or executable
+] {
+    main $done $script
+}
+
 # Print text in green with the current date / time
 export def ok [
     text: string    # The text to print
@@ -48,12 +57,29 @@ export def ok [
     p $text "green" $script
 }
 
+# Print 'Done.' in green with the current date / time
+export def ok_done [
+    script?: string # The name of the calling script or executable
+] {
+    ok $done $script
+}
+
 # Print text in red with the current date / time
 export def notok [
     text: string    # The text to print
     script?: string # The name of the calling script or executable
 ] {
     p $text "red" $script
+}
+
+# Print error text in red with the current date / time, and exit with status 1
+export def notok_error [
+    error: string   # The error text to print
+    script?: string # The name of the calling script or executable
+] {
+    let $output = notok $error $script
+    print --no-newline --stderr $output
+    exit 1
 }
 
 # Print text in grey with the current date / time, if BF_DEBUG is enabled
@@ -66,4 +92,11 @@ export def debug [
         let $output = p $text $colour $script
         print --no-newline $"(ansi $colour)($output)(ansi reset)"
     }
+}
+
+# Print 'Done.' in grey with the current date / time, if BF_DEBUG is enabled
+export def debug_done [
+    script?: string # The name of the calling script or executable
+] {
+    debug $done $script
 }

@@ -6,5 +6,5 @@ use ../../lib/bf/
 def main [
     script?: string # The name of the calling script or executable
 ] {
-    bf print ok "Done." $script
+    bf print ok_done $script
 }

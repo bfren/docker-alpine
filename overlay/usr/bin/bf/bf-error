@@ -7,7 +7,5 @@ def main [
     error: string   # The error message to print
     script?: string # The name of the calling script or executable
 ] {
-    let $output = bf print notok $error $script
-    print --no-newline --stderr $output
-    exit 1
+    bf print notok_error $error $script
 }
