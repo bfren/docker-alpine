@@ -6,7 +6,7 @@ export def main [
     ...glob: string             # The paths to which to apply ch operations
     --mode (-m): string         # Use chmod: Set permissions to this mode
     --owner (-o): string        # Use chown: Set ownership to this user & group
-    --recurse (-r): bool        # If type is not specified, adds -R to recurse
+    --recurse (-r)              # If type is not specified, adds -R to recurse
     --type (-t): string = "a"   # Apply to all (a), files only (f) or directories only (d)
 ] {
     # filter out paths that are not of the requested type
