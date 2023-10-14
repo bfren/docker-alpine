@@ -30,4 +30,4 @@ COPY ./3.14/overlay /
 
 RUN chmod +x ${BF_BIN}/bf-install && bf-install
 
-ENTRYPOINT [ "bf-init" ]
+ENTRYPOINT [ "/init" ]

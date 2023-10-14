@@ -30,4 +30,4 @@ COPY ./edge/overlay /
 
 RUN chmod +x ${BF_BIN}/bf-install && bf-install
 
-ENTRYPOINT [ "bf-init" ]
+ENTRYPOINT [ "/init" ]
