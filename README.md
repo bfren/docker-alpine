@@ -6,6 +6,22 @@
 
 [Documentation and Usage Guide](https://docs.bfren.dev/docker/alpine)
 
+## Tags
+
+You can pin by Alpine version:
+
+- **latest, 1, 1.8, 1.8.7, alpine3.18, alpine3.18.4** (EOL: 2025-05-09)
+- **alpine3.17, alpine3.17.5** (EOL: 2024-11-22)
+- **alpine3.16, alpine3.16.7** (EOL: 2024-05-23)
+- **alpine3.15, alpine3.15.10** (EOL: 2023-11-01)
+
+Or if you want a specific base image build you can add a version suffix, e.g.:
+
+- alpine3.18-1.8
+- alpine3.17-1.7.0
+
+These pin to v1.8.x of my Alpine 3.18 image and v1.7.0 of my Alpine 3.17 image respectively.
+
 ## Licence
 
 > [MIT](https://mit.bfren.dev/2021)
