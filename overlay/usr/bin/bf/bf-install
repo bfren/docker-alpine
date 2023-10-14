@@ -21,6 +21,7 @@ def main [] {
         bf print notok_error $"($install) does not exist."
     }
 
+    bf print debug $"Executing ($install)..."
     chmod +x $install; $install
     bf print ok_done
 
