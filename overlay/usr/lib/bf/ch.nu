@@ -43,3 +43,40 @@ export def main [
 
     print debug_done "ch"
 }
+
+# Apply permissions using a ch.d file
+export def apply [
+    path: string    # The ch.d file to read
+] {
+    # check file exists
+    if ($path | path type) != "file" {
+        print notok $"File ($path) does not exist." "ch/apply"
+        return
+    }
+
+    # closure to apply changes
+    let apply = { |x|
+        # split row by space
+        let val = $x | split row -r " "
+        if ($val | length) < 2 {
+            return
+        }
+
+        # get values - glob and owner are required, fmode and dmode are optional
+        let glob = $val | get 0
+        let owner = $val | get 1
+        let fmode = $val | get -i 2
+        let dmode = $val | get -i 3
+
+        # apply changes
+        main --owner $owner $glob
+        if $fmode != null { main --mode $fmode --type f $glob }
+        if $dmode != null { main --mode $dmode --type d $glob }
+    }
+
+    # split by row and apply changes row by row
+    print debug $"Applying ($path)..." "ch/apply"
+    open $path | split row -r "\n" | where { |x| $x != "" } | each { |x| do $apply $x }
+
+    print debug_done "ch/apply"
+}

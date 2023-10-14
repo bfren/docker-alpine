@@ -1,32 +1,10 @@
-#!/bin/sh
+#!/usr/bin/env nu
 
-set -euo pipefail
+use ../../lib/bf/
 
-
-#======================================================================================================================
-# Ensure file exists.
-#======================================================================================================================
-
-[[ -z "${1-}" ]] && bf-error "You must pass a file to apply." "bf-ch-apply"
-FILE=${1}
-
-[[ ! -f "${FILE}" ]] && bf-error "${FILE} is not a file." "bf-ch-apply"
-
-
-#======================================================================================================================
-# Apply ch file.
-#======================================================================================================================
-
-bf-echo "Applying ${FILE}..." "bf-ch-apply"
-
-while read GLOB OWNER FMODE DMODE ; do
-
-    [[ -z "${GLOB-}" ]] && continue
-
-    bf-ch -o ${OWNER} -r ${GLOB}
-    [[ -n "${FMODE}" ]] && bf-ch -m ${FMODE} -t f ${GLOB}
-    [[ -n "${DMODE}" ]] && bf-ch -m ${DMODE} -t d ${GLOB}
-
-done < "${FILE}"
-
-bf-debug "done." "bf-ch-apply"
+# Apply permissions using a ch.d file
+export def main [
+    path: string    # The ch.d file to read
+] {
+    bf ch apply $path
+}
