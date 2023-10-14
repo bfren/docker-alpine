@@ -13,7 +13,7 @@ def main [] {
     try {
         let esh_version = cat ESH_BUILD
         bf print $"Installing esh v($esh_version)." "/tmp/install"
-        apk add --no-cache esh=($esh_version)
+        apk add --no-cache $"esh=($esh_version)"
         bf print ok_done "/tmp/install"
     } catch {
         bf print notok_error "esh not installed." "/tmp/install"
