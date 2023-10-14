@@ -15,8 +15,8 @@ def main [] {
 def execute [
     name: string    # Name of file (within init.d directory)
 ] {
-    let path = $"($init_d)/($name)"
     bf print $"($name): Running..."
+    let path = $"($init_d)/($name)"
     chmod +x $path; $path
     bf print debug $"($name): Done."
 }
