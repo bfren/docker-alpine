@@ -3,7 +3,22 @@ use print.nu
 
 # Apply ownership or permissions values to files and directories matched by glob
 export def main [
-    glob: list<string>          # The paths to which to apply ch operations
+    ...glob: string             # The paths to which to apply ch operations
+    --mode (-m): string         # Use chmod: Set permissions to this mode
+    --owner (-o): string        # Use chown: Set ownership to this user & group
+    --recurse (-r)              # If type is not specified, adds -R to recurse
+    --type (-t): string = "a"   # Apply to all (a), files only (f) or directories only (d)
+] {
+    if $recurse {
+        apply --mode $mode --owner $owner --recurse $glob
+    } else {
+        apply --mode $mode --owner $owner --type $type $glob
+    }
+}
+
+# Apply ownership or permissions values to files and directories matched by glob
+export def apply [
+    paths: list<string>         # The paths to which to apply ch operations
     --mode (-m): string         # Use chmod: Set permissions to this mode
     --owner (-o): string        # Use chown: Set ownership to this user & group
     --recurse (-r)              # If type is not specified, adds -R to recurse
@@ -11,9 +26,9 @@ export def main [
 ] {
     # filter out paths that are not of the requested type
     let filtered = match $type {
-        "a" => { $glob }
-        "d" => { filesystem only_dirs $glob }
-        "f" => { filesystem only_files $glob }
+        "a" => { $paths }
+        "d" => { filesystem only_dirs $paths }
+        "f" => { filesystem only_files $paths }
         _ => { print notok_error $"Unknown type: ($type)." "ch" }
     }
 
@@ -45,7 +60,7 @@ export def main [
 }
 
 # Apply permissions using a ch.d file
-export def apply [
+export def apply_file [
     path: string    # The ch.d file to read
 ] {
     # check file exists

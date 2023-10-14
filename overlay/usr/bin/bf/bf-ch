@@ -11,8 +11,8 @@ export def main [
     --type (-t): string = "a"   # Apply to all (a), files only (f) or directories only (d)
 ] {
     if $recurse {
-        bf ch --mode $mode --owner $owner --recurse $glob
+        bf ch apply --mode $mode --owner $owner --recurse $glob
     } else {
-        bf ch --mode $mode --owner $owner --type $type $glob
+        bf ch apply --mode $mode --owner $owner --type $type $glob
     }
 }
