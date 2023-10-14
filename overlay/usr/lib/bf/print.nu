@@ -32,30 +32,34 @@ def p [
     print $"[bf] ($date) | (ansi $colour)($prefix)($text)($suffix)(ansi reset)"
 }
 
+# Print text in standard colour with the current date / time
 export def main [
-    text: string
-    script?: string
+    text: string    # The text to print
+    script?: string # The name of the calling script or executable
 ] {
     p $text "reset" $script
 }
 
+# Print text in green with the current date / time
 export def ok [
-    text: string
-    script?: string
+    text: string    # The text to print
+    script?: string # The name of the calling script or executable
 ] {
     p $text "green" $script
 }
 
+# Print text in red with the current date / time
 export def notok [
-    text: string
-    script?: string
+    text: string    # The text to print
+    script?: string # The name of the calling script or executable
 ] {
     p $text "red" $script
 }
 
+# Print text in grey with the current date / time, if BF_DEBUG is enabled
 export def debug [
-    text: string
-    script?: string
+    text: string    # The text to print
+    script?: string # The name of the calling script or executable
 ] {
     if (env check BF_DEBUG) {
         let $colour = "grey"

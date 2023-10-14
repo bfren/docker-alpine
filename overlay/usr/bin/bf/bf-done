@@ -2,9 +2,9 @@
 
 use ../../lib/bf/
 
-# Print 'done.' in green with the current date / time
+# Print 'Done.' in green with the current date / time
 def main [
     script?: string # The name of the calling script or executable
 ] {
-    bf print ok "done." $script
+    bf print ok "Done." $script
 }

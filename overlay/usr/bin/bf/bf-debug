@@ -2,7 +2,7 @@
 
 use ../../lib/bf/
 
-# Print text in grey with the current date / time
+# Print text in grey with the current date / time, if BF_DEBUG is enabled
 def main [
     text: string    # The text to print
     script?: string # The name of the calling script or executable
