@@ -33,4 +33,6 @@ RUN chmod +x /install && /install
 FROM scratch
 COPY --from=build / /
 
+ARG PATH
+
 ENTRYPOINT [ "/init" ]
