@@ -7,7 +7,7 @@ export def force [
 ] {
     let print_and_delete = { |x| print debug $" .. ($x)" "util/rmrf"; rm -rf $x }
 
-    let $kind = "files" + if (! $files_only) { " and directories" }
+    let $kind = "files" + if $files_only { "" } else { " and directories" }
     let $paths = if $files_only { glob --no-dir $glob } else { glob $glob }
 
     print debug $"Force deleting ($kind) matching ($glob)..." "util/rmrf"
