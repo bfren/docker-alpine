@@ -23,41 +23,23 @@ export def main [
         return
     }
 
+    print debug "Applying..." "ch"
+
     # set ownership
     if $owner != null {
-        set_ownership $owner $recurse $filtered
+        $filtered | each { |x|
+            print debug $" .. chown ($owner) to ($x)" "ch"
+            if $recurse { chown -R $owner $x } else { chown $owner $x }
+        }
     }
 
     # set mode
     if $mode != null {
-        set_mode $mode $recurse $filtered
+        $filtered | each { |x|
+            print debug $" .. chmod ($mode) to ($x)" "ch"
+            if $recurse { chmod -R $mode $x } else { chmod $mode $x }
+        }
     }
 
-    print debug_done
-}
-
-def set_ownership [
-    owner: string
-    recurse: bool
-    paths: list<string>
-] {
-    print debug $"Applying chown ($owner)..." "ch/set_ownership"
-
-    $paths | each { |x|
-        print debug $" .. ($x)" "ch/set_ownership"
-        if $recurse { chown -R $owner $x } else { chown $owner $x }
-    }
-}
-
-def set_mode [
-    mode: string
-    recurse: bool
-    paths: list<string>
-] {
-    print debug $"Applying chmod ($mode)..." "ch/set_mode"
-
-    $paths | each { |x|
-        print debug $" .. ($x)" "ch/set_mode"
-        if $recurse { chmod -R $mode $x } else { chmod $mode $x }
-    }
+    print debug_done "ch"
 }
