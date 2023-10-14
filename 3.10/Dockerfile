@@ -25,10 +25,8 @@ ENV \
     # add bf executables to PATH
     PATH=${BF_BIN}:${PATH}
 
-COPY ./overlay /
-COPY ./3.10/overlay /
+COPY ./overlay ./3.10/overlay /
 
-RUN apk add nu@edgetest && \
-    chmod +x ${BF_BIN}/bf-install && bf-install
+RUN chmod +x /install && /install
 
 ENTRYPOINT [ "/init" ]

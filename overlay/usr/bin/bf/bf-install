@@ -9,7 +9,6 @@ export BF_E=`basename ${0}`
 #======================================================================================================================
 
 chmod +x /init
-chmod +x ${BF_BIN}/*
 
 bf-ch -o root:root -m 1777 /etc/bf/src
 bf-ch -o root:root -r /etc/bf/templates && \
