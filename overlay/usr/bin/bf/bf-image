@@ -1,12 +1,15 @@
-#!/bin/sh
+#!/usr/bin/env nu
 
-set -euo pipefail
+use ../../lib/bf/
 
+def main [] {
+    # read image values
+    let image = cat /BF_IMAGE
+    let version = cat /BF_VERSION
+    let alpine = cat /BF_ALPINE
 
-#======================================================================================================================
-# Output image version.
-#======================================================================================================================
-
-printf "bfren | %s" `cat /BF_IMAGE` | figlet
-bf-echo "bfren `cat /BF_IMAGE` v`cat /BF_VERSION` (alpine/`cat /BF_ALPINE`)" "bf-image"
-bf-echo "https://github.com/bfren/docker-`cat /BF_IMAGE`" "bf-image"
+    # output image info
+    $"bfren | ($image)" | figlet
+    bf print $"bfren ($image) v($version) \(alpine/($alpine)\)" "bf-image"
+    bf print $"https://github.com/bfren/docker-($image)" "bf-image"
+}
