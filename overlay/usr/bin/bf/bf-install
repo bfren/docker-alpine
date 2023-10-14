@@ -29,6 +29,7 @@ def main [] {
     $env.ALPINE_REVISION | save --force /BF_ALPINE
     $env.BF_IMAGE | str replace "docker-" "" | save --force /BF_IMAGE
     $env.BF_VERSION | save --force /BF_VERSION
+    bf-image
 
     # cleanup installation files / caches etc
     bf-clear
