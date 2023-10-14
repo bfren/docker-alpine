@@ -1,11 +1,11 @@
 use print.nu
 
-# Remove all files and directories matching glob
+# Force and recursively remove all files and directories matching glob
 export def rmrf [
     glob: string    # Glob to match
 ] {
-    print debug $"Force deleting files and directories matching ($glob)..."
-    let print_and_delete = { |x| print debug $" .. ($x)"; rm -rf $x }
+    print debug $"Force deleting files and directories matching ($glob)..." "util/rmrf"
+    let print_and_delete = { |x| print debug $" .. ($x)" "util/rmrf"; rm -rf $x }
     glob $glob | sort | each { do $print_and_delete $in }
-    print debug_done
+    print debug_done "util/rmrf"
 }

@@ -2,7 +2,7 @@
 
 use ../../lib/bf/
 
-# Remove all files and directories matching glob
+# Force and recursively remove all files and directories matching glob
 def main [
     glob: string    # Glob to match
 ] {
