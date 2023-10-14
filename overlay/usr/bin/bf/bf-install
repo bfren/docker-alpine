@@ -26,9 +26,9 @@ def main [] {
     bf print ok_done
 
     # store versions
-    $env.ALPINE_REVISION | save /BF_ALPINE
-    $env.BF_IMAGE | str replace "docker-" "" | save /BF_IMAGE
-    $env.BF_VERSION | save /BF_VERSION
+    $env.ALPINE_REVISION | save --force /BF_ALPINE
+    $env.BF_IMAGE | str replace "docker-" "" | save --force /BF_IMAGE
+    $env.BF_VERSION | save --force /BF_VERSION
 
     # cleanup installation files / caches etc
     bf-clear
