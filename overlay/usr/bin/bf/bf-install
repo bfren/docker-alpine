@@ -8,6 +8,7 @@ export BF_E=`basename ${0}`
 # Set permissions.
 #======================================================================================================================
 
+chmod +x /init
 chmod +x ${BF_BIN}/*
 
 bf-ch -o root:root -m 1777 /etc/bf/src

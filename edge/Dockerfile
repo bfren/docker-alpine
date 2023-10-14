@@ -28,6 +28,7 @@ ENV \
 COPY ./overlay /
 COPY ./edge/overlay /
 
-RUN chmod +x ${BF_BIN}/bf-install && bf-install
+RUN apk add nu@edgetest && \
+    chmod +x ${BF_BIN}/bf-install && bf-install
 
 ENTRYPOINT [ "/init" ]

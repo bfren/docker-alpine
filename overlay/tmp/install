@@ -39,7 +39,7 @@ apk add --no-cache esh=${ESH_VERSION} && bf-done \
 #======================================================================================================================
 
 bf-echo "Installing additional packages..."
-apk add --no-cache figlet nu@edgetest && bf-done \
+apk add --no-cache figlet && bf-done \
     || bf-error "Unable to install additional packages."
 
 
