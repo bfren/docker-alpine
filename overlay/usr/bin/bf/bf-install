@@ -5,12 +5,11 @@ bf env set_executable
 
 def main [] {
     # set permissions
-    bf ch -o root:root -m 0400 -r /init $env.BF_BIN
+    bf ch -o root:root -m 0555 -r /init $env.BF_BIN $env.BF_LIB
     bf ch -o root:root -m 1777 /etc/bf/src /tmp
     bf ch -o root:root -r /etc/bf/templates
     bf ch -m 0444 -t f /etc/bf/templates
     bf ch -m 0555 -t d /etc/bf/templates
-    bf ch -o root:root -m 0555 -t f /usr/lib/bf
 
     # make sure apk is working correctly (fixes some strange 'no such file or directory errors' on apk FETCH)
     apk fix
