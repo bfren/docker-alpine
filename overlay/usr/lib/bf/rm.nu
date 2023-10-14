@@ -15,6 +15,6 @@ export def force [
 
     # loop through paths, print and delete
     print debug $"Force deleting ($kind) matching ($glob)..." "rm/force"
-    $paths | sort | each { do $print_and_delete $in }
+    $paths | sort | each { |x| do $print_and_delete $x }
     print debug_done "rm/force"
 }
