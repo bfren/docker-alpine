@@ -22,7 +22,7 @@ def main [] {
     }
 
     bf print debug $"Executing ($install)..."
-    chmod +x $install; $install
+    nu $install
     bf print ok_done
 
     # store versions

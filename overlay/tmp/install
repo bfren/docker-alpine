@@ -1,5 +1,3 @@
-#!/usr/bin/env nu
-
 use ../usr/lib/bf/
 
 def main [] {
