@@ -11,11 +11,12 @@ use rm.nu
 #   - running cleanup
 export def main [] {
     # set permissions
-    ch -o root:root -m 0555 -r /init $env.BF_BIN $env.BF_LIB
-    ch -o root:root -m 1777 /etc/bf/src /tmp
+    ch -o root:root -m 0555 -r $env.BF_BIN /init    # r+x
+    ch -o root:root -m 0444 -r $env.BF_LIB          # r
+    ch -o root:root -m 1777 /etc/bf/src /tmp        # r+w+x+s
     ch -o root:root -r /etc/bf/templates
-    ch -m 0444 -t f /etc/bf/templates
-    ch -m 0555 -t d /etc/bf/templates
+    ch -m 0444 -t f /etc/bf/templates               # r
+    ch -m 0555 -t d /etc/bf/templates               # r+x
 
     # make sure apk is working correctly (fixes some strange 'no such file or directory errors' on apk FETCH)
     apk fix
