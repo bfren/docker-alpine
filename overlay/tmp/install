@@ -1,50 +1,27 @@
-#!/bin/sh
+#!/usr/bin/env nu
 
-set -euo pipefail
-export BF_E=`basename ${0}`
+use ../usr/lib/bf/
 
+def main [] {
+    # upgrade to current versions of binaries
+    if (bf env check "BF_UPGRADE_PACKAGES") {
+        bf print "Upgrading binaries..." "/tmp/install"
+        apk upgrade --no-cache
+        bf print ok_done "/tmp/install"
+    }
 
-#======================================================================================================================
-# Upgrade to current versions of binaries.
-#======================================================================================================================
+    # get esh version and install
+    cd /tmp
+    let esh_version = cat ESH_BUILD
+    bf print $"Installing esh v($esh_version)." "/tmp/install"
+    try { apk add --no-cache esh=($esh_version); bf print done "/tmp/install" }
+    catch { bf print notok_error "esh not installed." "/tmp/install" }
 
-if [ "${BF_UPGRADE_PACKAGES-}" = "1" ] ; then
-    bf-echo "Upgrading binaries..."
-    apk upgrade --no-cache
-    bf-done
-fi
+    # install additional packages
+    bf print "Installing additional packages." "/tmp/install"
+    try { apk add --no-cache figlet; bf print done "/tmp/install" }
+    catch { bf print notok_error "Unable to install additional packages." }
 
-
-#======================================================================================================================
-# Get esh version.
-#======================================================================================================================
-
-cd /tmp
-
-ESH_VERSION=$(cat ESH_BUILD)
-bf-echo "esh version ${ESH_VERSION}."
-
-
-#======================================================================================================================
-# Install esh template engine.
-#======================================================================================================================
-
-bf-echo "Installing esh v${ESH_VERSION}..."
-apk add --no-cache esh=${ESH_VERSION} && bf-done \
-    || bf-error "esh not installed."
-
-
-#======================================================================================================================
-# Install other packages.
-#======================================================================================================================
-
-bf-echo "Installing additional packages..."
-apk add --no-cache figlet && bf-done \
-    || bf-error "Unable to install additional packages."
-
-
-#======================================================================================================================
-# Set timezone.
-#======================================================================================================================
-
-bf-tz "Europe/London"
+    # set timezone
+    bf-tz "Europe/London"
+}
