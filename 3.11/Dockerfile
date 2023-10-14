@@ -1,4 +1,4 @@
-FROM alpine:3.11.13
+FROM alpine:3.11.13 as build
 
 LABEL org.opencontainers.image.description="Alpine base image with various custom executables."
 LABEL org.opencontainers.image.source="https://github.com/bfren/docker-alpine"
@@ -25,8 +25,14 @@ ENV \
     # add bf executables to PATH
     PATH=${BF_BIN}:${PATH}
 
-COPY ./overlay ./3.11/overlay /
+COPY ./overlay /
+COPY ./3.11/overlay /
 
-RUN chmod +x /install && /install
+RUN chmod +x /install
+
+FROM scratch
+COPY --from=build / /
+
+RUN /install
 
 ENTRYPOINT [ "/init" ]

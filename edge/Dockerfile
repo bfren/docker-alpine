@@ -1,4 +1,4 @@
-FROM alpine:edge
+FROM alpine:edge as build
 
 LABEL org.opencontainers.image.description="Alpine base image with various custom executables."
 LABEL org.opencontainers.image.source="https://github.com/bfren/docker-alpine"
@@ -25,8 +25,14 @@ ENV \
     # add bf executables to PATH
     PATH=${BF_BIN}:${PATH}
 
-COPY ./overlay ./edge/overlay /
+COPY ./overlay /
+COPY ./edge/overlay /
 
-RUN chmod +x /install && /install
+RUN chmod +x /install
+
+FROM scratch
+COPY --from=build / /
+
+RUN /install
 
 ENTRYPOINT [ "/init" ]
