@@ -1,4 +1,5 @@
 use print.nu
+use rm.nu
 
 # Set the container's timezone
 export def main [
@@ -19,7 +20,7 @@ export def main [
 
     # copy timezone info
     print $"Setting timezone to ($tz)..." "tz"
-    cp $tz /etc/localtime
+    cp $path /etc/localtime
     clear
     print ok_done "tz"
 }
@@ -28,5 +29,5 @@ export def main [
 def clear [] {
     print debug "Removing tzdata packages." "tz/clear"
     apk del .tz
-    rm -rf /usr/share/zoneinfo/*
+    rm force /usr/share/zoneinfo/*
 }
