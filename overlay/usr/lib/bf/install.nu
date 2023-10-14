@@ -22,7 +22,7 @@ export def main [] {
     apk verify
 
     # run install script in /tmp
-    let install = "/tmp/install"
+    let install = "/tmp/install.nu"
     if ($install | path type) != "file" {
         print notok_error $"($install) does not exist." "install"
     }

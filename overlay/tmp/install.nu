@@ -29,5 +29,5 @@ def main [] {
     }
 
     # set timezone
-    bf-tz "Europe/London"
+    bf tz "Europe/London"
 }
