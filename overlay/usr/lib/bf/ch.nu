@@ -71,25 +71,23 @@ export def apply_file [
 
     # split by row and apply changes row by row
     print debug $"Applying ($path)..." "ch/apply_file"
-    open $path | split row -r "\n" | where { |x| $x != "" } | each { |x| split_and_apply $x }
+    open $path | from ssv --minimum-spaces 1 --noheaders | each { |x| $x | values | apply_row }
 
     print debug_done "ch/apply_file"
 }
 
-def split_and_apply [
-    row: string
-] {
-    # split row by space
-    let a = $row | split row -r " "
-    if ($a | length) < 2 {
+def apply_row [] {
+    # we need at least two values: glob and owner
+    let row = $in
+    if ($row | length) < 2 {
         return
     }
 
     # get values - glob and owner are required, fmode and dmode are optional
-    let glob = $a | get 0
-    let owner = $a | get 1
-    let fmode = $a | get -i 2
-    let dmode = $a | get -i 3
+    let glob = $row | get 0
+    let owner = $row | get 1
+    let fmode = $row | get -i 2
+    let dmode = $row | get -i 3
 
     # apply changes
     main --owner $owner $glob
