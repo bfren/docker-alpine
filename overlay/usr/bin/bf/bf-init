@@ -1,22 +1,9 @@
 #!/usr/bin/env nu
 
 use ../../lib/bf/
-
-const $init_d = "/etc/bf/init.d"
+bf env set_executable
 
 # Initialise the container by executing all scripts contained in /etc/bf/init.d
 def main [] {
-    bf print debug "Initialising container."
-    if ($init_d | path exists) { ls $init_d | get name | sort | each { |x| execute $x } }
-    bf print debug "Init complete."
-}
-
-# Execute a script within the init.d directory
-def execute [
-    filename: string    # Name of script file (within init.d directory)
-] {
-    bf print $"($filename): Running..."
-    let path = $"($init_d)/($filename)"
-    nu $path
-    bf print debug $"($filename): Done."
+    bf init
 }
