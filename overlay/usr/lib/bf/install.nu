@@ -28,7 +28,7 @@ export def main [] {
     write done install
 
     # run install script in /tmp
-    let install = "/tmp/install.nu"
+    const install = "/tmp/install.nu"
     if (fs is_not_file $install) {
         write notok_error $"($install) does not exist." install
     }
