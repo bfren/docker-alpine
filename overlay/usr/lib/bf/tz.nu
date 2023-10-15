@@ -23,6 +23,9 @@ export def main [
     write $"Setting timezone to ($tz)." tz
     cp $path /etc/localtime
     clear
+
+    # return nothing
+    return
 }
 
 # Remove tzdata packages and info

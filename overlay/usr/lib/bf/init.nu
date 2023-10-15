@@ -16,7 +16,6 @@ def execute [
 ] {
     write $"($filename): Running." init/execute
     fs x $"($init_d)/($filename)"
-    write debug $"($filename): Done." init/execute
 }
 
 # Output information about the current image including name and version

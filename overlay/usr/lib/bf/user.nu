@@ -11,6 +11,9 @@ export def add [
     write $"Adding user ($name) with UID ($uid) and GID ($use_gid)." user/add
 
     # add group first
-    addgroup --gid ($use_gid) $name
-    adduser --uid $uid --home $"/home/($name)" --disabled-login --disabled-password --ingroup $name $name
+    addgroup --gid ($use_gid) $name out> ignore
+    adduser --uid $uid --home $"/home/($name)" --disabled-login --disabled-password --ingroup $name $name out> ignore
+
+    # return nothing
+    return
 }

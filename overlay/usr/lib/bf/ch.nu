@@ -40,6 +40,9 @@ export def main [
             if $recurse { chmod -R $mode $x } else { chmod $mode $x }
         }
     }
+
+    # return nothing
+    return
 }
 
 # Apply permissions using a ch.d file
@@ -55,6 +58,9 @@ export def apply_file [
     # split by row and apply changes row by row
     write $"Applying ($path)." ch/apply_file
     open $path | from ssv --minimum-spaces 1 --noheaders | each {|x| $x | values | apply_row }
+
+    # return nothing
+    return
 }
 
 # Apply permissions for a row container in a ch.d file:

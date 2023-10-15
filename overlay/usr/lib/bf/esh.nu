@@ -13,7 +13,7 @@ export def main [
 
     # generate output file and display any errors
     let result = esh -o $output $input
-    if $result == "" {
+    if ($result == "") and ($output | path exists) {
         write debug $"($output) created." esh
     } else {
         write notok_error $"Error using template: ($result)." esh

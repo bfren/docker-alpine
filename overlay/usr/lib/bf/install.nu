@@ -56,12 +56,14 @@ export def main [] {
 
 # Clear temporary directories, caches and installation files.
 export def clear [] {
-    write debug "Deleting /install." install/clear
-    rm force /install
+    write debug "Deleting installation scripts." install/clear
+    rm force /preinstall /install
 
     write debug "Removing .empty files." install/clear
     rm force --files-only .empty
 
     write debug "Clearing caches." install/clear
     rm force /tmp/* /var/cache/apk/* /var/cache/misc/*
+
+    return
 }

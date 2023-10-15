@@ -17,6 +17,7 @@ export def force [
     write $"Force deleting ($kind) matching ($glob)." rm/force
     $paths | sort | each {|x| do $print_and_delete $x }
 
+    # return nothing
     return
 }
 
@@ -47,4 +48,7 @@ export def old [
     write $"Removing ($use_type)s older than ($days) days." rm/old
     let print_and_delete = {|x| write debug $" .. ($x.name)" rm/old; if $live { rm -rf $x.name } }
     ls $use_root_dir | where type == $use_type and modified < $minutes_ago | each {|x| do $print_and_delete $x }
+
+    # return nothing
+    return
 }
