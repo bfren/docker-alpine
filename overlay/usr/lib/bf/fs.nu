@@ -33,5 +33,5 @@ export def x [
     path: string    # Absolute path to the file to execute
 ] {
     chmod +x $path
-    exec $path
+    $path
 }
