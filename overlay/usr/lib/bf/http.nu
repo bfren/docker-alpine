@@ -1,4 +1,4 @@
-use print.nu
+use write.nu
 
 # Load a URL and return the HTTP status code
 export def get_status [
@@ -11,13 +11,13 @@ export def get_status [
 export def test_url [
     url: string # URL to load
 ] {
-    print $"Testing [($url)]." http/test_url
+    write $"Testing [($url)]." http/test_url
     let status = get_status $url
     if $status >= 200 and $status <= 399 {
-        print ok " .. OK" http/test_url
+        write ok " .. OK" http/test_url
     } else if $status >= 400 and $status <= 499 {
-        print notok_error " .. client error" http/test_url
+        write notok_error " .. client error" http/test_url
     } else {
-        print notok_error " .. server error" http/test_url
+        write notok_error " .. server error" http/test_url
     }
 }

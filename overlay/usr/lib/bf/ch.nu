@@ -1,5 +1,5 @@
 use fs.nu
-use print.nu
+use write.nu
 
 # Apply ownership or permissions values to files and directories matched by glob
 export def main [
@@ -14,21 +14,21 @@ export def main [
         "a" => { $paths }
         "d" => { fs only_dirs $paths }
         "f" => { fs only_files $paths }
-        _ => { print notok_error $"Unknown type: ($type)." ch }
+        _ => { write notok_error $"Unknown type: ($type)." ch }
     }
 
     # if everything has been filtered out, return
     if ($filtered_paths | length) == 0 {
-        print "Nothing found to change." ch
+        write "Nothing found to change." ch
         return
     }
 
-    print "Applying..." ch
+    write "Applying..." ch
 
     # set ownership
     if $owner != null {
         $filtered_paths | each { |x|
-            print debug $" .. chown ($owner) to ($x)" ch
+            write debug $" .. chown ($owner) to ($x)" ch
             if $recurse { chown -R $owner $x } else { chown $owner $x }
         }
     }
@@ -36,12 +36,12 @@ export def main [
     # set mode
     if $mode != null {
         $filtered_paths | each { |x|
-            print debug $" .. chmod ($mode) to ($x)" ch
+            write debug $" .. chmod ($mode) to ($x)" ch
             if $recurse { chmod -R $mode $x } else { chmod $mode $x }
         }
     }
 
-    print ok_done ch
+    write ok_done ch
 }
 
 # Apply permissions using a ch.d file
@@ -50,15 +50,15 @@ export def apply_file [
 ] {
     # check file exists
     if (fs is_not_file $path) {
-        print notok $"($path) does not exist or is not a file." ch/apply_file
+        write notok $"($path) does not exist or is not a file." ch/apply_file
         return
     }
 
     # split by row and apply changes row by row
-    print $"Applying ($path)..." ch/apply_file
+    write $"Applying ($path)..." ch/apply_file
     open $path | from ssv --minimum-spaces 1 --noheaders | each { |x| $x | values | apply_row }
 
-    print ok_done ch/apply_file
+    write ok_done ch/apply_file
 }
 
 # Apply permissions for a row container in a ch.d file:
@@ -78,7 +78,7 @@ def apply_row [] {
     let owner = $row | get 1
     let fmode = $row | get -i 2
     let dmode = $row | get -i 3
-    print debug $" .. ($glob) ($owner) ($fmode) ($dmode)" ch/apply_row
+    write debug $" .. ($glob) ($owner) ($fmode) ($dmode)" ch/apply_row
 
     # apply changes
     main --owner $owner $glob

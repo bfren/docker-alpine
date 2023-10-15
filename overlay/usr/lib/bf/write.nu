@@ -2,9 +2,9 @@ use env.nu
 
 const $done = "Done."
 
-# Print text, optionally in a specified colour, with the current date / time and script name
+# Write text, optionally in a specified colour, with the current date / time and script name
 def p [
-    text: string    # The text to print
+    text: string    # The text to write
     colour: string  # ANSI colour code to use for the text
     script?: string # The name of the calling script or executable
 ] {
@@ -29,52 +29,52 @@ def p [
         }
     }
 
-    # format date and print text
+    # format date and write text
     let date = date now | format date "%Y-%m-%d %H:%M:%S"
     print $"[bf] ($date) | (ansi $colour)($prefix)($text)($suffix)(ansi reset)"
 }
 
-# Print text in standard colour with the current date / time
+# Write text in standard colour with the current date / time
 export def main [
-    text: string    # The text to print
+    text: string    # The text to write
     script?: string # The name of the calling script or executable
 ] {
     p $text "reset" $script
 }
 
-# Print 'Done.' in standard colour with the current date / time
+# Write 'Done.' in standard colour with the current date / time
 export def done [
     script?: string # The name of the calling script or executable
 ] {
     main $done $script
 }
 
-# Print text in green with the current date / time
+# Write text in green with the current date / time
 export def ok [
-    text: string    # The text to print
+    text: string    # The text to write
     script?: string # The name of the calling script or executable
 ] {
     p $text "green" $script
 }
 
-# Print 'Done.' in green with the current date / time
+# Write 'Done.' in green with the current date / time
 export def ok_done [
     script?: string # The name of the calling script or executable
 ] {
     ok $done $script
 }
 
-# Print text in red with the current date / time
+# Write text in red with the current date / time
 export def notok [
-    text: string    # The text to print
+    text: string    # The text to write
     script?: string # The name of the calling script or executable
 ] {
     p $text "red" $script
 }
 
-# Print error text in red with the current date / time, and exit with status 1
+# Write error text in red with the current date / time, and exit with status 1
 export def notok_error [
-    error: string   # The error text to print
+    error: string   # The error text to write
     script?: string # The name of the calling script or executable
 ] {
     let output = notok $error $script
@@ -82,9 +82,9 @@ export def notok_error [
     exit 1
 }
 
-# Print text in grey with the current date / time, if BF_DEBUG is enabled
+# Write text in grey with the current date / time, if BF_DEBUG is enabled
 export def debug [
-    text: string    # The text to print
+    text: string    # The text to write
     script?: string # The name of the calling script or executable
 ] {
     if (env debug) {
@@ -94,7 +94,7 @@ export def debug [
     }
 }
 
-# Print 'Done.' in grey with the current date / time, if BF_DEBUG is enabled
+# Write 'Done.' in grey with the current date / time, if BF_DEBUG is enabled
 export def debug_done [
     script?: string # The name of the calling script or executable
 ] {
