@@ -8,8 +8,6 @@ set -euo pipefail
 #======================================================================================================================
 
 apk add --no-cache \
-    busybox-binsh@edgemain \
-    libcrypto3@edgemain \
     libssl3@edgemain \
     nushell@edgetest
 

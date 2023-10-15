@@ -1,6 +1,6 @@
 #!/usr/bin/nu
 
-use ../../lib/bf/
+use bf
 bf env set_executable
 
 # Execute a script

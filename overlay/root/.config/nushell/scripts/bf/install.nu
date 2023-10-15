@@ -19,7 +19,6 @@ export def main [] {
     # set permissions
     write "Setting permissions." install
     ch -o root:root -m 0555 -r $env.BF_BIN /init    # r+x
-    ch -o root:root -m 0444 -r $env.BF_LIB          # r
     ch -o root:root -m 1777 /etc/bf/src /tmp        # r+w+x+s
     ch -o root:root -r /etc/bf/templates
     ch -m 0444 -t f /etc/bf/templates               # r

@@ -1,6 +1,6 @@
 #!/usr/bin/nu
 
-use ../../lib/bf/
+use bf
 bf env set_executable
 
 # Generate output using input as an esh template
