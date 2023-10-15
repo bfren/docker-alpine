@@ -3,4 +3,4 @@
 use ../../lib/bf/
 bf env set_executable
 
-def main [] { $env.BF_DEBUG = 1; bf install }
+def main [] { with-env [BF_DEBUG 1] { bf install } }
