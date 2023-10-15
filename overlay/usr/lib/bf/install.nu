@@ -5,7 +5,7 @@ use init.nu
 use rm.nu
 use write.nu
 
-# Run standard installation for a container -
+# Run standard installation for a container:
 #   - setting permissions
 #   - fixing apk
 #   - running container's installation script
