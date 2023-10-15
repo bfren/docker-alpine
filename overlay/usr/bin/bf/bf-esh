@@ -1,0 +1,7 @@
+#!/usr/bin/nu
+
+use ../../lib/bf/
+bf env set_executable
+
+# Generate output using input as an esh template
+def main [input: string, output: string] { bf esh $input $output }

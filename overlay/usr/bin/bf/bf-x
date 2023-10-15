@@ -1,0 +1,7 @@
+#!/usr/bin/nu
+
+use ../../lib/bf/
+bf env set_executable
+
+# Execute a script
+def main [path: string] { bf fs x $path }

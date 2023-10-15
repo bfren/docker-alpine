@@ -7,7 +7,7 @@ export def get_status [
     try { http get --allow-errors --full $url | get status } catch { 400 }
 }
 
-# Test a URL and return whether or not it returns an error HTTP status code
+# Test a URL and return whether or not it gives an error HTTP status code
 export def test_url [
     url: string # URL to load
 ] {

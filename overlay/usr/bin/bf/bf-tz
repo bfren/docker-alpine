@@ -1,0 +1,7 @@
+#!/usr/bin/nu
+
+use ../../lib/bf/
+bf env set_executable
+
+# Set the container's timezone
+def main [tz: string] { bf tz $tz }

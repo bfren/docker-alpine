@@ -1,0 +1,7 @@
+#!/usr/bin/nu
+
+use ../../lib/bf/
+bf env set_executable
+
+# Output information about the current image including name and version
+def main [] { bf init image }

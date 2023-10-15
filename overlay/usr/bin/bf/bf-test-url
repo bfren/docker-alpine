@@ -1,0 +1,7 @@
+#!/usr/bin/nu
+
+use ../../lib/bf/
+bf env set_executable
+
+# Test a URL and return whether or not it gives an error HTTP status code
+def main [url: string] { bf http test_url $url }
