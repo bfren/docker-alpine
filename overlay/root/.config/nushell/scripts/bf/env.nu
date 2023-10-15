@@ -17,9 +17,17 @@ export def safe [
     $env | get -i $key
 }
 
+# Set an environment variable
+export def-env set [
+    key: string # Environment variable key name - will be prefixed with 'BF_'
+    value: any  # Environment variable value
+] {
+    load-env { $"BF_($key)": $value }
+}
+
 # Sets the BF_E environment variable to the name of the currently executing script
 export def-env set_executable [
-    override?: string   # If set, will override name of current script
+    prefix?: string # If set, will be added before the name of the current script
 ] {
-    $env.BF_E = if $override != null { $override } else { $"($env.CURRENT_FILE | path basename)" }
+    set E (if $prefix != null { $"($prefix)/" } | $"($in)($env.CURRENT_FILE | path basename)")
 }
