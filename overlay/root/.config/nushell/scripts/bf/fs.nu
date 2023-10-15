@@ -1,3 +1,5 @@
+use write.nu
+
 # Returns true unless path exists and is a file
 export def is_not_file [
     path: string    # Absolute path to the file to check
@@ -25,6 +27,18 @@ def only [
     paths: list<string> # List of paths to filter
 ] {
     $paths | where {|x| $x | path exists } | where {|x| ($x | path type) == $type }
+}
+
+# Read a file, trim contents and return
+export def read [
+    path: string
+] {
+    # ensure file exists
+    if (is_not_file $path) {
+        write notok_error $"File does not exist: ($path)." fs/read
+    }
+
+    open $path | str trim
 }
 
 # Execute a script
