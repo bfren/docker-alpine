@@ -11,11 +11,11 @@ export def force [
     let paths = if $files_only { fs only_files $glob } else { $glob }
 
     # closure to write and delete a path
-    let print_and_delete = { |x| write debug $" .. ($x)" rm/force; rm -rf $x }
+    let print_and_delete = {|x| write debug $" .. ($x)" rm/force; rm -rf $x }
 
     # loop through paths, write and delete
     write $"Force deleting ($kind) matching ($glob)..." rm/force
-    $paths | sort | each { |x| do $print_and_delete $x }
+    $paths | sort | each {|x| do $print_and_delete $x }
     write ok_done rm/force
 }
 
@@ -44,7 +44,7 @@ export def old [
 
     # perform deletion
     write $"Removing ($use_type)s older than ($days) days..." rm/old
-    let print_and_delete = { |x| write debug $" .. ($x.name)" rm/old; if $live { rm -rf $x.name } }
-    ls $use_root_dir | where type == $use_type and modified < $minutes_ago | each { |x| do $print_and_delete $x }
+    let print_and_delete = {|x| write debug $" .. ($x.name)" rm/old; if $live { rm -rf $x.name } }
+    ls $use_root_dir | where type == $use_type and modified < $minutes_ago | each {|x| do $print_and_delete $x }
     write ok_done rm/old
 }

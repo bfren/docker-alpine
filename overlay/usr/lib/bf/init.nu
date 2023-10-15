@@ -5,7 +5,7 @@ const $init_d = "/etc/bf/init.d"
 # Initialise the container by executing all scripts contained in /etc/bf/init.d
 export def main [] {
     write debug "Initialising container." init
-    if ($init_d | path exists) { ls $init_d | get name | sort | each { |x| execute $x } }
+    if ($init_d | path exists) { ls $init_d | get name | sort | each {|x| execute $x } }
     write debug "Init complete." init
 }
 

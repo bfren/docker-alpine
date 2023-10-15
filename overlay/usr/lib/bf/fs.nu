@@ -24,5 +24,5 @@ def only [
     type: string        # Path type, e.g. 'file' or 'dir'
     paths: list<string> # List of paths to filter
 ] {
-    $paths | where { |x| $x | path exists } | where { |x| ($x | path type) == $type }
+    $paths | where {|x| $x | path exists } | where {|x| ($x | path type) == $type }
 }

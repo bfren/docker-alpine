@@ -27,7 +27,7 @@ export def main [
 
     # set ownership
     if $owner != null {
-        $filtered_paths | each { |x|
+        $filtered_paths | each {|x|
             write debug $" .. chown ($owner) to ($x)" ch
             if $recurse { chown -R $owner $x } else { chown $owner $x }
         }
@@ -35,7 +35,7 @@ export def main [
 
     # set mode
     if $mode != null {
-        $filtered_paths | each { |x|
+        $filtered_paths | each {|x|
             write debug $" .. chmod ($mode) to ($x)" ch
             if $recurse { chmod -R $mode $x } else { chmod $mode $x }
         }
@@ -56,7 +56,7 @@ export def apply_file [
 
     # split by row and apply changes row by row
     write $"Applying ($path)..." ch/apply_file
-    open $path | from ssv --minimum-spaces 1 --noheaders | each { |x| $x | values | apply_row }
+    open $path | from ssv --minimum-spaces 1 --noheaders | each {|x| $x | values | apply_row }
 
     write ok_done ch/apply_file
 }
