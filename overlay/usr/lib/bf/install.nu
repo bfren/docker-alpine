@@ -13,7 +13,7 @@ use write.nu
 #   - running cleanup
 export def main [] {
     # output BF config
-    $env | transpose key value | where {|x| $x.key | str starts-with "BF" }
+    $env | transpose key value | where {|x| $x.key | str starts-with "BF_" } | print
 
     # set permissions
     write "Setting permissions..." install
