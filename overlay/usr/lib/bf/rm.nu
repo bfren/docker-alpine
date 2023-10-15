@@ -1,4 +1,4 @@
-use filesystem.nu
+use fs.nu
 use print.nu
 
 # Force and recursively remove all files and directories matching glob
@@ -8,13 +8,20 @@ export def force [
 ] {
     # get description and paths based on files_only flag
     let kind = "files" + if $files_only { "" } else { " and directories" }
-    let paths = if $files_only { filesystem only_files $glob } else { $glob }
+    let paths = if $files_only { fs only_files $glob } else { $glob }
 
     # closure to print and delete a path
-    let print_and_delete = { |x| print debug $" .. ($x)" "rm/force"; rm -rf $x }
+    let print_and_delete = { |x| print debug $" .. ($x)" rm/force; rm -rf $x }
 
     # loop through paths, print and delete
-    print debug $"Force deleting ($kind) matching ($glob)..." "rm/force"
+    print debug $"Force deleting ($kind) matching ($glob)..." rm/force
     $paths | sort | each { |x| do $print_and_delete $x }
-    print debug_done "rm/force"
+    print debug_done rm/force
+}
+
+# Delete files or directories older than a certain number of days
+export def old [
+
+] {
+
 }

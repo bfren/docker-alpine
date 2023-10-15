@@ -1,79 +1,64 @@
-use filesystem.nu
+use fs.nu
 use print.nu
 
 # Apply ownership or permissions values to files and directories matched by glob
 export def main [
-    ...glob: string             # The paths to which to apply ch operations
-    --mode (-m): string         # Use chmod: Set permissions to this mode
-    --owner (-o): string        # Use chown: Set ownership to this user & group
-    --recurse (-r)              # If type is not specified, adds -R to recurse
-    --type (-t): string = "a"   # Apply to all (a), files only (f) or directories only (d)
-] {
-    if $recurse {
-        apply --mode $mode --owner $owner --recurse $glob
-    } else {
-        apply --mode $mode --owner $owner --type $type $glob
-    }
-}
-
-# Apply ownership or permissions values to files and directories matched by glob
-export def apply [
-    paths: list<string>         # The paths to which to apply ch operations
+    ...paths: string             # The paths to which to apply ch operations
     --mode (-m): string         # Use chmod: Set permissions to this mode
     --owner (-o): string        # Use chown: Set ownership to this user & group
     --recurse (-r)              # If type is not specified, adds -R to recurse
     --type (-t): string = "a"   # Apply to all (a), files only (f) or directories only (d)
 ] {
     # filter out paths that are not of the requested type
-    let filtered = match $type {
+    let filtered_paths = match $type {
         "a" => { $paths }
-        "d" => { filesystem only_dirs $paths }
-        "f" => { filesystem only_files $paths }
-        _ => { print notok_error $"Unknown type: ($type)." "ch/apply" }
+        "d" => { fs only_dirs $paths }
+        "f" => { fs only_files $paths }
+        _ => { print notok_error $"Unknown type: ($type)." ch }
     }
 
     # if everything has been filtered out, return
-    if ($filtered | length) == 0 {
-        print debug "Nothing found to change." "ch/apply"
+    if ($filtered_paths | length) == 0 {
+        print debug "Nothing found to change." ch
         return
     }
 
-    print debug "Applying..." "ch/apply"
+    print debug "Applying..." ch
 
     # set ownership
     if $owner != null {
-        $filtered | each { |x|
-            print debug $" .. chown ($owner) to ($x)" "ch/apply"
+        $filtered_paths | each { |x|
+            print debug $" .. chown ($owner) to ($x)" ch
             if $recurse { chown -R $owner $x } else { chown $owner $x }
         }
     }
 
     # set mode
     if $mode != null {
-        $filtered | each { |x|
-            print debug $" .. chmod ($mode) to ($x)" "ch/apply"
+        $filtered_paths | each { |x|
+            print debug $" .. chmod ($mode) to ($x)" ch
             if $recurse { chmod -R $mode $x } else { chmod $mode $x }
         }
     }
 
-    print debug_done "ch/apply"
+    print debug_done ch
 }
 
 # Apply permissions using a ch.d file
 export def apply_file [
-    path: string    # The ch.d file to read
+    path: string    # Absolute path to the ch.d file to read
 ] {
     # check file exists
-    if ($path | path type) != "file" {
-        print notok $"File ($path) does not exist or is not a file." "ch/apply_file"
+    if (fs is_not_file $path) {
+        print notok $"($path) does not exist or is not a file." ch/apply_file
         return
     }
 
     # split by row and apply changes row by row
-    print debug $"Applying ($path)..." "ch/apply_file"
+    print debug $"Applying ($path)..." ch/apply_file
     open $path | from ssv --minimum-spaces 1 --noheaders | each { |x| $x | values | apply_row }
 
-    print debug_done "ch/apply_file"
+    print debug_done ch/apply_file
 }
 
 # Apply permissions for a row container in a ch.d file:

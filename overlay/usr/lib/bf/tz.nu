@@ -1,3 +1,4 @@
+use fs.nu
 use print.nu
 use rm.nu
 
@@ -9,25 +10,25 @@ export def main [
     let path = $"/usr/share/zoneinfo/($tz)"
 
     # install timezone package
-    print debug "Installing tzdata packages." "tz"
+    print debug "Installing tzdata packages." tz
     apk add --no-cache --virtual .tz tzdata
 
     # check the specified timezone exists
-    if ($path | path type) != "file" {
+    if (fs is_not_file $path) {
         clear
-        print notok_error $"($tz) is not a recognise timezone." "tz"
+        print notok_error $"($tz) is not a recognise timezone." tz
     }
 
     # copy timezone info
-    print $"Setting timezone to ($tz)..." "tz"
+    print $"Setting timezone to ($tz)..." tz
     cp $path /etc/localtime
     clear
-    print ok_done "tz"
+    print ok_done tz
 }
 
 # Remove tzdata packages and info
 def clear [] {
-    print debug "Removing tzdata packages." "tz/clear"
+    print debug "Removing tzdata packages." tz/clear
     apk del .tz
     rm force /usr/share/zoneinfo/*
 }

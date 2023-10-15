@@ -11,15 +11,15 @@ export def get_status [
 export def test_url [
     url: string # URL to load
 ] {
-    print debug $"Testing ($url)..." "http/test_url"
+    print debug $"Testing ($url)..." http/test_url
     let status = get_status $url
     if $status >= 200 and $status <= 399 {
-        print debug " .. OK" "http/test_url"
+        print debug " .. OK" http/test_url
     } else if $status >= 400 and $status <= 499 {
-        print debug " .. client error" "http/test_url"
+        print debug " .. client error" http/test_url
         exit 1
     } else {
-        print debug " .. server error" "http/test_url"
+        print debug " .. server error" http/test_url
         exit 1
     }
 }

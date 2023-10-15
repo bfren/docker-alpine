@@ -1,6 +1,8 @@
 # Sets the BF_E environment variable to the name of the currently executing script
-export def-env set_executable [] {
-    $env.BF_E = $"($env.CURRENT_FILE | path basename)"
+export def-env set_executable [
+    override?: string   # If set, will override name of current script
+] {
+    $env.BF_E = if $override { $override } else { $"($env.CURRENT_FILE | path basename)" }
 }
 
 # Safely return the value of an environment variable

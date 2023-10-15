@@ -6,8 +6,12 @@ export def add [
     --uid: int = 1000 # The UID
     --gid: int        # The GID (default: UID)
 ] {
-    print debug $"Adding user ($name) with UID ($uid) and GID ($gid | $uid)." "user/add"
-    addgroup --gid ($gid | $uid) $name
+    # if GID is set, use it, otherwise use UID
+    let use_gid = if $gid { $gid } else { $uid }
+    print debug $"Adding user ($name) with UID ($uid) and GID ($use_gid)." user/add
+
+    # add group first
+    addgroup --gid ($use_gid) $name
     adduser --uid $uid --home $"/home/($name)" --disabled-login --disabled-password --ingroup $name $name
-    print debug_done "user/add"
+    print debug_done user/add
 }

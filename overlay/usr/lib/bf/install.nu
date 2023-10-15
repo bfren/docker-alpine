@@ -24,13 +24,13 @@ export def main [] {
 
     # run install script in /tmp
     let install = "/tmp/install.nu"
-    if ($install | path type) != "file" {
-        print notok_error $"($install) does not exist." "install"
+    if (fs is_not_file $install) {
+        print notok_error $"($install) does not exist." install
     }
 
-    print debug $"Executing ($install)..." "install"
+    print debug $"Executing ($install)..." install
     nu $install
-    print ok_done "install"
+    print ok_done install
 
     # store versions
     $env.ALPINE_REVISION | save --force /BF_ALPINE
@@ -44,14 +44,14 @@ export def main [] {
 
 # Clear temporary directories, caches and installation files.
 export def clear [] {
-    print debug "Deleting /install" "bf-clear"
+    print debug "Deleting /install" install/clear
     rm force /install
 
-    print debug "Removing .empty files..." "bf-clear"
+    print debug "Removing .empty files..." install/clear
     rm force --files-only .empty
 
-    print debug "Clearing caches" "bf-clear"
+    print debug "Clearing caches" install/clear
     rm force /tmp/* /var/cache/apk/* /var/cache/misc/*
 
-    print debug_done "bf-clear"
+    print debug_done install/clear
 }
