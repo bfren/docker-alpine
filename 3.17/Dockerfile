@@ -16,8 +16,6 @@ ENV \
     BF_DEBUG=0 \
     # path to bf executables
     BF_BIN=/usr/bin/bf \
-    # path to bf library executables
-    BF_LIB=/usr/lib/bf \
     # upgrade packages during installation
     BF_UPGRADE_PACKAGES=0
 
