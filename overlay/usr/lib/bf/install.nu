@@ -1,4 +1,5 @@
 use ch.nu
+use fs.nu
 use init.nu
 use print.nu
 use rm.nu
