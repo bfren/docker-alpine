@@ -2,12 +2,10 @@
 
 use ../usr/lib/bf/
 
-let ns = $env.CURRENT_FILE
-
 def main [] {
     # upgrade to current versions of binaries
     if (bf env check "BF_UPGRADE_PACKAGES") {
-        bf write "Upgrading binaries." $ns
+        bf write "Upgrading binaries."
         apk upgrade --no-cache
     }
 
@@ -15,18 +13,18 @@ def main [] {
     cd /tmp
     try {
         let esh_version = cat ESH_BUILD
-        bf write $"Installing esh v($esh_version)." $ns
+        bf write $"Installing esh v($esh_version)."
         apk add --no-cache $"esh=($esh_version)" out> ignore
     } catch {
-        bf write notok_error "esh not installed." $ns
+        bf write notok_error "esh not installed."
     }
 
     # install additional packages
     try {
-        bf write "Installing additional packages." $ns
+        bf write "Installing additional packages."
         apk add --no-cache figlet out> ignore
     } catch {
-        bf write notok_error "Unable to install additional packages." $ns
+        bf write notok_error "Unable to install additional packages."
     }
 
     # set timezone
