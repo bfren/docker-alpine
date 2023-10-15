@@ -2,7 +2,7 @@
 export def check [
     key: string # Environment variable key
 ] {
-    (safe $key) == "1"
+    (safe $key | into string) == "1"
 }
 
 # Returns true if the BF_DEBUG environment variable is set to 1
