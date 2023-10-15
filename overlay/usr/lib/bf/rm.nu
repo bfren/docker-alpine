@@ -16,6 +16,8 @@ export def force [
     # loop through paths, write and delete
     write $"Force deleting ($kind) matching ($glob)." rm/force
     $paths | sort | each {|x| do $print_and_delete $x }
+
+    return
 }
 
 # Delete files or directories within root_dir older than a certain number of days
