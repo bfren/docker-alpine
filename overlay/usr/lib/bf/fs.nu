@@ -1,3 +1,4 @@
+
 # Returns true unless path exists and is a file
 export def is_not_file [
     path: string    # Absolute path to the file to check
@@ -25,4 +26,12 @@ def only [
     paths: list<string> # List of paths to filter
 ] {
     $paths | where {|x| $x | path exists } | where {|x| ($x | path type) == $type }
+}
+
+# Execute a script
+export def x [
+    path: string    # Absolute path to the file to execute
+] {
+    chmod +x $path
+    exec $path
 }

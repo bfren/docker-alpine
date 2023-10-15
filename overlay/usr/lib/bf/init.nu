@@ -1,3 +1,4 @@
+use fs.nu
 use write.nu
 
 const $init_d = "/etc/bf/init.d"
@@ -14,7 +15,7 @@ def execute [
     filename: string    # Name of script file (within init.d directory)
 ] {
     write $"($filename): Running..." init/execute
-    nu $"($init_d)/($filename)"
+    fs x $"($init_d)/($filename)"
     write debug $"($filename): Done." init/execute
 }
 
