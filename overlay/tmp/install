@@ -1,3 +1,5 @@
+#!/usr/bin/nu
+
 use ../usr/lib/bf/
 
 let ns = $env.CURRENT_FILE

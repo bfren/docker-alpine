@@ -35,7 +35,7 @@ export def main [] {
     }
 
     write $"Executing ($install)..." install
-    nu $install
+    chmox +x $install; $install
     write done install
 
     # store versions
