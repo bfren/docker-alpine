@@ -18,21 +18,11 @@ def create_left_prompt [] {
 }
 
 def create_right_prompt [] {
-    # create a right prompt in magenta with green separators and am/pm underlined
-    let time_segment = ([
-        (ansi reset)
-        (ansi magenta)
-        (date now | format date '%x %X %p') # try to respect user's locale
-    ] | str join | str replace --regex --all "([/:])" $"(ansi green)${1}(ansi magenta)" |
-        str replace --regex --all "([AP]M)" $"(ansi magenta_underline)${1}")
-
-    let last_exit_code = if ($env.LAST_EXIT_CODE != 0) {([
+    if ($env.LAST_EXIT_CODE != 0) {([
         (ansi rb)
         ($env.LAST_EXIT_CODE)
     ] | str join)
     } else { "" }
-
-    ([$last_exit_code, (char space), $time_segment] | str join)
 }
 
 # Use nushell functions to define your right and left prompt
@@ -40,7 +30,7 @@ $env.PROMPT_COMMAND = {|| create_left_prompt }
 # FIXME: This default is not implemented in rust code as of 2023-09-08.
 $env.PROMPT_COMMAND_RIGHT = {|| create_right_prompt }
 
-# The prompt indicators are environmental variables that represent
+# The prompt indicators are v environmental variables that represent
 # the state of the prompt
 $env.PROMPT_INDICATOR = {|| "> " }
 $env.PROMPT_INDICATOR_VI_INSERT = {|| ": " }
@@ -76,3 +66,11 @@ $env.NU_PLUGIN_DIRS = [
 
 # To add entries to PATH (on Windows you might use Path), you can use the following pattern:
 # $env.PATH = ($env.PATH | split row (char esep) | prepend '/some/path')
+
+const bf_bin = /usr/bin/bf
+const bf_lib = /usr/lib/bf
+
+$env.BF_BIN = $bf_bin
+$env.BF_LIB = $bf_lib
+
+$env.PATH = ($env.PATH | split row (char esep) | prepend $bf_bin)
