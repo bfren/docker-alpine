@@ -1,6 +1,6 @@
 #!/usr/bin/nu
 
-use ../usr/lib/bf/
+use bf
 
 def main [] {
     # upgrade to current versions of binaries
