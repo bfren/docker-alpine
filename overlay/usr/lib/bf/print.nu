@@ -87,7 +87,7 @@ export def debug [
     text: string    # The text to print
     script?: string # The name of the calling script or executable
 ] {
-    if (env check BF_DEBUG) {
+    if (env debug) {
         let colour = "grey"
         let output = p $text $colour $script
         print --no-newline $"(ansi $colour)($output)(ansi reset)"
