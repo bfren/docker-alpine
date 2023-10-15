@@ -32,5 +32,6 @@ export def x [
     path: string    # Absolute path to the file to execute
 ] {
     chmod +x $path
-    nu $path | ignore
+    nu $path
+    return
 }
