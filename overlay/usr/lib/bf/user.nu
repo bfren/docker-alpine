@@ -13,5 +13,4 @@ export def add [
     # add group first
     addgroup --gid ($use_gid) $name
     adduser --uid $uid --home $"/home/($name)" --disabled-login --disabled-password --ingroup $name $name
-    write done user/add
 }

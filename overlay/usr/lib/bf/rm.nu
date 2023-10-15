@@ -14,9 +14,8 @@ export def force [
     let print_and_delete = {|x| write debug $" .. ($x)" rm/force; rm -rf $x }
 
     # loop through paths, write and delete
-    write $"Force deleting ($kind) matching ($glob)..." rm/force
+    write $"Force deleting ($kind) matching ($glob)." rm/force
     $paths | sort | each {|x| do $print_and_delete $x }
-    write done rm/force
 }
 
 # Delete files or directories within root_dir older than a certain number of days
@@ -43,8 +42,7 @@ export def old [
     let use_root_dir = $root_dir | str trim --char "/" --right | $"($in)/*"
 
     # perform deletion
-    write $"Removing ($use_type)s older than ($days) days..." rm/old
+    write $"Removing ($use_type)s older than ($days) days." rm/old
     let print_and_delete = {|x| write debug $" .. ($x.name)" rm/old; if $live { rm -rf $x.name } }
     ls $use_root_dir | where type == $use_type and modified < $minutes_ago | each {|x| do $print_and_delete $x }
-    write done rm/old
 }

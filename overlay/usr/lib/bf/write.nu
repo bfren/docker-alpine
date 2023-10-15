@@ -1,6 +1,5 @@
 use env.nu
 
-const done = "Done."
 const colour = "reset"
 const colour_debug = "grey"
 const colour_ok = "green"
@@ -46,13 +45,6 @@ export def main [
     p $text $colour $script
 }
 
-# Write 'Done.' in standard colour with the current date / time
-export def done [
-    script?: string # The name of the calling script or executable
-] {
-    main $done $script
-}
-
 # Write text in green with the current date / time
 export def ok [
     text: string    # The text to write
@@ -88,11 +80,4 @@ export def debug [
         let output = p $text $colour_debug $script
         print --no-newline $"(ansi $colour_debug)($output)(ansi reset)"
     }
-}
-
-# Write 'Done.' in grey with the current date / time, if BF_DEBUG is enabled
-export def debug_done [
-    script?: string # The name of the calling script or executable
-] {
-    debug $done $script
 }

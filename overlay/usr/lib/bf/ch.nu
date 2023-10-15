@@ -23,7 +23,7 @@ export def main [
         return
     }
 
-    write "Applying..." ch
+    write "Applying permissions changes." ch
 
     # set ownership
     if $owner != null {
@@ -40,8 +40,6 @@ export def main [
             if $recurse { chmod -R $mode $x } else { chmod $mode $x }
         }
     }
-
-    write done ch
 }
 
 # Apply permissions using a ch.d file
@@ -55,10 +53,8 @@ export def apply_file [
     }
 
     # split by row and apply changes row by row
-    write $"Applying ($path)..." ch/apply_file
+    write $"Applying ($path)." ch/apply_file
     open $path | from ssv --minimum-spaces 1 --noheaders | each {|x| $x | values | apply_row }
-
-    write done ch/apply_file
 }
 
 # Apply permissions for a row container in a ch.d file:

@@ -14,7 +14,7 @@ export def main [] {
 def execute [
     filename: string    # Name of script file (within init.d directory)
 ] {
-    write $"($filename): Running..." init/execute
+    write $"($filename): Running." init/execute
     fs x $"($init_d)/($filename)"
     write debug $"($filename): Done." init/execute
 }
