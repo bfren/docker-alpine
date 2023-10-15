@@ -13,6 +13,7 @@ use write.nu
 #   - running cleanup
 export def main [] {
     # output BF config
+    write "BF environment variables." install
     $env | transpose key value | where {|x| $x.key | str starts-with "BF_" } | print
 
     # set permissions
@@ -43,7 +44,6 @@ export def main [] {
     $env.ALPINE_REVISION | save --force /BF_ALPINE
     $env.BF_IMAGE | str replace "docker-" "" | save --force /BF_IMAGE
     $env.BF_VERSION | save --force /BF_VERSION
-    init image
 
     # clear installation files / caches etc
     write "Running cleanup."
@@ -51,6 +51,7 @@ export def main [] {
 
     # all finished
     write ok "Installation complete." install
+    init image
 }
 
 # Clear temporary directories, caches and installation files.
