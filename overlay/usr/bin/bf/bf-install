@@ -1,9 +1,5 @@
-#!/usr/bin/env nu
+#!/usr/bin/nu
 
 use ../../lib/bf/
 bf env set_executable
-
-# Run standard installation for a container
-def main [] {
-    bf install
-}
+bf install

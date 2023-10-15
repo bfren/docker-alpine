@@ -1,9 +1,5 @@
-#!/usr/bin/env nu
+#!/usr/bin/nu
 
 use ../../lib/bf/
 bf env set_executable
-
-# Initialise the container by executing all scripts contained in /etc/bf/init.d
-def main [] {
-    bf init
-}
+bf init
