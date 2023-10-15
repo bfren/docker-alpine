@@ -14,7 +14,7 @@ use write.nu
 export def main [] {
     $env | print
     $nu | print
-    ls /root/.config/nushell | print
+    ls -al /root/.config/nushell | print
     # set permissions
     write "Setting permissions..." install
     ch -o root:root -m 0555 -r $env.BF_BIN /init    # r+x
