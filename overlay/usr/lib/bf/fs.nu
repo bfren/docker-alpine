@@ -1,4 +1,3 @@
-
 # Returns true unless path exists and is a file
 export def is_not_file [
     path: string    # Absolute path to the file to check
@@ -33,5 +32,5 @@ export def x [
     path: string    # Absolute path to the file to execute
 ] {
     chmod +x $path
-    $path
+    nu $path
 }
