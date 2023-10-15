@@ -3,7 +3,7 @@ use print.nu
 
 # Apply ownership or permissions values to files and directories matched by glob
 export def main [
-    ...paths: string             # The paths to which to apply ch operations
+    ...paths: string            # The paths to which to apply ch operations
     --mode (-m): string         # Use chmod: Set permissions to this mode
     --owner (-o): string        # Use chown: Set ownership to this user & group
     --recurse (-r)              # If type is not specified, adds -R to recurse
