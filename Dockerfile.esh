@@ -22,8 +22,6 @@ ENV \
     BF_DEBUG=0 \
     # upgrade packages during installation
     BF_UPGRADE_PACKAGES=0 \
-    # set the location of the custom nu config files
-    NU_CONFIG_DIR=/etc/bf/nu \
     # add bf executables to PATH
     PATH=/usr/bin/bf:${PATH}
 
