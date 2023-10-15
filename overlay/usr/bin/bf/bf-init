@@ -1,4 +1,4 @@
-#!/usr/bin/env nu
+#!/usr/bin/nu
 
 use ../../lib/bf/
 bf env set_executable
