@@ -1,6 +1,10 @@
 use env.nu
 
-const $done = "Done."
+const done = "Done."
+const colour = "reset"
+const colour_debug = "grey"
+const colour_ok = "green"
+const colour_notok = "red_bold"
 
 # Write text, optionally in a specified colour, with the current date / time and script name
 def p [
@@ -39,7 +43,7 @@ export def main [
     text: string    # The text to write
     script?: string # The name of the calling script or executable
 ] {
-    p $text "reset" $script
+    p $text $colour $script
 }
 
 # Write 'Done.' in standard colour with the current date / time
@@ -54,7 +58,7 @@ export def ok [
     text: string    # The text to write
     script?: string # The name of the calling script or executable
 ] {
-    p $text "green" $script
+    p $text $colour_ok $script
 }
 
 # Write 'Done.' in green with the current date / time
@@ -69,7 +73,7 @@ export def notok [
     text: string    # The text to write
     script?: string # The name of the calling script or executable
 ] {
-    p $text "red" $script
+    p $text $colour_notok $script
 }
 
 # Write error text in red with the current date / time, and exit with status 1
@@ -88,9 +92,8 @@ export def debug [
     script?: string # The name of the calling script or executable
 ] {
     if (env debug) {
-        let colour = "grey"
-        let output = p $text $colour $script
-        print --no-newline $"(ansi $colour)($output)(ansi reset)"
+        let output = p $text $colour_debug $script
+        print --no-newline $"(ansi $colour_debug)($output)(ansi reset)"
     }
 }
 
