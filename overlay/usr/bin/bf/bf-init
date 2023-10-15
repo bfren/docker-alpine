@@ -2,4 +2,5 @@
 
 use ../../lib/bf/
 bf env set_executable
-bf init
+
+def main [] { bf init }
