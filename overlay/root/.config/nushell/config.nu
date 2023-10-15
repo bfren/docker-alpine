@@ -173,30 +173,30 @@ $env.config = {
     # Behavior without this configuration point will be to "humanize" the datetime display,
     # showing something like "a day ago."
     datetime_format: {
-        normal: '%a, %d %b %Y %H:%M:%S %z'    # shows up in displays of variables or other datetime's outside of tables
-        table: '%Y-%m-%d %H:%M:%S'          # generally shows up in tabular outputs such as ls. commenting this out will change it to the default human readable datetime format
+        normal: '%a, %d %b %Y %H:%M:%S %z'
+        table: '%Y-%m-%d %H:%M:%S'
     }
 
     explore: {
-        status_bar_background: {fg: "#1D1F21", bg: "#C4C9C6"},
-        command_bar_text: {fg: "#C4C9C6"},
-        highlight: {fg: "black", bg: "yellow"},
+        status_bar_background: {fg: "#1D1F21", bg: "#C4C9C6"}
+        command_bar_text: {fg: "#C4C9C6"}
+        highlight: {fg: "black", bg: "yellow"}
         status: {
-            error: {fg: "white", bg: "red"},
+            error: {fg: "white", bg: "red"}
             warn: {}
             info: {}
-        },
+        }
         table: {
-            split_line: {fg: "#404040"},
-            selected_cell: {},
-            selected_row: {},
-            selected_column: {},
-            show_cursor: true,
-            line_head_top: true,
-            line_head_bottom: true,
-            line_shift: true,
-            line_index: true,
-        },
+            split_line: {fg: "#404040"}
+            selected_cell: {}
+            selected_row: {}
+            selected_column: {}
+            show_cursor: true
+            line_head_top: true
+            line_head_bottom: true
+            line_shift: true
+            line_index: true
+        }
     }
 
     history: {
@@ -321,21 +321,21 @@ $env.config = {
             name: history_menu
             modifier: control
             keycode: char_r
-            mode: [emacs, vi_insert, vi_normal]
+            mode: [emacs vi_insert vi_normal]
             event: { send: menu name: history_menu }
         }
         {
             name: help_menu
             modifier: none
             keycode: f1
-            mode: [emacs, vi_insert, vi_normal]
+            mode: [emacs vi_insert vi_normal]
             event: { send: menu name: help_menu }
         }
         {
             name: completion_previous_menu
             modifier: shift
             keycode: backtab
-            mode: [emacs, vi_normal, vi_insert]
+            mode: [emacs vi_insert vi_normal]
             event: { send: menuprevious }
         }
         {
@@ -361,49 +361,49 @@ $env.config = {
             name: escape
             modifier: none
             keycode: escape
-            mode: [emacs, vi_normal, vi_insert]
+            mode: [emacs vi_insert vi_normal]
             event: { send: esc }    # NOTE: does not appear to work
         }
         {
             name: cancel_command
             modifier: control
             keycode: char_c
-            mode: [emacs, vi_normal, vi_insert]
+            mode: [emacs vi_insert vi_normal]
             event: { send: ctrlc }
         }
         {
             name: quit_shell
             modifier: control
             keycode: char_d
-            mode: [emacs, vi_normal, vi_insert]
+            mode: [emacs vi_insert vi_normal]
             event: { send: ctrld }
         }
         {
             name: clear_screen
             modifier: control
             keycode: char_l
-            mode: [emacs, vi_normal, vi_insert]
+            mode: [emacs vi_insert vi_normal]
             event: { send: clearscreen }
         }
         {
             name: search_history
             modifier: control
             keycode: char_q
-            mode: [emacs, vi_normal, vi_insert]
+            mode: [emacs vi_insert vi_normal]
             event: { send: searchhistory }
         }
         {
             name: open_command_editor
             modifier: control
             keycode: char_o
-            mode: [emacs, vi_normal, vi_insert]
+            mode: [emacs vi_insert vi_normal]
             event: { send: openeditor }
         }
         {
             name: move_up
             modifier: none
             keycode: up
-            mode: [emacs, vi_normal, vi_insert]
+            mode: [emacs vi_insert vi_normal]
             event: {
                 until: [
                     {send: menuup}
@@ -415,7 +415,7 @@ $env.config = {
             name: move_down
             modifier: none
             keycode: down
-            mode: [emacs, vi_normal, vi_insert]
+            mode: [emacs vi_insert vi_normal]
             event: {
                 until: [
                     {send: menudown}
@@ -427,7 +427,7 @@ $env.config = {
             name: move_left
             modifier: none
             keycode: left
-            mode: [emacs, vi_normal, vi_insert]
+            mode: [emacs vi_insert vi_normal]
             event: {
                 until: [
                     {send: menuleft}
@@ -439,7 +439,7 @@ $env.config = {
             name: move_right_or_take_history_hint
             modifier: none
             keycode: right
-            mode: [emacs, vi_normal, vi_insert]
+            mode: [emacs vi_insert vi_normal]
             event: {
                 until: [
                     {send: historyhintcomplete}
@@ -452,14 +452,14 @@ $env.config = {
             name: move_one_word_left
             modifier: control
             keycode: left
-            mode: [emacs, vi_normal, vi_insert]
+            mode: [emacs vi_insert vi_normal]
             event: {edit: movewordleft}
         }
         {
             name: move_one_word_right_or_take_history_hint
             modifier: control
             keycode: right
-            mode: [emacs, vi_normal, vi_insert]
+            mode: [emacs vi_insert vi_normal]
             event: {
                 until: [
                     {send: historyhintwordcomplete}
@@ -471,21 +471,21 @@ $env.config = {
             name: move_to_line_start
             modifier: none
             keycode: home
-            mode: [emacs, vi_normal, vi_insert]
+            mode: [emacs vi_insert vi_normal]
             event: {edit: movetolinestart}
         }
         {
             name: move_to_line_start
             modifier: control
             keycode: char_a
-            mode: [emacs, vi_normal, vi_insert]
+            mode: [emacs vi_insert vi_normal]
             event: {edit: movetolinestart}
         }
         {
             name: move_to_line_end_or_take_history_hint
             modifier: none
             keycode: end
-            mode: [emacs, vi_normal, vi_insert]
+            mode: [emacs vi_insert vi_normal]
             event: {
                 until: [
                     {send: historyhintcomplete}
@@ -497,7 +497,7 @@ $env.config = {
             name: move_to_line_end_or_take_history_hint
             modifier: control
             keycode: char_e
-            mode: [emacs, vi_normal, vi_insert]
+            mode: [emacs vi_insert vi_normal]
             event: {
                 until: [
                     {send: historyhintcomplete}
@@ -509,21 +509,21 @@ $env.config = {
             name: move_to_line_start
             modifier: control
             keycode: home
-            mode: [emacs, vi_normal, vi_insert]
+            mode: [emacs vi_insert vi_normal]
             event: {edit: movetolinestart}
         }
         {
             name: move_to_line_end
             modifier: control
             keycode: end
-            mode: [emacs, vi_normal, vi_insert]
+            mode: [emacs vi_insert vi_normal]
             event: {edit: movetolineend}
         }
         {
             name: move_up
             modifier: control
             keycode: char_p
-            mode: [emacs, vi_normal, vi_insert]
+            mode: [emacs vi_insert vi_normal]
             event: {
                 until: [
                     {send: menuup}
@@ -535,7 +535,7 @@ $env.config = {
             name: move_down
             modifier: control
             keycode: char_t
-            mode: [emacs, vi_normal, vi_insert]
+            mode: [emacs vi_insert vi_normal]
             event: {
                 until: [
                     {send: menudown}
@@ -547,42 +547,42 @@ $env.config = {
             name: delete_one_character_backward
             modifier: none
             keycode: backspace
-            mode: [emacs, vi_insert]
+            mode: [emacs vi_insert]
             event: {edit: backspace}
         }
         {
             name: delete_one_word_backward
             modifier: control
             keycode: backspace
-            mode: [emacs, vi_insert]
+            mode: [emacs vi_insert]
             event: {edit: backspaceword}
         }
         {
             name: delete_one_character_forward
             modifier: none
             keycode: delete
-            mode: [emacs, vi_insert]
+            mode: [emacs vi_insert]
             event: {edit: delete}
         }
         {
             name: delete_one_character_forward
             modifier: control
             keycode: delete
-            mode: [emacs, vi_insert]
+            mode: [emacs vi_insert]
             event: {edit: delete}
         }
         {
             name: delete_one_character_forward
             modifier: control
             keycode: char_h
-            mode: [emacs, vi_insert]
+            mode: [emacs vi_insert]
             event: {edit: backspace}
         }
         {
             name: delete_one_word_backward
             modifier: control
             keycode: char_w
-            mode: [emacs, vi_insert]
+            mode: [emacs vi_insert]
             event: {edit: backspaceword}
         }
         {
