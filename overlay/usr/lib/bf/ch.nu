@@ -41,7 +41,7 @@ export def main [
         }
     }
 
-    write ok_done ch
+    write done ch
 }
 
 # Apply permissions using a ch.d file
@@ -58,7 +58,7 @@ export def apply_file [
     write $"Applying ($path)..." ch/apply_file
     open $path | from ssv --minimum-spaces 1 --noheaders | each {|x| $x | values | apply_row }
 
-    write ok_done ch/apply_file
+    write done ch/apply_file
 }
 
 # Apply permissions for a row container in a ch.d file:

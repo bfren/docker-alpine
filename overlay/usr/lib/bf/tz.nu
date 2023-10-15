@@ -11,7 +11,7 @@ export def main [
 
     # install timezone package
     write debug "Installing tzdata packages." tz
-    apk add --no-cache --virtual .tz tzdata
+    (apk add --no-cache --virtual .tz tzdata) | ignore
 
     # check the specified timezone exists
     if (fs is_not_file $path) {
@@ -23,12 +23,12 @@ export def main [
     write $"Setting timezone to ($tz)..." tz
     cp $path /etc/localtime
     clear
-    write ok_done tz
+    write done tz
 }
 
 # Remove tzdata packages and info
 def clear [] {
     write debug "Removing tzdata packages." tz/clear
-    apk del .tz
+    (apk del .tz) | ignore
     rm force /usr/share/zoneinfo/*
 }

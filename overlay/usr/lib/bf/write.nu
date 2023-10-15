@@ -61,13 +61,6 @@ export def ok [
     p $text $colour_ok $script
 }
 
-# Write 'Done.' in green with the current date / time
-export def ok_done [
-    script?: string # The name of the calling script or executable
-] {
-    ok $done $script
-}
-
 # Write text in red with the current date / time
 export def notok [
     text: string    # The text to write
