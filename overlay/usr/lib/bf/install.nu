@@ -15,6 +15,7 @@ export def main [] {
     $env | print
     $nu | print
     ls -al /root/.config/nushell | print
+    cat /root/.config/nushell/env.nu | print
     # set permissions
     write "Setting permissions..." install
     ch -o root:root -m 0555 -r $env.BF_BIN /init    # r+x
