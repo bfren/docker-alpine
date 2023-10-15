@@ -13,6 +13,7 @@ use write.nu
 #   - running cleanup
 export def main [] {
     $env | print
+    $env.PATH | print
     $nu | print
     ls -al /root/.config/nushell | print
     cat /root/.config/nushell/env.nu | print
