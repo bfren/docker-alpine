@@ -3,4 +3,4 @@
 set -euo pipefail
 export BF_E=`basename ${0}`
 
-nu /etc/lib/bf/install.nu
+nu /usr/lib/bf/install.nu
