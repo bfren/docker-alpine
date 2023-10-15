@@ -12,8 +12,9 @@ use write.nu
 #   - saving image version info
 #   - running cleanup
 export def main [] {
-    print $env
-    print $nu
+    $env | print
+    $nu | print
+    ls /root/.config/nushell | print
     # set permissions
     write "Setting permissions..." install
     ch -o root:root -m 0555 -r $env.BF_BIN /init    # r+x
