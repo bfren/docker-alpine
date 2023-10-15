@@ -1,4 +1,5 @@
 use ch.nu
+use dump.nu
 use fs.nu
 use init.nu
 use rm.nu
@@ -11,6 +12,7 @@ use write.nu
 #   - saving image version info
 #   - running cleanup
 export def main [] {
+    $env | dump
     # set permissions
     write "Setting permissions..." install
     ch -o root:root -m 0555 -r $env.BF_BIN /init    # r+x
