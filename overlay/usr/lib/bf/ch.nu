@@ -19,11 +19,11 @@ export def main [
 
     # if everything has been filtered out, return
     if ($filtered_paths | length) == 0 {
-        print debug "Nothing found to change." ch
+        print "Nothing found to change." ch
         return
     }
 
-    print debug "Applying..." ch
+    print "Applying..." ch
 
     # set ownership
     if $owner != null {
@@ -41,7 +41,7 @@ export def main [
         }
     }
 
-    print debug_done ch
+    print ok_done ch
 }
 
 # Apply permissions using a ch.d file
@@ -55,10 +55,10 @@ export def apply_file [
     }
 
     # split by row and apply changes row by row
-    print debug $"Applying ($path)..." ch/apply_file
+    print $"Applying ($path)..." ch/apply_file
     open $path | from ssv --minimum-spaces 1 --noheaders | each { |x| $x | values | apply_row }
 
-    print debug_done ch/apply_file
+    print ok_done ch/apply_file
 }
 
 # Apply permissions for a row container in a ch.d file:
@@ -78,6 +78,7 @@ def apply_row [] {
     let owner = $row | get 1
     let fmode = $row | get -i 2
     let dmode = $row | get -i 3
+    print debug $" .. ($glob) ($owner) ($fmode) ($dmode)" ch/apply_row
 
     # apply changes
     main --owner $owner $glob
