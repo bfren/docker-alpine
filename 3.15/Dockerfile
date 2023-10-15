@@ -1,9 +1,4 @@
-FROM alpine:3.15.10 as build
-COPY overlay/ 3.15/overlay/ /
-RUN chmod +x /preinstall && /preinstall
-
-FROM scratch
-COPY --from=build / /
+FROM alpine:3.15.10
 
 LABEL org.opencontainers.image.description="Alpine base image with nushell."
 LABEL org.opencontainers.image.source="https://github.com/bfren/docker-alpine"
@@ -30,6 +25,10 @@ ENV \
     # add bf executables to PATH
     PATH=${BF_BIN}:${PATH}
 
+COPY ./overlay /
+COPY ./3.15/overlay /
+
+RUN chmod +x /preinstall && /preinstall
 RUN bf-install
 
 ENTRYPOINT [ "/init" ]
