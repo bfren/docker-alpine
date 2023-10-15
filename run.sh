@@ -5,8 +5,6 @@ ALPINE=${1:-3.18}
 
 docker buildx build \
     --load \
-    --no-cache \
-    --progress plain \
     --build-arg BF_IMAGE=alpine \
     --build-arg BF_VERSION=${IMAGE} \
     -f ${ALPINE}/Dockerfile \
