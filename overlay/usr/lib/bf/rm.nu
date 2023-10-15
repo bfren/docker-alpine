@@ -3,8 +3,8 @@ use print.nu
 
 # Force and recursively remove all files and directories matching glob
 export def force [
-    ...glob: string # Glob to match
-    --files-only    # If set, only files will be deleted
+    ...glob: string     # Glob to match
+    --files-only (-f)   # If set, only files will be deleted
 ] {
     # get description and paths based on files_only flag
     let kind = "files" + if $files_only { "" } else { " and directories" }
@@ -22,8 +22,9 @@ export def force [
 # Delete files or directories within root_dir older than a certain number of days
 export def old [
     root_dir: string    # The root directory - files / directories within this will be deleted
-    days: int           # If a file or directory is older than this number of days it will be deleted
-    type: string        # The type of path to delete, either 'd' (directory) or 'f' (file)
+    --days (-d): int    # If a file or directory is older than this number of days it will be deleted
+    --live              # If not set, the paths to be deleted will be printed but not actually deleted
+    --type (-t): string # The type of path to delete, either 'd' (directory) or 'f' (file)
 ] {
     # days cannot be a negative number
     if $days <= 0 {
@@ -37,5 +38,13 @@ export def old [
         _ => { print notok_error $"Unknown type: ($type)." rm/old }
     }
 
-    let minutes = $days * 24 * 60
+    # process input values to use in query
+    let minutes_ago = $days * 24 * 60 | $"($in)min" | into duration | (date now) - $in
+    let use_root_dir = $root_dir | str trim --char "/" --right | $"($in)/*"
+
+    # perform deletion
+    print $"Removing ($use_type)s older than ($days) days..." rm/old
+    let print_and_delete = { |x| print debug $" .. ($x.name)" rm/old; if $live { rm -rf $x.name } }
+    ls $use_root_dir | where type == $use_type and modified < $minutes_ago | each { |x| do $print_and_delete $x }
+    print ok_done rm/old
 }
