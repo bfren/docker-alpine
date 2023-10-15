@@ -1,6 +1,6 @@
-#!/bin/sh
+#!/usr/bin/env nu
 
-set -euo pipefail
-export BF_E=`basename ${0}`
+use ../../lib/bf/
+bf env set_executable
 
-nu /usr/lib/bf/install.nu
+def main [] { bf install }

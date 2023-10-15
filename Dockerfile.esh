@@ -19,10 +19,16 @@ ENV \
     #   0: disable
     #   1: enable
     BF_DEBUG=0 \
+    # path to bf executables
+    BF_BIN=/usr/bin/bf \
+    # path to bf library executables
+    BF_LIB=/usr/lib/bf \
     # upgrade packages during installation
-    BF_UPGRADE_PACKAGES=0 \
+    BF_UPGRADE_PACKAGES=0
+
+ENV \
     # add bf executables to PATH
-    PATH=/usr/bin/bf:${PATH}
+    PATH=${BF_BIN}:${PATH}
 
 RUN bf-install
 

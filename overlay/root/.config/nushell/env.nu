@@ -66,11 +66,3 @@ $env.NU_PLUGIN_DIRS = [
 
 # To add entries to PATH (on Windows you might use Path), you can use the following pattern:
 # $env.PATH = ($env.PATH | split row (char esep) | prepend '/some/path')
-
-$env.BF_BIN = "/usr/bin/bf"
-$env.BF_LIB = "/usr/lib/bf"
-
-$env.PATH = ($env.PATH | split row (char esep) | prepend $env.BF_BIN)
-
-$env | print
-$env.PATH | print
