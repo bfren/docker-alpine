@@ -21,5 +21,5 @@ export def safe [
 export def-env set_executable [
     override?: string   # If set, will override name of current script
 ] {
-    $env.BF_E = if $override { $override } else { $"($env.CURRENT_FILE | path basename)" }
+    $env.BF_E = if $override != null { $override } else { $"($env.CURRENT_FILE | path basename)" }
 }
