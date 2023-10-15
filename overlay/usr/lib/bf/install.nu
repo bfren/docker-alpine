@@ -35,7 +35,7 @@ export def main [] {
     }
 
     write $"Executing ($install)..." install
-    ch -m 0500 $install; $install
+    ch -m 0500 $install; exec $install
     write done install
 
     # store versions
