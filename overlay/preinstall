@@ -13,8 +13,18 @@ apk add --no-cache \
 
 
 #======================================================================================================================
+# Get default configuration files.
+#======================================================================================================================
+
+NU_DIR=/root/.config/nushell
+mkdir -p ${NU_DIR} && cd ${NU_DIR}
+wget https://gist.githubusercontent.com/bfren/fdc7c7870855a2969068222ed772e5b3/raw/config.nu
+wget https://gist.githubusercontent.com/bfren/e7cbb1a04a4e1d1382965fad57e46f26/raw/env.nu
+
+
+#======================================================================================================================
 # Set permissions.
 #======================================================================================================================
 
 chmod 0544 /usr/bin/bf/bf-install
-chmod 0644 /root/.config/nushell/*
+chmod 0644 ${NU_DIR}/*
