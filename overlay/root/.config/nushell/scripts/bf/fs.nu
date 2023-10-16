@@ -46,7 +46,7 @@ export def read [
 }
 
 # Execute a script
-export def-env x [
+export def x [
     path: string    # Absolute path to the file to execute
 ] {
     let name = if ($path | str length) > 15 { $path | path basename } else { $path }
