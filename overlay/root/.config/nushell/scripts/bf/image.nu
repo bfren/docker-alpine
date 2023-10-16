@@ -13,8 +13,10 @@ export def main [] {
     # output image info
     do $border
     $"bfren | ($image)" | figlet
-    char newline | print
-    $"bfren | ($image) v($version) \(alpine/($alpine)\)" | print
+    "" | print
+    $"bfren/($image) v($version) \(alpine:($alpine)\)" | print
+    $"Built on (ls /BF_IMAGE | first | get modified)" | print
+    "" | print
     $"https://github.com/bfren/docker-($image)" | print
     do $border
 }
