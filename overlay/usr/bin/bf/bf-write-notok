@@ -1,0 +1,11 @@
+#!/usr/bin/nu
+
+use bf
+
+# Write text in red with the current date / time
+def main [
+    text: string    # The text to write
+    script?: string # The name of the calling script or executable
+] {
+    bf write notok $text $script
+}
