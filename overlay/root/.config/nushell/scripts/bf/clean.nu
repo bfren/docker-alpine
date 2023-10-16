@@ -12,9 +12,3 @@ export def main [] {
     write debug "cleaning caches." clean
     del force /tmp/* /var/cache/apk/* /var/cache/misc/*
 }
-
-# clean src directory
-export def src [] {
-    write debug $"cleaning ($env.BF_SRC)." clean/src
-    del force $"($env.BF_SRC)/*"
-}
