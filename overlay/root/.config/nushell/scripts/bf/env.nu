@@ -1,3 +1,5 @@
+use write.nu
+
 # Returns true if $key exists in the environment and is equal to 1
 export def check [
     key: string # Environment variable key
@@ -22,7 +24,9 @@ export def-env set [
     key: string # Environment variable key name - will be prefixed with 'BF_'
     value: any  # Environment variable value
 ] {
-    load-env { $"BF_($key)": $value }
+    let use_key = $"BF_($key)"
+    write debug $"($use_key)=($value)." env/set
+    load-env { $use_key: $value }
 }
 
 # Sets the BF_E environment variable to the name of the currently executing script
