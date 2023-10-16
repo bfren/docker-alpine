@@ -33,12 +33,16 @@ def only [
 export def read [
     path: string
 ] {
+    # attempt to get full path
+    let use_path = $path | path expand
+
     # ensure file exists
-    if (is_not_file $path) {
-        write error $"File does not exist: ($path)." fs/read
+    if (is_not_file $use_path) {
+        write error $"File does not exist: ($use_path)." fs/read
     }
 
-    open $path | str trim
+    # get and trim raw contents
+    open --raw $use_path | str trim
 }
 
 # Execute a script
