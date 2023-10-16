@@ -4,11 +4,17 @@ use write.nu
 # Apply ownership or permissions values to files and directories matched by glob
 export def main [
     ...paths: string            # The paths to which to apply ch operations
+    --debug (-d)                # Override BF_DEBUG for this call
     --mode (-m): string         # Use chmod: Set permissions to this mode
     --owner (-o): string        # Use chown: Set ownership to this user & group
     --recurse (-r)              # If type is not specified, adds -R to recurse
     --type (-t): string = "a"   # Apply to all (a), files only (f) or directories only (d)
 ] {
+    # override debug
+    if $debug {
+        $env.BF_DEBUG = "1"
+    }
+
     # filter out paths that are not of the requested type
     let filtered_paths = match $type {
         "a" => { $paths }
@@ -23,9 +29,11 @@ export def main [
         return
     }
 
+    # output
+    write $"Applying changes to ($filtered_paths | length) path(s)." ch
+
     # set ownership
     if $owner != null {
-        write "Applying ownership." ch
         $filtered_paths | each {|x|
             write debug $" .. chown ($owner) to ($x)" ch
             if $recurse { chown -R $owner $x } else { chown $owner $x }
@@ -34,7 +42,6 @@ export def main [
 
     # set mode
     if $mode != null {
-        write "Applying permissions." ch
         $filtered_paths | each {|x|
             write debug $" .. chmod ($mode) to ($x)" ch
             if $recurse { chmod -R $mode $x } else { chmod $mode $x }
