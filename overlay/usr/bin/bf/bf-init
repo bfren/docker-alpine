@@ -3,4 +3,4 @@
 use bf
 bf env set_executable
 
-def-env main [] { bf init }
+def main [] { bf init }

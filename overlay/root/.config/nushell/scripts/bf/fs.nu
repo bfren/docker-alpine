@@ -46,7 +46,7 @@ export def read [
 }
 
 # Execute a script
-export def x [
+export def-env x [
     path: string    # Absolute path to the file to execute
 ] {
     chmod +x $path
