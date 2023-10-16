@@ -1,7 +1,7 @@
 use ch.nu
 use dump.nu
 use fs.nu
-use init.nu
+use image.nu
 use rm.nu
 use write.nu
 
@@ -50,7 +50,7 @@ export def main [] {
 
     # all finished
     write ok "Installation complete." install
-    init image
+    image
 }
 
 # Clear temporary directories, caches and installation files

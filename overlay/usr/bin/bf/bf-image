@@ -4,4 +4,4 @@ use bf
 bf env set_executable
 
 # Output information about the current image including name and version
-def main [] { bf init image }
+def main [] { bf image }

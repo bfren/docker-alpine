@@ -49,7 +49,6 @@ export def read [
 export def-env x [
     path: string    # Absolute path to the file to execute
 ] {
-    chmod +x $path
     let name = if ($path | str length) > 15 { $path | path basename } else { $path }
     with-env [BF_E $name] { nu $path }
 }
