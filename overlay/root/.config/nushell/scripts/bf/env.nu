@@ -1,3 +1,4 @@
+use dump.nu
 use write.nu
 
 # Returns true if $key exists in the environment and is equal to 1
