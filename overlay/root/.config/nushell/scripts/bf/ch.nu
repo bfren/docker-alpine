@@ -23,10 +23,9 @@ export def main [
         return
     }
 
-    write "Applying permissions changes." ch
-
     # set ownership
     if $owner != null {
+        write "Applying ownership." ch
         $filtered_paths | each {|x|
             write debug $" .. chown ($owner) to ($x)" ch
             if $recurse { chown -R $owner $x } else { chown $owner $x }
@@ -35,6 +34,7 @@ export def main [
 
     # set mode
     if $mode != null {
+        write "Applying permissions." ch
         $filtered_paths | each {|x|
             write debug $" .. chmod ($mode) to ($x)" ch
             if $recurse { chmod -R $mode $x } else { chmod $mode $x }
