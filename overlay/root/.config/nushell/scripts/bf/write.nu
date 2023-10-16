@@ -10,7 +10,7 @@ def p [
     script?: string # The name of the calling script or executable
 ] {
     # get the name of the base executable
-    let bf_e = $env | get -i BF_E
+    let bf_e = $env | get --ignore-errors BF_E
 
     # use BF_E or the calling script as the prefix
     let prefix = if $script != null {
@@ -48,7 +48,7 @@ export def debug [
     text: string    # The text to write
     script?: string # The name of the calling script or executable
 ] {
-    if ($env | get -i BF_DEBUG | into string) == "1" {
+    if ($env | get --ignore-errors BF_DEBUG | into string) == "1" {
         p $text $colour_debug $script | print --no-newline $"(ansi $colour_debug)($in)(ansi reset)"
     }
 }

@@ -17,7 +17,7 @@ export def debug [] {
 export def safe [
     key: string # Environment variable key
 ] {
-    $env | get -i $key
+    $env | get --ignore-errors $key
 }
 
 # Sets the BF_E environment variable to the name of the currently executing script

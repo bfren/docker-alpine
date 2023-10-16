@@ -4,7 +4,7 @@ export def is_at_least [
     minimum: string # The minimum version required
 ] {
     # use natural sort to ensure (e.g.) 1.2.10 comes below 1.2.5
-    let lowest = [$version $minimum] | sort -n | first
+    let lowest = [$version $minimum] | sort --natural | first
     $lowest == $minimum
 }
 
