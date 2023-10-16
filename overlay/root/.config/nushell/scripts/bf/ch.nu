@@ -30,7 +30,7 @@ export def main [
     }
 
     # output
-    write $"Applying changes to ($filtered_paths | length) path(s)." ch
+    write $"Applying changes to ($filtered_paths | length) path\(s\)." ch
 
     # set ownership
     if $owner != null {
