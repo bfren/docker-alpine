@@ -4,4 +4,13 @@ use bf
 bf env set_executable
 
 # Test a URL and return whether or not it gives an error HTTP status code
-def main [url: string] { bf http test_url $url }
+def main [
+    url: string             # URL to load
+    --return-status (-s)    # Enable to return status instead of false
+] {
+    if $return_status {
+        bf http test_url --return-status $url
+    } else {
+        bf http test_url $url
+    }
+}
