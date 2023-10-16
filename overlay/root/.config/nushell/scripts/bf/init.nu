@@ -12,10 +12,10 @@ export def main [] {
 
 # Execute a script within the init.d directory
 def execute [
-    filename: string    # Name of script file (within init.d directory)
+    filename: string    # Full path to script file
 ] {
-    write $"($filename): Running." init/execute
-    fs x $"($init_d)/($filename)"
+    write $"($filename | path basename): Running." init/execute
+    fs x $filename
 }
 
 # Output information about the current image including name and version
