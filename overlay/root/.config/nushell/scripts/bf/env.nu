@@ -20,16 +20,6 @@ export def safe [
     $env | get -i $key
 }
 
-# Set an environment variable
-export def-env set [
-    key: string # Environment variable key name - will be prefixed with 'BF_'
-    value: any  # Environment variable value
-] {
-    let use_key = $"BF_($key)"
-    write debug $"($use_key)=($value)." env/set
-    load-env { $use_key: $value }
-}
-
 # Sets the BF_E environment variable to the name of the currently executing script
 export def-env set_executable [
     prefix?: string # If set, will be added before the name of the current script
