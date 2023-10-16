@@ -24,5 +24,5 @@ export def safe [
 export def-env set_executable [
     prefix?: string # If set, will be added before the name of the current script
 ] {
-    set E (if $prefix != null { $"($prefix)/" } | $"($in)($env.CURRENT_FILE | path basename)")
+    $env.BF_E = (if $prefix != null { $"($prefix)/" } | $"($in)($env.CURRENT_FILE | path basename)")
 }
