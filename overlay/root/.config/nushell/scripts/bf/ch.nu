@@ -14,7 +14,7 @@ export def main [
         "a" => { $paths }
         "d" => { fs only_dirs $paths }
         "f" => { fs only_files $paths }
-        _ => { write notok_error $"Unknown type: ($type)." ch }
+        _ => { write error $"Unknown type: ($type)." ch }
     }
 
     # if everything has been filtered out, return

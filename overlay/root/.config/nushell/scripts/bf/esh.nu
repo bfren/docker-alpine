@@ -8,7 +8,7 @@ export def main [
 ] {
     # ensure template file exists
     if (fs is_not_file $input) {
-        write notok_error $"Template file ($input) does not exist." esh
+        write error $"Template file ($input) does not exist." esh
     }
 
     # generate output file and display any errors
@@ -16,6 +16,6 @@ export def main [
     if ($result == "") and ($output | path exists) {
         write debug $"($output) created." esh
     } else {
-        write notok_error $"Error using template: ($result)." esh
+        write error $"Error using template: ($result)." esh
     }
 }

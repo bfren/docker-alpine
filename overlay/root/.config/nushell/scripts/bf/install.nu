@@ -32,7 +32,7 @@ export def main [] {
     # run install script in /tmp
     const install = "/tmp/install"
     if (fs is_not_file $install) {
-        write notok_error $"($install) does not exist." install
+        write error $"($install) does not exist." install
     }
 
     write $"Executing ($install)." install
@@ -53,7 +53,7 @@ export def main [] {
     init image
 }
 
-# Clear temporary directories, caches and installation files.
+# Clear temporary directories, caches and installation files
 export def clear [] {
     write debug "Deleting installation scripts." install/clear
     rm force /preinstall /install
@@ -63,6 +63,10 @@ export def clear [] {
 
     write debug "Clearing caches." install/clear
     rm force /tmp/* /var/cache/apk/* /var/cache/misc/*
+}
 
-    return
+# Clear src directory
+export def clear_src [] {
+    write debug $"Clearing ($env.BF_SRC)." install/clear_src
+    rm force $"($env.BF_SRC)/*"
 }

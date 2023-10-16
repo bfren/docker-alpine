@@ -1,5 +1,3 @@
-use env.nu
-
 const colour = "reset"
 const colour_debug = "grey"
 const colour_ok = "green"
@@ -45,12 +43,24 @@ export def main [
     p $text $colour $script
 }
 
-# Write text in green with the current date / time
-export def ok [
+# Write text in grey with the current date / time, if BF_DEBUG is enabled
+export def debug [
     text: string    # The text to write
     script?: string # The name of the calling script or executable
 ] {
-    p $text $colour_ok $script
+    if ($env | get -i BF_DEBUG | into string) == "1" {
+        p $text $colour_debug $script | print --no-newline $"(ansi $colour_debug)($in)(ansi reset)"
+    }
+}
+
+# Write error text in red with the current date / time, and exit using code
+export def error [
+    error: string           # The error text to write
+    script?: string         # The name of the calling script or executable
+    --code (-c): int = 1    # The error code to emit after the message
+] {
+    notok $error $script | print --no-newline --stderr $in
+    exit $code
 }
 
 # Write text in red with the current date / time
@@ -61,23 +71,10 @@ export def notok [
     p $text $colour_notok $script
 }
 
-# Write error text in red with the current date / time, and exit with status 1
-export def notok_error [
-    error: string   # The error text to write
-    script?: string # The name of the calling script or executable
-] {
-    let output = notok $error $script
-    print --no-newline --stderr $output
-    exit 1
-}
-
-# Write text in grey with the current date / time, if BF_DEBUG is enabled
-export def debug [
+# Write text in green with the current date / time
+export def ok [
     text: string    # The text to write
     script?: string # The name of the calling script or executable
 ] {
-    if (env debug) {
-        let output = p $text $colour_debug $script
-        print --no-newline $"(ansi $colour_debug)($output)(ansi reset)"
-    }
+    p $text $colour_ok $script
 }

@@ -16,7 +16,7 @@ export def main [
     # check the specified timezone exists
     if (fs is_not_file $path) {
         clear
-        write notok_error $"($tz) is not a recognise timezone." tz
+        write error $"($tz) is not a recognise timezone." tz
     }
 
     # copy timezone info

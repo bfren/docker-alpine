@@ -16,8 +16,8 @@ export def test_url [
     if $status >= 200 and $status <= 399 {
         write ok " .. OK" http/test_url
     } else if $status >= 400 and $status <= 499 {
-        write notok_error " .. client error" http/test_url
+        write error " .. client error" http/test_url
     } else {
-        write notok_error " .. server error" http/test_url
+        write error " .. server error" http/test_url
     }
 }

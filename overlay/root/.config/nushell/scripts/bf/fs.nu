@@ -35,7 +35,7 @@ export def read [
 ] {
     # ensure file exists
     if (is_not_file $path) {
-        write notok_error $"File does not exist: ($path)." fs/read
+        write error $"File does not exist: ($path)." fs/read
     }
 
     open $path | str trim

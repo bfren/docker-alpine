@@ -30,14 +30,14 @@ export def old [
 ] {
     # days cannot be a negative number
     if $days <= 0 {
-        write notok_error "Days must be a whole number greater than 0." rm/old
+        write error "Days must be a whole number greater than 0." rm/old
     }
 
     # ensure only valid types are used
     let use_type = match $type {
         "d" => { "dir" }
         "f" => { "file" }
-        _ => { write notok_error $"Unknown type: ($type)." rm/old }
+        _ => { write error $"Unknown type: ($type)." rm/old }
     }
 
     # process input values to use in query
