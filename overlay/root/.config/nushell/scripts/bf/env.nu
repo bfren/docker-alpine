@@ -13,16 +13,23 @@ export def debug [] {
     check BF_DEBUG
 }
 
-# Safely return the value of an environment variable
+# Safely returns the value of an environment variable
 export def safe [
     key: string # Environment variable key
 ] {
     $env | get --ignore-errors $key
 }
 
+# Gets the name of the currently executing script
+export def get_executable [
+    prefix?: string # If set, will be added before the name of the current script
+] {
+    if $prefix != null { $"($prefix)/" } | $"($in)($env.CURRENT_FILE | path basename)"
+}
+
 # Sets the BF_E environment variable to the name of the currently executing script
 export def-env set_executable [
     prefix?: string # If set, will be added before the name of the current script
 ] {
-    $env.BF_E = (if $prefix != null { $"($prefix)/" } | $"($in)($env.CURRENT_FILE | path basename)")
+    $env.BF_E = (get_executable $prefix)
 }
