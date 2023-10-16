@@ -1,8 +1,9 @@
 use ch.nu
+use clean.nu
 use dump.nu
 use fs.nu
 use image.nu
-use rm.nu
+use del.nu
 use write.nu
 
 # Run standard installation for a container:
@@ -44,29 +45,11 @@ export def main [] {
     $env.BF_IMAGE | str replace "docker-" "" | save --force /BF_IMAGE
     $env.BF_VERSION | save --force /BF_VERSION
 
-    # clear installation files / caches etc
+    # clean installation files / caches etc
     write "Running cleanup."
-    clear
+    clean
 
     # all finished
     write ok "Installation complete." install
     image
-}
-
-# Clear temporary directories, caches and installation files
-export def clear [] {
-    write debug "Deleting installation scripts." install/clear
-    rm force /preinstall /install
-
-    write debug "Removing .empty files." install/clear
-    rm force --files-only .empty
-
-    write debug "Clearing caches." install/clear
-    rm force /tmp/* /var/cache/apk/* /var/cache/misc/*
-}
-
-# Clear src directory
-export def clear_src [] {
-    write debug $"Clearing ($env.BF_SRC)." install/clear_src
-    rm force $"($env.BF_SRC)/*"
 }

@@ -1,5 +1,5 @@
 use fs.nu
-use rm.nu
+use del.nu
 use write.nu
 
 # Set the container's timezone
@@ -15,22 +15,22 @@ export def main [
 
     # check the specified timezone exists
     if (fs is_not_file $path) {
-        clear
+        clean
         write error $"($tz) is not a recognise timezone." tz
     }
 
     # copy timezone info
     write $"Setting timezone to ($tz)." tz
     cp $path /etc/localtime
-    clear
+    clean
 
     # return nothing
     return
 }
 
 # Remove tzdata packages and info
-def clear [] {
-    write debug "Removing tzdata packages." tz/clear
+def clean [] {
+    write debug "Removing tzdata packages." tz/clean
     apk del .tz out> ignore
-    rm force /usr/share/zoneinfo/*
+    del force /usr/share/zoneinfo/*
 }
