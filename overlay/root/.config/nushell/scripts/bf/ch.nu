@@ -15,7 +15,7 @@ export def main [
 
     # filter paths by type
     let filtered_paths = if $recurse {
-        $paths | each {|x| fs find $x $type | reduce -f [] {|y, acc| $acc | append $x } }
+        fs find_acc $paths $type
     } else {
         fs filter $paths $type
     }

@@ -27,13 +27,21 @@ export def filter [
 # Find things within a glob
 export def find [
     glob: string    # Base glob to search
-    type?: string   # Find directories (d), files (f), symlinks (l) or (a) everything
+    type: string = "a"  # Find directories (d), files (f), symlinks (l) or (a) everything
 ] {
     match $type {
         "d" | "f" | "l" => { run-external --redirect-stdout "find" $glob "-type" $type }
         "a" => { run-external --redirect-stdout "find" $glob }
         _ => { write error $"Unknown search type: ($type)." fs/find }
     } | lines
+}
+
+# Find things matching a list of globs
+export def find_acc [
+    globs: list<string> # Base globs to search
+    type: string = "a"  # Find directories (d), files (f), symlinks (l) or (a) everything
+] {
+    $globs | each {|x| find $x $type | reduce -f [] {|y, acc| $acc | append $x } }
 }
 
 # Returns true unless path exists and is a file
