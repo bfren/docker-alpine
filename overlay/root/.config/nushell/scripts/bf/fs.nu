@@ -17,12 +17,13 @@ export def filter [
 
     # expand paths and filter by file type:
     #               ensure the path exists before getting information about it
-    #               |                                 use ls to convert input path to a list of actual paths
-    #               |                                 |                 use closure to filter by file type
-    #               |                                 |                 |                     get the file path ('name')
-    #               |                                 |                 |                     |                    append each list of names to the accumulator
-    #               \___________________              \________         \_________________    \________            \_________________________
-    $paths | where {|x| $x | path exists } | each {|x| ls -f $x | where {|y| do $filter $y } | get name } | reduce {|x, acc| $acc | append $x }
+    #               |                              use ls to convert input path to a list of actual paths
+    #               |                              |                     use closure to filter by file type
+    #               |                              |                     |                    get the file path ('name')
+    #               |                              |                     |                    |                   start with an empty list
+    #               |                              |                     |                    |                   |       append each list of names to the accumulator
+    #               |___________________           |___________          |________________    |________           |_____  |________________________
+    $paths | where {|x| $x | path exists } | each {|x| ls -f $x | where {|y| do $filter $y } | get name } | reduce -f [] {|x, acc| $acc | append $x }
 }
 
 # Returns true unless path exists and is a file
