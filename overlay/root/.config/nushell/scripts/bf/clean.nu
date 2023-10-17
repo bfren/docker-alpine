@@ -4,7 +4,7 @@ use write.nu
 # clean temporary directories, caches and installation files
 export def main [] {
     write debug "Deleting installation scripts." clean
-    del force /preinstall /install
+    del force --files-only /preinstall /install
 
     write debug "Removing .empty files." clean
     del force --files-only .empty

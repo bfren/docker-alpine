@@ -6,16 +6,16 @@ export def force [
     ...paths: string    # The paths to delete
     --files-only (-f)   # If set, only files will be deleted
 ] {
-    # get description and paths based on files_only flag
+    # get description and filter paths based on files_only flag
     let kind = "files" + if $files_only { "" } else { " and directories" }
-    let paths = fs filter $paths (if $files_only { "f" } else { "a" })
+    let filtered = fs find_acc $paths (if $files_only { "f" })
 
     # closure to write and delete a path
     let print_and_delete = {|x| write debug $" .. ($x)" rm/force; rm -rf $x }
 
-    # loop through paths, write and delete
-    write $"Force deleting ($kind) matching ($paths)." rm/force
-    $paths | each {|x| do $print_and_delete $x }
+    # loop through filtered paths, write and delete
+    write $"Force deleting ($kind) matching ($filtered)." rm/force
+    $filtered | each {|x| do $print_and_delete $x }
 
     # return nothing
     return
