@@ -20,6 +20,7 @@ export def main [
         fs filter $paths $type
     }
 
+    # execute changes
     execute --mode $mode --owner $owner $recurse $filtered_paths
 }
 

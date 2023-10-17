@@ -19,11 +19,7 @@ export def main [] {
 
     # set permissions
     write "Setting permissions." install
-    ch --owner root:root --mode 0555 --type f $"($env.BF_BIN)/bf-*" /init   # r+x
-    ch --owner root:root --mode 1777 /etc/bf/src /tmp                       # r+w+x+s
-    ch --owner root:root --recurse /etc/bf/templates
-    ch --mode 0444 --type f /etc/bf/templates                               # r
-    ch --mode 0555 --type d /etc/bf/templates                               # r+x
+    ch --owner root:root --mode 0555 --type f /init $"($env.BF_BIN)/bf-*"
 
     # make sure apk is working correctly (fixes some strange 'no such file or directory errors' on apk FETCH)
     write "Running apk fix and verify." install
