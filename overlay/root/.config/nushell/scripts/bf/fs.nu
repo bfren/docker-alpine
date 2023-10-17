@@ -9,8 +9,8 @@ export def filter [
     let filter = {|x|
         match $type {
             "a" => true
-            "d" => ($x.type == "dir")
-            "f" => ($x.type == "file")
+            "d" => { ($x | path type) == "dir" }
+            "f" => { ($x | path type) == "file" }
             _ => false
         }
     }
@@ -23,7 +23,9 @@ export def filter [
     #               |                              |                     |                    |                   start with an empty list
     #               |                              |                     |                    |                   |       append each list of names to the accumulator
     #               |___________________           |___________          |________________    |________           |_____  |________________________
-    $paths | where {|x| $x | path exists } | each {|x| ls -f $x | where {|y| do $filter $y } | get name } | reduce -f [] {|x, acc| $acc | append $x }
+    #$paths | where {|x| $x | path exists } | each {|x| ls -f $x | where {|y| do $filter $y } | get name } | reduce -f [] {|x, acc| $acc | append $x }
+
+    $paths | each {|x| glob $x | where {|y| do $filter $y } } | reduce -f [] {|x, acc| $acc | append $x }
 }
 
 # Returns true unless path exists and is a file
