@@ -15,26 +15,42 @@ export def main [
         $env.BF_DEBUG = "1"
     }
 
-    # filter out paths that are not of the requested type
-    let filtered_paths = match $type {
-        "a" => { $paths }
-        "d" => { fs only_dirs $paths }
-        "f" => { fs only_files $paths }
-        _ => { write error $"Unknown type: ($type)." ch }
+    # filter a file record by specified type
+    let filter = {|x|
+        match $type {
+            "a" => true
+            "d" => ($x.type == "dir")
+            "f" => ($x.type == "file")
+            _ => false
+        }
     }
 
+    # expand paths and filter by file type:
+    #
+    #                  | begin with the list input paths (might be globs, actual files, directories, etc)
+    #                  |
+    #                  |                  | use ls to convert input path to a list of actual paths
+    #                  |                  |
+    #                  |                  |                     | use closure to filter by file type
+    #                  |                  |                     |
+    #                  |                  |                     |                 | get the file path ('name')
+    #                  |                  |                     |                 |
+    #                  |                  |                     |                 |                             | append each list of names to the accumulator
+    #                  \______            \________             \_____________    \________                     \________________
+    let filtered = $paths | each {|x| ls -f $x | where {|y| do $filter $y } | get name } | reduce {|x, acc| $acc | append $x }
+
     # if everything has been filtered out, return
-    if ($filtered_paths | length) == 0 {
+    if ($filtered | length) == 0 {
         write "Nothing found to change." ch
         return
     }
 
     # output
-    write $"Applying changes to ($filtered_paths | length) path\(s\)." ch
+    write $"Changing ($filtered | length) path\(s\)." ch
 
     # set ownership
     if $owner != null {
-        $filtered_paths | each {|x|
+        $filtered | each {|x|
             write debug $" .. chown ($owner) to ($x)" ch
             if $recurse { chown -R $owner $x } else { chown $owner $x }
         }
@@ -42,7 +58,7 @@ export def main [
 
     # set mode
     if $mode != null {
-        $filtered_paths | each {|x|
+        $filtered | each {|x|
             write debug $" .. chmod ($mode) to ($x)" ch
             if $recurse { chmod -R $mode $x } else { chmod $mode $x }
         }
