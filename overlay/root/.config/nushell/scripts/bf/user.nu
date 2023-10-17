@@ -7,7 +7,7 @@ export def add [
     --gid (-g): int         # The GID (default: UID)
 ] {
     # if GID is set, use it, otherwise use UID
-    let use_gid = if $gid { $gid } else { $uid }
+    let use_gid = if $gid != null { $gid } else { $uid }
     write $"Adding user ($name) with UID ($uid) and GID ($use_gid)." user/add
 
     # add group first
