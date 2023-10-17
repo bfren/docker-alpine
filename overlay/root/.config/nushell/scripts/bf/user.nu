@@ -12,7 +12,7 @@ export def add [
 
     # add group first
     addgroup --gid ($use_gid) $name out> ignore
-    adduser --uid $uid --home $"/home/($name)" --disabled-login --disabled-password --ingroup $name $name out> ignore
+    adduser --uid $uid --home $"/home/($name)" --disabled-password --ingroup $name $name out> ignore
 
     # return nothing
     return
