@@ -7,44 +7,20 @@ export def main [
     --debug (-d)                # Override BF_DEBUG for this call
     --mode (-m): string         # Use chmod: Set permissions to this mode
     --owner (-o): string        # Use chown: Set ownership to this user & group
-    --recurse (-r)              # If type is not specified, adds -R to recurse
-    --type (-t): string = "a"   # Apply to all (a), files only (f) or directories only (d)
+    --recurse (-r)              # Adds -R to chmod / chown to recurse
+    --type (-t): string = "a"   # Apply to all (a), directories (d), files (f) or symlinks (l)
 ] {
     # override debug
-    if $debug {
-        $env.BF_DEBUG = "1"
+    if $debug { $env.BF_DEBUG = "1" }
+
+    # filter paths by type
+    let filtered_paths = if $recurse {
+        $paths | each {|x| fs find $x $type | reduce -f [] {|y, acc| $acc | append $x } }
+    } else {
+        fs filter $paths $type
     }
 
-    # filter files by type
-    let filtered = fs filter $paths $type
-
-    # if everything has been filtered out, return
-    if ($filtered | length) == 0 {
-        write "Nothing found to change." ch
-        return
-    }
-
-    # output
-    write $"Changing ($filtered | length) path\(s\)." ch
-
-    # set ownership
-    if $owner != null {
-        $filtered | each {|x|
-            write debug $" .. chown ($owner) to ($x)" ch
-            if $recurse { chown -R $owner $x } else { chown $owner $x }
-        }
-    }
-
-    # set mode
-    if $mode != null {
-        $filtered | each {|x|
-            write debug $" .. chmod ($mode) to ($x)" ch
-            if $recurse { chmod -R $mode $x } else { chmod $mode $x }
-        }
-    }
-
-    # return nothing
-    return
+    execute --mode $mode --owner $owner $recurse $filtered_paths
 }
 
 # Apply permissions using a ch.d file
@@ -73,9 +49,7 @@ export def apply_file [
 def apply_row [] {
     # we need at least two values: glob and owner
     let row = $in
-    if ($row | length) < 2 {
-        return
-    }
+    if ($row | length) < 2 { return }
 
     # get values - glob and owner are required, fmode and dmode are optional
     let glob = $row | get 0
@@ -84,8 +58,50 @@ def apply_row [] {
     let dmode = $row | get -i 3
     write debug $" .. ($glob) ($owner) ($fmode) ($dmode)" ch/apply_row
 
-    # apply changes
-    main --owner $owner $glob
-    if $fmode != null { main --mode $fmode --type f $glob }
-    if $dmode != null { main --mode $dmode --type d $glob }
+    # apply ownership changes
+    execute --owner $owner true [$glob]
+
+    # apply mode changes
+    if $fmode != null {
+        execute --mode $fmode false (fs find $glob f)
+    }
+    if $dmode != null {
+        execute --mode $dmode false (fs find $glob d)
+    }
+}
+
+# Execute changes on a set of files
+def execute [
+    recurse: bool               # Whether or not to use chmod / chown -R switch
+    paths: list<string>         # The list of paths to change
+    --mode (-m): string         # Use chmod: set permissions to this mode
+    --owner (-o): string        # Use chown: set ownership to this user & group
+] {
+    # if there are no paths to change, return
+    if ($paths | length) == 0 {
+        write "Nothing found to change." ch
+        return
+    }
+
+    # output the number of paths to change
+    write $"Changing ($paths | length) path\(s\)." ch
+
+    # set ownership
+    if $owner != null {
+        $paths | each {|x|
+            write debug $" .. chown ($owner) to ($x)" ch
+            if $recurse { chown -R $owner $x } else { chown $owner $x }
+        }
+    }
+
+    # set mode
+    if $mode != null {
+        $paths | each {|x|
+            write debug $" .. chmod ($mode) to ($x)" ch
+            if $recurse { chmod -R $mode $x } else { chmod $mode $x }
+        }
+    }
+
+    # return nothing
+    return
 }

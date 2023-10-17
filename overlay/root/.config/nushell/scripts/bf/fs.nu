@@ -24,6 +24,18 @@ export def filter [
     $paths | each {|x| glob $x | where {|y| do $filter $y } } | reduce -f [] {|x, acc| $acc | append $x }
 }
 
+# Find things within a glob
+export def find [
+    glob: string    # Base glob to search
+    type?: string   # Find directories (d), files (f), symlinks (l) or (a) everything
+] {
+    match $type {
+        "d" | "f" | "l" => { run-external --redirect-stdout "find" $glob "-type" $type }
+        "a" => { run-external --redirect-stdout "find" $glob }
+        _ => { write error $"Unknown search type: ($type)." fs/find }
+    } | lines
+}
+
 # Returns true unless path exists and is a file
 export def is_not_file [
     path: string    # Absolute path to the file to check
