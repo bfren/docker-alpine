@@ -25,7 +25,7 @@ export def filter [
     #               |___________________           |___________          |________________    |________           |_____  |________________________
     #$paths | where {|x| $x | path exists } | each {|x| ls -f $x | where {|y| do $filter $y } | get name } | reduce -f [] {|x, acc| $acc | append $x }
 
-    $paths | each {|x| glob $x | where $filter } | reduce -f [] {|x, acc| $acc | append $x }
+    $paths | each {|x| glob $x | where {|y| do $filter $y } } | reduce -f [] {|x, acc| $acc | append $x }
 }
 
 # Returns true unless path exists and is a file
