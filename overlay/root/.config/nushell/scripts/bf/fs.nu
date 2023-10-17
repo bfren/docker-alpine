@@ -29,6 +29,12 @@ export def find [
     glob: string    # Base glob to search
     type: string = "a"  # Find directories (d), files (f), symlinks (l) or (a) everything
 ] {
+    # if the glob / file cannot be found, return an empty list
+    if (glob $glob | length) == 0 {
+        return []
+    }
+
+    # use posix find to search for items of a type, and split by lines into a list
     match $type {
         "d" | "f" | "l" => { run-external --redirect-stdout "find" $glob "-type" $type }
         _ => { run-external --redirect-stdout "find" $glob }
@@ -40,7 +46,7 @@ export def find_acc [
     globs: list<string> # Base globs to search
     type: string = "a"  # Find directories (d), files (f), symlinks (l) or (a) everything
 ] {
-    $globs | each {|x| find $x $type | reduce -f [] {|y, acc| $acc | append $x } }
+    $globs | each {|x| find $x $type | reduce -f [] {|y, acc| $acc | append $x } } | where {|x| $x | path exists }
 }
 
 # Returns true unless path exists and is a file
