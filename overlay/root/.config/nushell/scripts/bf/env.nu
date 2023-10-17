@@ -3,21 +3,29 @@ use write.nu
 
 # Returns true if $key exists in the environment and is equal to 1
 export def check [
-    key: string # Environment variable key
+    key: string # Environment variable key - the BF_ prefix will be added automatically
 ] {
     (safe $key | into string) == "1"
 }
 
 # Returns true if the BF_DEBUG environment variable is set to 1
 export def debug [] {
-    check BF_DEBUG
+    check DEBUG
 }
 
-# Safely returns the value of an environment variable
-export def safe [
-    key: string # Environment variable key
+# Returns the value of an environment variable
+export def req [
+    key: string # Environment variable key - the BF_ prefix will be added automatically
 ] {
-    $env | get --ignore-errors $key
+    $env | get $"BF_($key)"
+}
+
+# Safely returns the value of an environment variable -
+# if the variable doesn't exist, an empty string will be returned instead
+export def safe [
+    key: string # Environment variable key - the BF_ prefix will be added automatically
+] {
+    $env | get --ignore-errors $"BF_($key)"
 }
 
 # Gets the name of the currently executing script

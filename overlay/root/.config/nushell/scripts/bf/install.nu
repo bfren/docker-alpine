@@ -14,16 +14,16 @@ use write.nu
 #   - running cleanup
 export def main [] {
     # output BF config
-    write "BF environment variables." install
+    write "bfren platform environment variables." install
     $env | transpose key value | where {|x| $x.key | str starts-with "BF_" } | print
 
     # set permissions
     write "Setting permissions." install
-    ch --owner root:root --mode 0555 --recurse $env.BF_BIN /init    # r+x
-    ch --owner root:root --mode 1777 /etc/bf/src /tmp               # r+w+x+s
+    ch --owner root:root --mode 0555 --type f $"($env.BF_BIN)/bf-*" /init   # r+x
+    ch --owner root:root --mode 1777 /etc/bf/src /tmp                       # r+w+x+s
     ch --owner root:root --recurse /etc/bf/templates
-    ch --mode 0444 --type f /etc/bf/templates                       # r
-    ch --mode 0555 --type d /etc/bf/templates                       # r+x
+    ch --mode 0444 --type f /etc/bf/templates                               # r
+    ch --mode 0555 --type d /etc/bf/templates                               # r+x
 
     # make sure apk is working correctly (fixes some strange 'no such file or directory errors' on apk FETCH)
     write "Running apk fix and verify." install

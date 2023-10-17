@@ -4,7 +4,7 @@ use bf
 
 def main [] {
     # upgrade to current versions of binaries
-    if (bf env check "BF_UPGRADE_PACKAGES") {
+    if (bf env check UPGRADE_PACKAGES) {
         bf write "Upgrading binaries."
         apk upgrade --no-cache
     }
