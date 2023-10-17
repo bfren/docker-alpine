@@ -31,8 +31,7 @@ export def find [
 ] {
     match $type {
         "d" | "f" | "l" => { run-external --redirect-stdout "find" $glob "-type" $type }
-        "a" => { run-external --redirect-stdout "find" $glob }
-        _ => { write error $"Unknown search type: ($type)." fs/find }
+        _ => { run-external --redirect-stdout "find" $glob }
     } | lines
 }
 
