@@ -15,29 +15,8 @@ export def main [
         $env.BF_DEBUG = "1"
     }
 
-    # filter a file record by specified type
-    let filter = {|x|
-        match $type {
-            "a" => true
-            "d" => ($x.type == "dir")
-            "f" => ($x.type == "file")
-            _ => false
-        }
-    }
-
-    # expand paths and filter by file type:
-    #
-    #                  | begin with the list input paths (might be globs, actual files, directories, etc)
-    #                  |
-    #                  |                  | use ls to convert input path to a list of actual paths
-    #                  |                  |
-    #                  |                  |                     | use closure to filter by file type
-    #                  |                  |                     |
-    #                  |                  |                     |                 | get the file path ('name')
-    #                  |                  |                     |                 |
-    #                  |                  |                     |                 |                             | append each list of names to the accumulator
-    #                  \______            \________             \_____________    \________                     \________________
-    let filtered = $paths | each {|x| ls -f $x | where {|y| do $filter $y } | get name } | reduce {|x, acc| $acc | append $x }
+    # filter files by type
+    let filtered = fs filter $paths $type
 
     # if everything has been filtered out, return
     if ($filtered | length) == 0 {

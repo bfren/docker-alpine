@@ -3,19 +3,19 @@ use write.nu
 
 # Force and recursively remove all files and directories matching glob
 export def force [
-    ...glob: string     # Glob to match
+    ...paths: string    # The paths to delete
     --files-only (-f)   # If set, only files will be deleted
 ] {
     # get description and paths based on files_only flag
     let kind = "files" + if $files_only { "" } else { " and directories" }
-    let paths = if $files_only { fs only_files $glob } else { $glob }
+    let paths = fs filter $paths (if $files_only { "f" } else { "a" })
 
     # closure to write and delete a path
     let print_and_delete = {|x| write debug $" .. ($x)" rm/force; rm -rf $x }
 
     # loop through paths, write and delete
-    write $"Force deleting ($kind) matching ($glob)." rm/force
-    $paths | sort | each {|x| do $print_and_delete $x }
+    write $"Force deleting ($kind) matching ($paths)." rm/force
+    $paths | each {|x| do $print_and_delete $x }
 
     # return nothing
     return

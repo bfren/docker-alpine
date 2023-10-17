@@ -1,32 +1,35 @@
 use write.nu
 
+# Filter a list of paths by type
+export def filter [
+    paths: list<string> # The paths to filter
+    type: string        # All (a), files only (f) or directories only (d)
+] {
+    # filter a file record by specified type
+    let filter = {|x|
+        match $type {
+            "a" => true
+            "d" => ($x.type == "dir")
+            "f" => ($x.type == "file")
+            _ => false
+        }
+    }
+
+    # expand paths and filter by file type:
+    #               ensure the path exists before getting information about it
+    #               |                                 use ls to convert input path to a list of actual paths
+    #               |                                 |                 use closure to filter by file type
+    #               |                                 |                 |                     get the file path ('name')
+    #               |                                 |                 |                     |                    append each list of names to the accumulator
+    #               \___________________              \________         \_________________    \________            \_________________________
+    $paths | where {|x| $x | path exists } | each {|x| ls -f $x | where {|y| do $filter $y } | get name } | reduce {|x, acc| $acc | append $x }
+}
+
 # Returns true unless path exists and is a file
 export def is_not_file [
     path: string    # Absolute path to the file to check
 ] {
     ($path | path type) != "file"
-}
-
-# Return only the paths that point to files that exist
-export def only_files [
-    paths: list<string> # List of paths
-] {
-    only file $paths
-}
-
-# Return only the paths that point to directories that exist
-export def only_dirs [
-    paths: list<string> # List of paths
-] {
-    only dir $paths
-}
-
-# Returns only paths of the specified type
-def only [
-    type: string        # Path type, e.g. 'file' or 'dir'
-    paths: list<string> # List of paths to filter
-] {
-    $paths | where {|x| $x | path exists } | where {|x| ($x | path type) == $type }
 }
 
 # Read a file, trim contents and return
