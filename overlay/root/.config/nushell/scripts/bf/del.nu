@@ -18,7 +18,7 @@ export def force [
     $paths_to_delete | each {|x|
         if (glob $x | length) > 0 {
             write debug $" .. ($x)" rm/force
-            run-external "rm" "-rf" $x | complete
+            rm --force --recursive $x
         }
     }
 

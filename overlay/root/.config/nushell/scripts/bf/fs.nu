@@ -1,3 +1,4 @@
+use dump.nu
 use write.nu
 
 # Check $type is valid (i.e. supported by posix find)
@@ -23,7 +24,7 @@ export def find_name [
     check_type $type
 
     # use posix find to search for items of a type, and split by lines into a list
-    let result = run-external --redirect-stdout "find" $base_path "-name" $name "-type" $type | complete
+    let result = do { ^find $base_path -name $name -type $type } | complete
     if $result.exit_code > 0 {
         write error $"Unable to find ($name) in ($base_path): ($result.stderr)." fs/find_name
     }
@@ -53,7 +54,7 @@ export def find_type [
     check_type $type
 
     # use posix find to search for items of a type, and split by lines into a list
-    let result = run-external --redirect-stdout "find" $base_path "-type" $type | complete
+    let result = do { ^find $base_path -type $type } | complete | dump -t "comp"
     if $result.exit_code > 0 {
         write error $"Unable to find type ($type) in ($base_path): ($result.stderr)." fs/find_type
     }
