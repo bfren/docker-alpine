@@ -69,7 +69,7 @@ export def show [] {
 }
 
 export def store [] {
-    env | lines | parse "{key}={value}" | each {|x| main $x.key $x.value }
+    env | lines | parse "{key}={value}" | each {|x| $x.value | save --force $"($env_dir)/($x.key)" }
 }
 
 # Gets the name of the currently executing script
