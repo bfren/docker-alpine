@@ -21,8 +21,8 @@ export def main [] {
 
     # make sure apk is working correctly (fixes some strange 'no such file or directory errors' on apk FETCH)
     write "Running apk fix and verify." install
-    apk fix out> ignore
-    apk verify out> ignore
+    do { apk fix } | ignore
+    do { apk verify } | ignore
 
     # run install script in /tmp
     const install = /tmp/install

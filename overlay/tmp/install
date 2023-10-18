@@ -14,7 +14,7 @@ def main [] {
     try {
         let esh_version = cat ESH_BUILD
         bf write $"Installing esh v($esh_version)."
-        apk add --no-cache $"esh=($esh_version)" out> ignore
+        do { apk add --no-cache $"esh=($esh_version)" } | ignore
     } catch {
         bf write error "esh not installed."
     }
@@ -22,7 +22,7 @@ def main [] {
     # install additional packages
     try {
         bf write "Installing additional packages."
-        apk add --no-cache figlet out> ignore
+        do { apk add --no-cache figlet } | ignore
     } catch {
         bf write error "Unable to install additional packages."
     }
