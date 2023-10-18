@@ -81,7 +81,7 @@ export def show [] {
 
 # Store incoming environment variables
 export def store [] {
-    env | lines | parse "{key}={value}" | each {|x| $x.value | save --force $"($env_dir)/($x.key)" } | ignore
+    ^env | lines | parse "{key}={value}" | each {|x| $x.value | save --force $"($env_dir)/($x.key)" } | ignore
 }
 
 # Gets the name of the currently executing script
