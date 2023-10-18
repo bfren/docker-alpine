@@ -68,8 +68,10 @@ export def show [] {
     $env | transpose key value | where {|x| $x.key | str starts-with "BF_" } | | transpose -i -r -d | print
 }
 
+# Store incoming environment variables
 export def store [] {
-    env | lines | parse "{key}={value}" | each {|x| $x.value | save --force $"($env_dir)/($x.key)" }
+    let ignore = [CURRENT_FILE]
+    env | lines | parse "{key}={value}" | transpose -i -r -d | reject $ignore | transpose key value | each {|x| $x.value | save --force $"($env_dir)/($x.key)" } | ignore
 }
 
 # Gets the name of the currently executing script
