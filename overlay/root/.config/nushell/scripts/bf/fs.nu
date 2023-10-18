@@ -1,4 +1,3 @@
-use dump.nu
 use write.nu
 
 # Check $type is valid (i.e. supported by posix find)
@@ -54,7 +53,7 @@ export def find_type [
     check_type $type
 
     # use posix find to search for items of a type, and split by lines into a list
-    let result = do { ^find $base_path -type $type } | complete | dump -t "comp"
+    let result = do { ^find $base_path -type $type } | complete
     if $result.exit_code > 0 {
         write error $"Unable to find type ($type) in ($base_path): ($result.stderr)." fs/find_type
     }
