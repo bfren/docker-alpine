@@ -29,10 +29,12 @@ export def-env load [
     let ignore = [CURRENT_FILE FILE_PWD]
 
     # load environment variables from shared directory
-    ls $env_dir | where {|x| (
-        $x.name | path basename | str upcase) not-in $ignore
+    ls -f $env_dir | get name | each {|x|
+        {name: ($x | path basename | str upcase), path: $x}
+    } | where {|x|
+        $x.name not-in $ignore
     } | each {|x|
-        open $x.name | str trim | {($x.name | path basename | str upcase): $in}
+        open --raw $x.path | str trim | {$x.name: $in}
     } | reduce -f {} {|y, acc|
         $acc | merge $y
     } | load-env
