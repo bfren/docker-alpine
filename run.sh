@@ -13,4 +13,4 @@ docker buildx build \
     -t alpine${ALPINE}-dev \
     . \
     && \
-    docker run -it -e BF_DEBUG=1 alpine${ALPINE}-dev nu
+    docker run -it -e BF_DEBUG=1 alpine${ALPINE}-dev sh
