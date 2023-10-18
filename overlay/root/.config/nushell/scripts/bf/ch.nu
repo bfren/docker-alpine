@@ -70,10 +70,10 @@ def apply_row [] {
 
     # apply mode changes
     if $fmode != null {
-        execute --mode $fmode false (fs find $glob f)
+        execute --mode $fmode false (fs find_type $glob f)
     }
     if $dmode != null {
-        execute --mode $dmode false (fs find $glob d)
+        execute --mode $dmode false (fs find_type $glob d)
     }
 }
 
