@@ -6,12 +6,14 @@ use image.nu
 use del.nu
 use write.nu
 
-# Run standard installation for a container:
-#   - setting permissions
-#   - fixing apk
-#   - running container's installation script
-#   - saving image version info
-#   - running cleanup
+# Run standard installation for the container:
+#   - show bfren environment
+#   - fix apk
+#   - run container's installation script
+#   - set permissions
+#   - save image version info
+#   - run cleanup
+#   - output image info
 export def main [] {
     # output BF config
     write "bfren platform environment variables." install

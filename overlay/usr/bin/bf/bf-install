@@ -3,4 +3,5 @@
 use bf
 bf env set_executable
 
+# Run standard installation for the container
 def main [] { with-env [BF_DEBUG 1] { bf install } }
