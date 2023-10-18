@@ -1,52 +1,74 @@
+use dump.nu
 use write.nu
 
-# Filter a list of paths by type
-export def filter [
-    paths: list<string> # The paths to filter
-    type: string        # All (a), files only (f) or directories only (d)
+# Check $type is valid (i.e. supported by posix find)
+def check_type [
+    type: string    # Type to check - supported are directories (d), files (f) or symlinks (l)
 ] {
-    # filter a file record by specified type
-    let filter = {|x|
-        match $type {
-            "a" => true
-            "d" => { ($x | path type) == "dir" }
-            "f" => { ($x | path type) == "file" }
-            _ => false
-        }
+    match $type {
+        "d" | "f" | "l" => $type
+        _ => { write error $"($type) is not supported." fs/find_type }
     }
-
-    # expand paths and filter by file type:
-    #              expand each path string using glob
-    #              |                    use closure to filter expanded paths by type
-    #              |                    |                             start with an empty list
-    #              |                    |                             |       append each list of names to the accumulator
-    #              |__________          |________________             |_____  |________________________
-    $paths | each {|x| glob $x | where {|y| do $filter $y } } | reduce -f [] {|x, acc| $acc | append $x }
 }
 
-# Find things within a glob
-export def find [
-    glob: string    # Base glob to search
-    type: string = "a"  # Find directories (d), files (f), symlinks (l) or (a) everything
+# Find all paths called $name in $base_path
+export def find_name [
+    base_path: string   # Base path to search
+    name: string        # Name to search within $base_path
+    type: string = "f"  # Limit results to paths of this type - supported are directories (d), files (f) or symlinks (l)
 ] {
     # if the glob / file cannot be found, return an empty list
-    if (glob $glob | length) == 0 {
-        return []
-    }
+    if (glob $base_path | length) == 0 { return [] }
+
+    # check type is valid
+    check_type $type
 
     # use posix find to search for items of a type, and split by lines into a list
-    match $type {
-        "d" | "f" | "l" => { run-external --redirect-stdout "find" $glob "-type" $type }
-        _ => { run-external --redirect-stdout "find" $glob }
-    } | lines
+    let result = run-external --redirect-stdout "find" $base_path "-name" $name "-type" $type | complete
+    if $result.exit_code > 0 {
+        write error $"Unable to find ($name) in ($base_path): ($result.stderr)." fs/find_name
+    }
+
+    # split result by lines
+    $result.stdout | lines
 }
 
-# Find things matching a list of globs
-export def find_acc [
-    globs: list<string> # Base globs to search
-    type: string = "a"  # Find directories (d), files (f), symlinks (l) or (a) everything
+# Find all paths called $name in $base_paths and reduce to a single list
+export def find_name_acc [
+    base_paths: list<string>    # List of base paths to search
+    name: string                # Name to search within $base_paths
+    type: string = "f"          # Limit results to paths of this type - supported are directories (d), files (f) or symlinks (l)
 ] {
-    $globs | each {|x| find $x $type | reduce -f [] {|y, acc| $acc | append $x } } | where {|x| $x | path exists }
+    $base_paths | each {|x| find_name $x $name $type } | reduce -f [] {|y, acc| $acc | append $y }
+}
+
+# Find all paths that are $type in $base_path
+export def find_type [
+    base_path: string   # Base path to search
+    type: string        # Limit results to paths of this type - supported are directories (d), files (f) or symlinks (l)
+] {
+    # if the glob / file cannot be found, return an empty list
+    if (glob $base_path | length) == 0 { return [] }
+
+    # check type is valid
+    check_type $type
+
+    # use posix find to search for items of a type, and split by lines into a list
+    let result = run-external --redirect-stdout "find" $base_path "-type" $type | complete
+    if $result.exit_code > 0 {
+        write error $"Unable to find type ($type) in ($base_path): ($result.stderr)." fs/find_type
+    }
+
+    # split result by lines
+    $result.stdout | lines
+}
+
+# Find all paths that are $type in $base_paths
+export def find_type_acc [
+    base_paths: list<string>    # List of base paths to search
+    type: string                # Limit results to paths of this type - supported are directories (d), files (f) or symlinks (l)
+] {
+    $base_paths | each {|x| find_type $x $type } | reduce -f [] {|y, acc| $acc | append $y }
 }
 
 # Returns true unless path exists and is a file

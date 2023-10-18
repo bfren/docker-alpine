@@ -1,3 +1,4 @@
+use dump.nu
 use fs.nu
 use write.nu
 
@@ -7,21 +8,26 @@ export def main [
     --debug (-d)                # Override BF_DEBUG for this call
     --mode (-m): string         # Use chmod: Set permissions to this mode
     --owner (-o): string        # Use chown: Set ownership to this user & group
-    --recurse (-r)              # Adds -R to chmod / chown to recurse
-    --type (-t): string = "a"   # Apply to all (a), directories (d), files (f) or symlinks (l)
+    --recurse (-r)              # Adds -R to chmod / chown to recurse (overrides type if that is set too)
+    --type (-t): string         # Apply to directories (d), files (f) or symlinks (l)
 ] {
     # override debug
     if $debug { $env.BF_DEBUG = "1" }
 
-    # filter paths by type
-    let filtered_paths = if $recurse {
-        fs find_acc $paths $type
-    } else {
-        fs filter $paths $type
+    # if recurse is set, execute chmod/chown on each path with recursion
+    if $recurse {
+        execute --mode $mode --owner $owner $recurse $paths
+        return
     }
 
-    # execute changes
-    execute --mode $mode --owner $owner $recurse $filtered_paths
+    # if type is set, find all paths of type within each path and execute chmod/chown on them
+    if $type != null {
+        execute --mode $mode --owner $owner false (fs find_type_acc $paths $type)
+        return
+    }
+
+    # otherwise, execute chmod/chown on each path
+    execute --mode $mode --owner $owner false $paths
 }
 
 # Apply permissions using a ch.d file
@@ -89,17 +95,25 @@ def execute [
 
     # set ownership
     if $owner != null {
-        $paths | each {|x|
-            write debug $" .. chown ($owner) to ($x)" ch
-            if $recurse { chown -R $owner $x } else { chown $owner $x }
+        $paths | dump -t "execute paths" | each {|x|
+            if ($x | path exists) {
+                write debug $" .. chown ($owner) to ($x)" ch
+                if $recurse { chown -R $owner $x } else { chown $owner $x }
+            } else {
+                write debug $" .. ($x) does not exist"
+            }
         }
     }
 
     # set mode
     if $mode != null {
         $paths | each {|x|
-            write debug $" .. chmod ($mode) to ($x)" ch
-            if $recurse { chmod -R $mode $x } else { chmod $mode $x }
+            if ($x | path exists) {
+                write debug $" .. chmod ($mode) to ($x)" ch
+                if $recurse { chmod -R $mode $x } else { chmod $mode $x }
+            } else {
+                write debug $" .. ($x) does not exist"
+            }
         }
     }
 

@@ -1,6 +1,7 @@
 use ch.nu
 use clean.nu
 use dump.nu
+use env.nu
 use fs.nu
 use image.nu
 use del.nu
@@ -19,7 +20,8 @@ export def main [] {
 
     # set permissions
     write "Setting permissions." install
-    ch --owner root:root --mode 0555 --type f /init $"($env.BF_BIN)/bf-*"
+    ch --owner root:root --mode 0555 /init
+    ch --owner root:root --mode 0555 --type f (env req BIN)
 
     # make sure apk is working correctly (fixes some strange 'no such file or directory errors' on apk FETCH)
     write "Running apk fix and verify." install

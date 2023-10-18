@@ -1,21 +1,26 @@
 use fs.nu
 use write.nu
 
-# Force and recursively remove all files and directories matching glob
+# Force and recursively remove all files and directories paths
 export def force [
-    ...paths: string    # The paths to delete
-    --files-only (-f)   # If set, only files will be deleted
+    ...paths: string        # The paths to delete
+    --filename (-n): string # Only delete files matching this name within the specified paths
 ] {
-    # get description and filter paths based on files_only flag
-    let kind = "files" + if $files_only { "" } else { " and directories" }
-    let filtered = fs find_acc $paths (if $files_only { "f" })
-
-    # closure to write and delete a path
-    let print_and_delete = {|x| write debug $" .. ($x)" rm/force; rm -rf $x }
+    # get the paths to delete
+    let paths_to_delete = if $filename != null {
+        fs find_name_acc $paths $filename f
+    } else {
+        $paths
+    }
 
     # loop through filtered paths, write and delete
-    write $"Force deleting ($kind) matching ($filtered)." rm/force
-    $filtered | each {|x| do $print_and_delete $x }
+    write $"Force deleting ($paths_to_delete)." rm/force
+    $paths_to_delete | each {|x|
+        if (glob $x | length) > 0 {
+            write debug $" .. ($x)" rm/force
+            run-external "rm" "-rf" $x | complete
+        }
+    }
 
     # return nothing
     return
