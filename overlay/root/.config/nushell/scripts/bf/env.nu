@@ -25,8 +25,17 @@ export def-env load [
     prefix?: string         # If $set_executable is added, $prefix will be added before the name of the current script
     --set-executable (-e)   # Whether or not to set BF_E to the current script
 ] {
+    # these environment variables are reserved, set only by nu
+    let ignore = [CURRENT_FILE FILE_PWD]
+
     # load environment variables from shared directory
-    ls $env_dir | each {|x| open $x.name | str trim | {($x.name | path basename | str upcase): $in} } | reduce -f {} {|y, acc| $acc | merge $y } | load-env
+    ls $env_dir | where {|x| (
+        $x.name | path basename | str upcase) not-in $ignore
+    } | each {|x|
+        open $x.name | str trim | {($x.name | path basename | str upcase): $in}
+    } | reduce -f {} {|y, acc|
+        $acc | merge $y
+    } | load-env
 
     # set current script
     if $set_executable { set_executable $prefix }
@@ -70,8 +79,7 @@ export def show [] {
 
 # Store incoming environment variables
 export def store [] {
-    let ignore = [CURRENT_FILE]
-    env | lines | parse "{key}={value}" | transpose -i -r -d | reject $ignore | transpose key value | each {|x| $x.value | save --force $"($env_dir)/($x.key)" } | ignore
+    env | lines | parse "{key}={value}" | each {|x| $x.value | save --force $"($env_dir)/($x.key)" } | ignore
 }
 
 # Gets the name of the currently executing script
