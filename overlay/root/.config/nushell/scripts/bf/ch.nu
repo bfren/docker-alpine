@@ -62,7 +62,6 @@ def apply_row [] {
     let owner = $row | get 1
     let fmode = $row | get -i 2
     let dmode = $row | get -i 3
-    write debug $" .. ($glob) ($owner) ($fmode) ($dmode)" ch/apply_row
 
     # apply ownership changes
     execute --owner $owner true [$glob]
@@ -85,34 +84,25 @@ def execute [
 ] {
     # if there are no paths to change, return
     if ($paths | length) == 0 {
-        write "Nothing found to change." ch
         return
     }
 
     # output the number of paths to change
-    write $"Changing ($paths | length) path\(s\)." ch
+    write debug $"Changing ($paths | length) path\(s\)." ch
 
     # set ownership
     if $owner != null {
-        $paths | each {|x|
-            if ($x | path exists) {
-                write debug $" .. chown ($owner) to ($x)" ch
-                if $recurse { chown -R $owner $x } else { chown $owner $x }
-            } else {
-                write debug $" .. ($x) does not exist"
-            }
+        $paths | where {|x| $x | path exists } | each {|x|
+            write debug $" .. chown ($owner) to ($x)" ch
+            if $recurse { chown -R $owner $x } else { chown $owner $x }
         }
     }
 
     # set mode
     if $mode != null {
-        $paths | each {|x|
-            if ($x | path exists) {
-                write debug $" .. chmod ($mode) to ($x)" ch
-                if $recurse { chmod -R $mode $x } else { chmod $mode $x }
-            } else {
-                write debug $" .. ($x) does not exist"
-            }
+        $paths | where {|x| $x | path exists } | each {|x|
+            write debug $" .. chmod ($mode) to ($x)" ch
+            if $recurse { chmod -R $mode $x } else { chmod $mode $x }
         }
     }
 

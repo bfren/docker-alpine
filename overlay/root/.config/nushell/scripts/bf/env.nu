@@ -27,6 +27,11 @@ export def safe [
     $env | get --ignore-errors $"BF_($key)"
 }
 
+# Show all bfren platform environment variables
+export def show [] {
+    $env | transpose key value | where {|x| $x.key | str starts-with "BF_" } | | transpose -i -r -d | print
+}
+
 # Gets the name of the currently executing script
 export def get_executable [
     prefix?: string # If set, will be added before the name of the current script

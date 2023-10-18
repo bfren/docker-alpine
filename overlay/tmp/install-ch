@@ -1,0 +1,3 @@
+/init root:root 0555
+/usr/bin/bf root:root 0555
+/tmp root:root 1777
