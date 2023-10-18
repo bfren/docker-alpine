@@ -1,6 +1,5 @@
 use ch.nu
 use clean.nu
-use dump.nu
 use env.nu
 use fs.nu
 use image.nu

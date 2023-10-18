@@ -1,4 +1,3 @@
-use dump.nu
 use write.nu
 
 # Check $type is valid (i.e. supported by posix find)

@@ -1,4 +1,3 @@
-use dump.nu
 use fs.nu
 use write.nu
 
@@ -95,7 +94,7 @@ def execute [
 
     # set ownership
     if $owner != null {
-        $paths | dump -t "execute paths" | each {|x|
+        $paths | each {|x|
             if ($x | path exists) {
                 write debug $" .. chown ($owner) to ($x)" ch
                 if $recurse { chown -R $owner $x } else { chown $owner $x }
