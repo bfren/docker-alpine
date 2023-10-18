@@ -29,9 +29,7 @@ export def-env load [
     ls $env_dir | each {|x| open $x.name | str trim | {($x.name | path basename | str upcase): $in} } | reduce -f {} {|y, acc| $acc | merge $y } | load-env
 
     # set current script
-    if $set_executable {
-        main E (get_executable $prefix)
-    }
+    if $set_executable { set_executable $prefix }
 }
 
 # Returns true if $key exists in the environment and is equal to 1
