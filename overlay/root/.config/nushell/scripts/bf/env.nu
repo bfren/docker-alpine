@@ -68,6 +68,10 @@ export def show [] {
     $env | transpose key value | where {|x| $x.key | str starts-with "BF_" } | | transpose -i -r -d | print
 }
 
+export def store [] {
+    env | lines | parse "{key}={value}" | each {|x| main $x.key $x.value }
+}
+
 # Gets the name of the currently executing script
 export def get_executable [
     prefix?: string # If set, will be added before the name of the current script

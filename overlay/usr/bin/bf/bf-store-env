@@ -1,0 +1,4 @@
+#!/usr/bin/nu
+
+use bf
+bf env store
