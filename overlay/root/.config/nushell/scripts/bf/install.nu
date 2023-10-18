@@ -35,6 +35,7 @@ export def main [] {
 
     # set permissions
     write "Setting permissions." install
+    ch --owner root:root --mode 0555 --type f /usr/bin/bf
     const perms = /tmp/install-ch
     if ($perms | path exists) {
         ch apply_file $perms
