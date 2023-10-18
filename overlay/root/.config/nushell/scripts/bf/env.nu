@@ -16,7 +16,11 @@ export def debug [] {
 export def req [
     key: string # Environment variable key - the BF_ prefix will be added automatically
 ] {
-    $env | get $"BF_($key)"
+    try {
+        $env | get $"BF_($key)"
+    } catch {
+        write error $"Unable to get environment variable BF_($key)."
+    }
 }
 
 # Safely returns the value of an environment variable -
