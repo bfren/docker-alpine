@@ -1,7 +1,7 @@
 #!/usr/bin/nu
 
 use bf
-bf env load -e
+bf env load -x
 
 # Output information about the current image including name and version
 def main [] { bf image }

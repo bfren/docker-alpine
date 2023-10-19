@@ -1,7 +1,7 @@
 #!/usr/bin/env nu
 
 use bf
-bf env load -e
+bf env load -x
 
 # Execute a script
 def main [path: string] { bf fs x $path }
