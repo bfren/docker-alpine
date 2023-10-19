@@ -1,6 +1,7 @@
 #!/usr/bin/nu
 
 use bf
+bf env load
 
 # Write text in grey with the current date / time, if BF_DEBUG is enabled
 def main [

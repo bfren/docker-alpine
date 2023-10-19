@@ -1,6 +1,7 @@
 #!/usr/bin/nu
 
 use bf
+bf env load
 
 # Write error text in red with the current date / time, and exit using code
 def main [
