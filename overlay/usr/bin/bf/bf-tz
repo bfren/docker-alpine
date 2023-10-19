@@ -4,4 +4,8 @@ use bf
 bf env load -e
 
 # Set the container's timezone
-def main [tz: string] { bf tz $tz }
+def main [
+    tz: string  # The name of the timezone to use
+] {
+    bf tz $tz
+}
