@@ -40,7 +40,7 @@ export def debug [] {
 }
 
 # Clears the BF_X environment variable
-export def-env x_clear [] { hide E }
+export def-env x_clear [] { hide X }
 
 # Hide and remove an environment variable
 export def-env hide [
