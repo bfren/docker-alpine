@@ -5,6 +5,7 @@ use fs.nu
 use image.nu
 use del.nu
 use write.nu
+use x.nu
 
 # Run standard installation for the container:
 #   - show bfren environment
@@ -26,24 +27,20 @@ export def main [] {
 
     # run install script in /tmp
     const install = /tmp/install
-    if (fs is_not_file $install) {
-        write error $"($install) does not exist." install
-    }
+    if (fs is_not_file $install) { write error $"($install) does not exist." install }
 
     write $"Executing ($install)." install
-    fs x $install
+    x $install
 
     # set permissions
     write "Setting permissions." install
     ch --owner root:root --mode 0555 --type f /usr/bin/bf
     const perms = /tmp/install-ch
-    if ($perms | path exists) {
-        ch apply_file $perms
-    }
+    if ($perms | path exists) { ch apply_file $perms }
 
     # store versions
     write "Storing image information." install
-    $env.ALPINE_REVISION | save --force /BF_ALPINE
+    ^cat /etc/os-release | lines | parse "{key}={value}" | transpose -i -r -d | get VERSION_ID | save --force /BF_ALPINE
     $env.BF_IMAGE | str replace "docker-" "" | save --force /BF_IMAGE
     $env.BF_VERSION | save --force /BF_VERSION
 

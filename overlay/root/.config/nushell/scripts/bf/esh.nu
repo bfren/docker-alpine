@@ -7,9 +7,7 @@ export def main [
     output: string  # output file
 ] {
     # ensure template file exists
-    if (fs is_not_file $input) {
-        write error $"Template file ($input) does not exist." esh
-    }
+    if (fs is_not_file $input) { write error $"Template file ($input) does not exist." esh }
 
     # generate output file and display any errors
     let result = do { ^esh -o $output $input } | complete

@@ -24,9 +24,7 @@ export def find_name [
 
     # use posix find to search for items of a type, and split by lines into a list
     let result = do { ^find $base_path -name $name -type $type } | complete
-    if $result.exit_code > 0 {
-        write error $"Unable to find ($name) in ($base_path): ($result.stderr)." fs/find_name
-    }
+    if $result.exit_code > 0 { write error $"Unable to find ($name) in ($base_path): ($result.stderr)." fs/find_name }
 
     # split result by lines
     $result.stdout | lines
@@ -54,9 +52,7 @@ export def find_type [
 
     # use posix find to search for items of a type, and split by lines into a list
     let result = do { ^find $base_path -type $type } | complete
-    if $result.exit_code > 0 {
-        write error $"Unable to find type ($type) in ($base_path): ($result.stderr)." fs/find_type
-    }
+    if $result.exit_code > 0 { write error $"Unable to find type ($type) in ($base_path): ($result.stderr)." fs/find_type }
 
     # split result by lines
     $result.stdout | lines
@@ -85,9 +81,7 @@ export def read [
     let use_path = $path | path expand
 
     # ensure file exists
-    if (is_not_file $use_path) {
-        write error $"File does not exist: ($use_path)." fs/read
-    }
+    if (is_not_file $use_path) { write error $"File does not exist: ($use_path)." fs/read }
 
     # get and trim raw contents
     open --raw $use_path | str trim
@@ -103,23 +97,12 @@ export def make_temp_dir [
 
     # make temporary directory and capture output
     let result = do { ^mktemp -d tmp.XXXXXX } | complete
-    if $result.exit_code > 0 {
-        write error $"($result.stderr)." fs/make_temp_dir
-    }
+    if $result.exit_code > 0 { write error $"($result.stderr)." fs/make_temp_dir }
 
-    # return absolute path to new directory
+    # get absolute path to directory and ensure it exists
     let path = $"($root)/($result.stdout)"
-    if not ($path | path exists) {
-        write error "Unable to create temporary directory." fs/make_temp_dir
-    }
+    if not ($path | path exists) { write error "Unable to create temporary directory." fs/make_temp_dir }
 
+    # return the path
     $path
-}
-
-# Execute a script
-export def x [
-    path: string    # Absolute path to the file to execute
-] {
-    let name = if ($path | str length) > 15 { $path | path basename } else { $path }
-    with-env [BF_X $name] { ^nu $path }
 }

@@ -68,11 +68,7 @@ def p [
     }
 
     # if script and BF_X are both set, BF_X is the prefix, so use script as the suffix
-    let suffix = if $script != null {
-        if $bf_x != "" {
-            $" \(($script)\)"
-        }
-    }
+    let suffix = if $script != null and $bf_x != "" { $" \(($script)\)" }
 
     # format date and write text
     let date = date now | format date "%Y-%m-%d %H:%M:%S"

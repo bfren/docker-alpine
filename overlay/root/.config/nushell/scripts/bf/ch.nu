@@ -67,12 +67,8 @@ def apply_row [] {
     execute --owner $owner true [$glob]
 
     # apply mode changes
-    if $fmode != null {
-        execute --mode $fmode false (fs find_type $glob f)
-    }
-    if $dmode != null {
-        execute --mode $dmode false (fs find_type $glob d)
-    }
+    if $fmode != null { execute --mode $fmode false (fs find_type $glob f) }
+    if $dmode != null { execute --mode $dmode false (fs find_type $glob d) }
 }
 
 # Execute changes on a set of files

@@ -34,9 +34,7 @@ export def old [
     --type (-t): string # The type of path to delete, either 'd' (directory) or 'f' (file)
 ] {
     # days cannot be a negative number
-    if $days <= 0 {
-        write error "Days must be a whole number greater than 0." rm/old
-    }
+    if $days <= 0 { write error "Days must be a whole number greater than 0." rm/old }
 
     # ensure only valid types are used
     let use_type = match $type {
