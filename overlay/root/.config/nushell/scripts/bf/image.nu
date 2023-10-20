@@ -12,7 +12,7 @@ export def main [] {
 
     # output image info
     do $border
-    $"bfren | ($image)" | figlet
+    $"bfren | ($image)" | ^figlet
     "" | print
     $"bfren/($image) v($version) \(alpine:($alpine)\)" | print
     $"Built on (ls /BF_IMAGE | first | get modified)" | print

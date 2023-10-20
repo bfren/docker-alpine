@@ -12,10 +12,10 @@ export def main [
     }
 
     # generate output file and display any errors
-    let result = esh -o $output $input
-    if ($result == "") and ($output | path exists) {
+    let result = do { ^esh -o $output $input } | complete
+    if ($result.exit_code == 0) and ($output | path exists) {
         write debug $"($output) created." esh
     } else {
-        write error $"Error using template: ($result)." esh
+        write error $"Error using template: ($result.stderr)." esh
     }
 }

@@ -93,10 +93,33 @@ export def read [
     open --raw $use_path | str trim
 }
 
+# Make a temporary directory in /tmp
+export def make_temp_dir [
+    --local (-l)    # If set the temporary directory will be created in the current working directory
+] {
+    # move to requested root dir
+    let root = if $local { $env.PWD } else { "/tmp" }
+    cd $root
+
+    # make temporary directory and capture output
+    let result = do { ^mktemp -d tmp.XXXXXX } | complete
+    if $result.exit_code > 0 {
+        write error $"($result.stderr)." fs/make_temp_dir
+    }
+
+    # return absolute path to new directory
+    let path = $"($root)/($result.stdout)"
+    if not ($path | path exists) {
+        write error "Unable to create temporary directory." fs/make_temp_dir
+    }
+
+    $path
+}
+
 # Execute a script
 export def x [
     path: string    # Absolute path to the file to execute
 ] {
     let name = if ($path | str length) > 15 { $path | path basename } else { $path }
-    with-env [BF_X $name] { nu $path }
+    with-env [BF_X $name] { ^nu $path }
 }

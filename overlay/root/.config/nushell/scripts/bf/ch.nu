@@ -94,7 +94,7 @@ def execute [
     if $owner != null {
         $paths | where {|x| $x | path exists } | each {|x|
             write debug $" .. chown ($owner) to ($x)" ch
-            if $recurse { chown -R $owner $x } else { chown $owner $x }
+            if $recurse { ^chown -R $owner $x } else { ^chown $owner $x }
         }
     }
 
@@ -102,7 +102,7 @@ def execute [
     if $mode != null {
         $paths | where {|x| $x | path exists } | each {|x|
             write debug $" .. chmod ($mode) to ($x)" ch
-            if $recurse { chmod -R $mode $x } else { chmod $mode $x }
+            if $recurse { ^chmod -R $mode $x } else { ^chmod $mode $x }
         }
     }
 
