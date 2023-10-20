@@ -14,7 +14,7 @@ export def main [] {
     do $border
     $"bfren | ($image)" | ^figlet
     "" | print
-    $"bfren/($image) v($version) \(alpine:($alpine)\)" | print
+    $"bfren/($image):($version) \(alpine:($alpine) nushell:(nu -v)\)" | print
     $"Built on (ls /BF_IMAGE | first | get modified)" | print
     "" | print
     $"https://github.com/bfren/docker-($image)" | print
