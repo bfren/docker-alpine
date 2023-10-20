@@ -4,22 +4,24 @@ set -euo pipefail
 
 
 #======================================================================================================================
-# Install nushell and dependencies.
+# Install Nushell and dependencies.
 #======================================================================================================================
 
+echo "Installing Nushell ${NUSHELL_VERSION}."
 apk add --no-cache \
     libssl3@edgemain \
-    nushell@edgetest
+    nushell@edgetest>=${NUSHELL_VERSION}
 
 
 #======================================================================================================================
 # Get default configuration files.
 #======================================================================================================================
 
+echo "Downloading bfren default configuration files for Nushell ${NUSHELL_VERSION}."
 NU_DIR=/root/.config/nushell
 mkdir -p ${NU_DIR} && cd ${NU_DIR}
-wget https://gist.githubusercontent.com/bfren/fdc7c7870855a2969068222ed772e5b3/raw/config.nu
-wget https://gist.githubusercontent.com/bfren/e7cbb1a04a4e1d1382965fad57e46f26/raw/env.nu
+wget https://raw.githubusercontent.com/bfren/nushell/main/${NUSHELL_VERSION}/config.nu
+wget https://raw.githubusercontent.com/bfren/nushell/main/${NUSHELL_VERSION}/env.nu
 
 
 #======================================================================================================================

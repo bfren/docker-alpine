@@ -1,6 +1,6 @@
 FROM alpine:<%= ${ALPINE_REVISION} %>
 
-LABEL org.opencontainers.image.description="Alpine base image with nushell."
+LABEL org.opencontainers.image.description="Alpine base image with Nushell."
 LABEL org.opencontainers.image.source="https://github.com/bfren/docker-alpine"
 
 ARG BF_IMAGE
@@ -10,6 +10,8 @@ ENV \
     # Alpine versions
     ALPINE_MINOR=<%= ${ALPINE_VERSION} %> \
     ALPINE_REVISION=<%= ${ALPINE_REVISION} %> \
+    # Nushell version
+    NUSHELL_VERSION=<%= ${NUSHELL_VERSION} %> \
     # debug log output
     #   0: disable
     #   1: enable

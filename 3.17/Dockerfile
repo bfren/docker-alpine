@@ -10,6 +10,8 @@ ENV \
     # Alpine versions
     ALPINE_MINOR=3.17 \
     ALPINE_REVISION=3.17.5 \
+    # Nushell version
+    NUSHELL_VERSION=0.85.0 \
     # debug log output
     #   0: disable
     #   1: enable

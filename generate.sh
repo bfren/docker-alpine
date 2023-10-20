@@ -5,6 +5,7 @@ set -euo pipefail
 docker pull bfren/alpine
 
 ALPINE_VERSIONS="3.15 3.16 3.17 3.18"
+NUSHELL_VERSION="0.85.0"
 for V in ${ALPINE_VERSIONS} ; do
 
     echo "Alpine ${V}"
@@ -16,7 +17,8 @@ for V in ${ALPINE_VERSIONS} ; do
         bfren/alpine esh \
         "/ws/Dockerfile.esh" \
         ALPINE_VERSION=${V} \
-        ALPINE_REVISION=${ALPINE_REVISION}
+        ALPINE_REVISION=${ALPINE_REVISION}\
+        NUSHELL_VERSION=${NUSHELL_VERSION}
     )
 
     echo "${DOCKERFILE}" > ./${V}/Dockerfile
