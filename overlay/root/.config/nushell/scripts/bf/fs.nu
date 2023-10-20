@@ -73,20 +73,6 @@ export def is_not_file [
     ($path | path type) != "file"
 }
 
-# Read a file, trim contents and return
-export def read [
-    path: string
-] {
-    # attempt to get full path
-    let use_path = $path | path expand
-
-    # ensure file exists
-    if (is_not_file $use_path) { write error $"File does not exist: ($use_path)." fs/read }
-
-    # get and trim raw contents
-    open --raw $use_path | str trim
-}
-
 # Make a temporary directory in /tmp
 export def make_temp_dir [
     --local (-l)    # If set the temporary directory will be created in the current working directory
@@ -105,4 +91,18 @@ export def make_temp_dir [
 
     # return the path
     $path
+}
+
+# Read a file, trim contents and return
+export def read [
+    path: string
+] {
+    # attempt to get full path
+    let use_path = $path | path expand
+
+    # ensure file exists
+    if (is_not_file $use_path) { write error $"File does not exist: ($use_path)." fs/read }
+
+    # get and trim raw contents
+    open --raw $use_path | str trim
 }
