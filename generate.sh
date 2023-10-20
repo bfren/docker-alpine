@@ -5,7 +5,7 @@ set -euo pipefail
 docker pull bfren/alpine
 
 ALPINE_VERSIONS="3.15 3.16 3.17 3.18"
-NUSHELL_VERSION="0.85.0"
+NUSHELL_VERSION="0.86.0"
 for V in ${ALPINE_VERSIONS} ; do
 
     echo "Alpine ${V}"

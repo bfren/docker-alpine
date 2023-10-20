@@ -1,17 +1,16 @@
-FROM alpine:3.15.10
+FROM ghcr.io/bfren/nushell:0.86.0-alpine as nushell
 
-LABEL org.opencontainers.image.description="Alpine base image with nushell."
+FROM alpine:3.15.10
+COPY --from=nushell / /
+
+LABEL org.opencontainers.image.description="Alpine base image with Nushell."
 LABEL org.opencontainers.image.source="https://github.com/bfren/docker-alpine"
 
 ARG BF_IMAGE
 ARG BF_VERSION
+ARG NUSHELL_VERSION=0.86.0
 
 ENV \
-    # Alpine versions
-    ALPINE_MINOR=3.15 \
-    ALPINE_REVISION=3.15.10 \
-    # Nushell version
-    NUSHELL_VERSION=0.85.0 \
     # debug log output
     #   0: disable
     #   1: enable

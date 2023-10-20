@@ -4,29 +4,32 @@ set -euo pipefail
 
 
 #======================================================================================================================
-# Install Nushell and dependencies.
+# Install Nushell dependencies.
 #======================================================================================================================
 
-echo "Installing Nushell ${NUSHELL_VERSION}."
+echo "Installing Nushell dependencies."
 apk add --no-cache \
-    libssl3@edgemain \
-    nushell@edgetest>=${NUSHELL_VERSION}
+    libcrypto3 \
+    libgcc \
+    libssl3 \
+    sqlite-libs
 
 
 #======================================================================================================================
-# Get default configuration files.
+# Set permissions for installation executable.
 #======================================================================================================================
 
-echo "Downloading bfren default configuration files for Nushell ${NUSHELL_VERSION}."
-NU_DIR=/root/.config/nushell
-mkdir -p ${NU_DIR} && cd ${NU_DIR}
-wget https://raw.githubusercontent.com/bfren/nushell/main/${NUSHELL_VERSION}/config.nu
-wget https://raw.githubusercontent.com/bfren/nushell/main/${NUSHELL_VERSION}/env.nu
-
-
-#======================================================================================================================
-# Set permissions.
-#======================================================================================================================
-
+echo "Setting permissions for installation executable."
 chmod 0544 /usr/bin/bf/bf-install
-chmod 0644 ${NU_DIR}/*
+
+
+#======================================================================================================================
+# Test Nushell version.
+#======================================================================================================================
+
+echo "Testing Nushell version."
+INSTALLED_VERSION=$(nu -v 2> /dev/null)
+if [ "${INSTALLED_VERSION}" != "${NUSHELL_VERSION}" ] ; then
+    echo "Detected Nushell version '${INSTALLED_VERSION}' - expecting '${NUSHELL_VERSION}'."
+    exit 1
+fi
