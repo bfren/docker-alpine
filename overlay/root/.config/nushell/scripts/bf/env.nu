@@ -89,7 +89,7 @@ export def req [
     try {
         $env | get (add_prefix $key)
     } catch {
-        write error $"Unable to get environment variable BF_($key)."
+        write error $"Unable to get environment variable (add_prefix $key)."
     }
 }
 
