@@ -15,7 +15,8 @@ export def format [
     let result = $values | transpose k v | reduce -f $input {|x, acc| $acc | str replace --all $"{($x.k)}" $x.v }
 
     # return an error if the result still contains unmatched palceholders
-    if $result =~ "\{.*\}" { write error $"($input) contains unmatched palceholders." str/format }
+    let unmatched = $result | split row " " | find --regex "{.*}"
+    if ($unmatched | length) > 0 { write error $"($input) contains unmatched placeholders: ($unmatched | str join ', ')." }
 
     # return formatted string
     $result
