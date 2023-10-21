@@ -1,3 +1,4 @@
+use build.nu
 use ch.nu
 use clean.nu
 use env.nu
@@ -16,6 +17,10 @@ use x.nu
 #   - run cleanup
 #   - output image info
 export def main [] {
+    # output build info
+    write "Build information." install
+    build show
+
     # output BF config
     write "bfren platform environment variables." install
     env show
@@ -40,7 +45,7 @@ export def main [] {
 
     # store versions
     write "Storing image information." install
-    cd /etc/bf
+    cd (env ETC)
     ^cat /etc/os-release | lines | parse "{key}={value}" | transpose -i -r -d | get VERSION_ID | save --force ALPINE
     $env.BF_IMAGE | str replace "docker-" "" | save --force IMAGE
     $env.BF_VERSION | save --force VERSION
