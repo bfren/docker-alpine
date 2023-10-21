@@ -1,8 +1,9 @@
 #!/usr/bin/nu
 
 use bf
+bf env load -x
 
-# Add an item to the build log
+# Add an entry to the build log
 def main [
     key: string     # Key e.g. 'Build Arch'
     value: string   # Value e.g. 'linux/amd64'
