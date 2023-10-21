@@ -1,13 +1,24 @@
 use write.nu
 
 # Path to the environment variable store
-const env_dir = /etc/bf/env.d
+const env_dir = "env.d"
 
 # bfren platform prefix for namespacing environment variables
 const prefix = "BF_"
 
+# Returns the value of an environment variable
+export def main [
+    key: string # Environment variable key - the BF_ prefix will be added automatically
+] {
+    try {
+        $env | get (add_prefix $key)
+    } catch {
+        write error $"Unable to get environment variable (add_prefix $key)."
+    }
+}
+
 # Save an environment variable to the bfren environment
-export def-env main [
+export def --env set [
     key: string # Environment variable key name - the BF_ prefix will be added automatically
     value: any  # Environment variable value
 ] {
@@ -18,7 +29,7 @@ export def-env main [
     load-env {$prefixed: $value}
 
     # create persistence file
-    $value | save --force $"($env_dir)/($prefixed)"
+    $value | save --force $"(main ETC)/($env_dir)/($prefixed)"
 
     # output for debugging purposes
     write debug $"($prefixed)=($value)." env
@@ -40,10 +51,10 @@ export def debug [] {
 }
 
 # Clears the BF_X environment variable
-export def-env x_clear [] { hide X }
+export def --env x_clear [] { hide X }
 
 # Hide and remove an environment variable
-export def-env hide [
+export def --env hide [
     key: string # Environment variable key name - the BF_ prefix will be added automatically
 ] {
     # add the BF_ prefix
@@ -53,14 +64,14 @@ export def-env hide [
     hide-env --ignore-errors $prefixed
 
     # delete persistence file
-    rm --force $"($env_dir)/($prefixed)"
+    rm --force $"(main ETC)/($env_dir)/($prefixed)"
 
     # output for debugging purposes
     write debug $"($prefixed) removed." env/hide
 }
 
 # Load shared environment into the current $env
-export def-env load [
+export def --env load [
     prefix?: string         # If $set_executable is added, $prefix will be added before the name of the current script
     --set-executable (-x)   # Whether or not to set BF_X to the current script
 ] {
@@ -68,7 +79,7 @@ export def-env load [
     let ignore = [CURRENT_FILE FILE_PWD]
 
     # load environment variables from shared directory
-    ls -f $env_dir | get name | each {|x|
+    ls -f $"(main ETC)/($env_dir)" | get name | each {|x|
         {name: ($x | path basename | str upcase), path: $x}
     } | where {|x|
         $x.name not-in $ignore
@@ -80,17 +91,6 @@ export def-env load [
 
     # set current script
     if $set_executable { x_set $prefix }
-}
-
-# Returns the value of an environment variable
-export def req [
-    key: string # Environment variable key - the BF_ prefix will be added automatically
-] {
-    try {
-        $env | get (add_prefix $key)
-    } catch {
-        write error $"Unable to get environment variable (add_prefix $key)."
-    }
 }
 
 # Safely returns the value of an environment variable -
@@ -108,7 +108,7 @@ export def show [] {
 
 # Store incoming environment variables
 export def store [] {
-    ^env | lines | parse "{key}={value}" | each {|x| $x.value | save --force $"($env_dir)/($x.key)" } | ignore
+    ^env | lines | parse "{key}={value}" | each {|x| $x.value | save --force $"(main ETC)/($env_dir)/($x.key)" } | ignore
 }
 
 # Gets the name of the currently executing script
@@ -119,8 +119,8 @@ export def x_get [
 }
 
 # Sets the BF_X environment variable to the name of the currently executing script
-export def-env x_set [
+export def --env x_set [
     prefix?: string # If set, will be added before the name of the current script
 ] {
-    main X (x_get $prefix)
+    set X (x_get $prefix)
 }

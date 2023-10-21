@@ -1,9 +1,10 @@
+use env.nu
 use fs.nu
 
 # Output information about the current image including name and version
 export def main [] {
     # read image values
-    cd /etc/bf
+    cd (env ETC)
     let alpine = (fs read ALPINE)
     let image = (fs read IMAGE)
     let version = (fs read VERSION)
