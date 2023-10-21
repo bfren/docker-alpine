@@ -17,7 +17,9 @@ for E in ${ALPINE_EDITIONS} ; do
         bfren/alpine esh \
         "/ws/Dockerfile.esh" \
         ALPINE_EDITION=${E} \
-        ALPINE_VERSION=${ALPINE_VERSION}\
+        ALPINE_VERSION=${ALPINE_VERSION} \
+        BF_BIN=/usr/bin/bf \
+        BF_ETC=/etc/bf \
         NUSHELL_VERSION=${NUSHELL_VERSION}
     )
 

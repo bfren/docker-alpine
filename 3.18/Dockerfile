@@ -1,3 +1,7 @@
+#======================================================================================================================
+# STAGE 0: get build information.
+#======================================================================================================================
+
 FROM --platform=${BUILDPLATFORM} golang:alpine AS build
 ARG TARGETPLATFORM
 
@@ -7,39 +11,54 @@ RUN \
     echo "Alpine: 3.18.4" >> /log && \
     echo "Nushell: 0.86.0" >> /log
 
+
+#======================================================================================================================
+# STAGE 1: load Nushell.
+#======================================================================================================================
+
 FROM ghcr.io/bfren/nushell:0.86.0-alpine as nushell
 
-FROM alpine:3.18.4
+
+#======================================================================================================================
+# STAGE 2: install bfren platform.
+#======================================================================================================================
+
+FROM alpine:3.18.4 as install
 COPY --from=build /log /etc/bf/BUILD
 COPY --from=nushell / /
 
-LABEL org.opencontainers.image.description="Alpine base image with Nushell."
-LABEL org.opencontainers.image.source="https://github.com/bfren/docker-alpine"
-
 ARG BF_IMAGE
 ARG BF_VERSION
-ARG NUSHELL_VERSION=0.86.0
+
+ENV BF_ETC=/etc/bf \
+    BF_UPGRADE_PACKAGES=0 \
+    NUSHELL_VERSION=0.86.0
+
+COPY ./overlay /
+COPY ./3.18/overlay /
+
+RUN chmod +x /preinstall && /preinstall
+RUN /usr/bin/bf/bf-install
+
+
+#======================================================================================================================
+# STAGE 3: create single layer image.
+#======================================================================================================================
+
+FROM scratch as final
+COPY --from=install / /
+
+LABEL org.opencontainers.image.description="Alpine base image with Nushell."
+LABEL org.opencontainers.image.source="https://github.com/bfren/docker-alpine"
 
 ENV \
     # debug log output
     #   0: disable
     #   1: enable
     BF_DEBUG=0 \
-    # path to bf executables
-    BF_BIN=/usr/bin/bf \
-    # path to bf configuration
+    # path to bfren configuration directory
     BF_ETC=/etc/bf \
-    # upgrade packages during installation
-    BF_UPGRADE_PACKAGES=0
-
-ENV \
-    # add bf executables to PATH
-    PATH=${BF_BIN}:${PATH}
-
-COPY ./overlay /
-COPY ./3.18/overlay /
-
-RUN chmod +x /preinstall && /preinstall
-RUN bf-install
+    # add bfren executables to PATH
+    PATH=/usr/bin/bf:${PATH}
 
 ENTRYPOINT [ "/init" ]
