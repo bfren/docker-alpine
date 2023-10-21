@@ -40,9 +40,10 @@ export def main [] {
 
     # store versions
     write "Storing image information." install
-    ^cat /etc/os-release | lines | parse "{key}={value}" | transpose -i -r -d | get VERSION_ID | save --force /BF_ALPINE
-    $env.BF_IMAGE | str replace "docker-" "" | save --force /BF_IMAGE
-    $env.BF_VERSION | save --force /BF_VERSION
+    cd /etc/bf
+    ^cat /etc/os-release | lines | parse "{key}={value}" | transpose -i -r -d | get VERSION_ID | save --force ALPINE
+    $env.BF_IMAGE | str replace "docker-" "" | save --force IMAGE
+    $env.BF_VERSION | save --force VERSION
 
     # clean installation files / caches etc
     write "Running cleanup."
