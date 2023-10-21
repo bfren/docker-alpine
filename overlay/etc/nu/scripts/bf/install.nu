@@ -1,10 +1,10 @@
 use build.nu
 use ch.nu
 use clean.nu
+use del.nu
 use env.nu
 use fs.nu
 use image.nu
-use del.nu
 use write.nu
 use x.nu
 
@@ -39,7 +39,10 @@ export def main [] {
 
     # set permissions
     write "Setting permissions." install
-    ch --owner root:root --mode 0555 --type f /usr/bin/bf
+    env apply_perms
+    ["/etc/nu" "root:root" 0666 0777] | ch apply
+    ["/usr/bin/bf" "root:root" 0555] | ch apply
+
     const perms = /tmp/install-ch
     if ($perms | path exists) { ch apply_file $perms }
 

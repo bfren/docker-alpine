@@ -1,3 +1,4 @@
+use ch.nu
 use write.nu
 
 # Path to the environment variable store
@@ -17,26 +18,14 @@ export def main [
     }
 }
 
-# Save an environment variable to the bfren environment
-export def --env set [
-    key: string # Environment variable key name - the BF_ prefix will be added automatically
-    value: any  # Environment variable value
-] {
-    # add the BF_ prefix
-    let prefixed = add_prefix $key
-
-    # save to current environment
-    load-env {$prefixed: $value}
-
-    # create persistence file
-    $value | save --force $"($env_dir)/($prefixed)"
-
-    # output for debugging purposes
-    write debug $"($prefixed)=($value)." env
-}
-
 # Adds the BF_ prefix to $key
 def add_prefix [key: string] { $prefix + $key }
+
+# Apply permissions for the environment variables directory
+export def apply_perms [] {
+    write debug "Applying permissions to environment variables directory." ch/apply_perms
+    [$env_dir "root:root" 0666] | ch apply
+}
 
 # Returns true if $key exists in the environment and is equal to 1
 export def check [
@@ -49,9 +38,6 @@ export def check [
 export def debug [] {
     check DEBUG
 }
-
-# Clears the BF_X environment variable
-export def --env x_clear [] { hide X }
 
 # Hide and remove an environment variable
 export def --env hide [
@@ -101,6 +87,25 @@ export def safe [
     $env | get --ignore-errors (add_prefix $key)
 }
 
+# Save an environment variable to the bfren environment
+export def --env set [
+    key: string # Environment variable key name - the BF_ prefix will be added automatically
+    value: any  # Environment variable value
+] {
+    # add the BF_ prefix
+    let prefixed = add_prefix $key
+
+    # save to current environment
+    load-env {$prefixed: $value}
+
+    # create persistence file
+    $value | save --force $"($env_dir)/($prefixed)"
+    apply_perms
+
+    # output for debugging purposes
+    write debug $"($prefixed)=($value)." env
+}
+
 # Show all bfren platform environment variables
 export def show [] {
     $env | transpose key value | where {|x| $x.key | str starts-with $prefix } | | transpose -i -r -d | print
@@ -109,7 +114,11 @@ export def show [] {
 # Store incoming environment variables
 export def store [] {
     ^env | lines | parse "{key}={value}" | each {|x| $x.value | save --force $"($env_dir)/($x.key)" } | ignore
+    apply_perms
 }
+
+# Clears the BF_X environment variable
+export def --env x_clear [] { hide X }
 
 # Gets the name of the currently executing script
 export def x_get [

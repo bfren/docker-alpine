@@ -1,3 +1,2 @@
 /init root:root 0500
 /tmp root:root 1777 1777
-/root/.config/nushell/scripts root:root 0400
