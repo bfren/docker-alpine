@@ -58,3 +58,19 @@ export def main [] {
     write ok "Installation complete." install
     image
 }
+
+# Use apk to install a list of packages
+export def add [
+    packages: list<string>  # List of packages to isntall
+] {
+    # we need to do it like this because apk won't take a joined string directly
+    let pkg = $packages | str join " "
+    write debug $"Installing: ($pkg)." install/add
+    let result = do { sh -c $"apk add --no-cache ($pkg)" } | complete
+
+    # exit on error
+    if $result.exit_code > 0 {
+        $result.stderr | print
+        write error --code $result.exit_code "Error installing packages." install/add
+    }
+}
