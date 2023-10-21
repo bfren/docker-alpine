@@ -1,7 +1,7 @@
 use write.nu
 
 # Path to the environment variable store
-const env_dir = "env.d"
+const env_dir = "/etc/bf/env.d"
 
 # bfren platform prefix for namespacing environment variables
 const prefix = "BF_"
@@ -29,7 +29,7 @@ export def --env set [
     load-env {$prefixed: $value}
 
     # create persistence file
-    $value | save --force $"(main ETC)/($env_dir)/($prefixed)"
+    $value | save --force $"($env_dir)/($prefixed)"
 
     # output for debugging purposes
     write debug $"($prefixed)=($value)." env
@@ -64,7 +64,7 @@ export def --env hide [
     hide-env --ignore-errors $prefixed
 
     # delete persistence file
-    rm --force $"(main ETC)/($env_dir)/($prefixed)"
+    rm --force $"($env_dir)/($prefixed)"
 
     # output for debugging purposes
     write debug $"($prefixed) removed." env/hide
@@ -79,7 +79,7 @@ export def --env load [
     let ignore = [CURRENT_FILE FILE_PWD]
 
     # load environment variables from shared directory
-    ls -f $"(main ETC)/($env_dir)" | get name | each {|x|
+    ls -f $env_dir | get name | each {|x|
         {name: ($x | path basename | str upcase), path: $x}
     } | where {|x|
         $x.name not-in $ignore
@@ -108,7 +108,7 @@ export def show [] {
 
 # Store incoming environment variables
 export def store [] {
-    ^env | lines | parse "{key}={value}" | each {|x| $x.value | save --force $"(main ETC)/($env_dir)/($x.key)" } | ignore
+    ^env | lines | parse "{key}={value}" | each {|x| $x.value | save --force $"($env_dir)/($x.key)" } | ignore
 }
 
 # Gets the name of the currently executing script
