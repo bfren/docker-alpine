@@ -1,6 +1,19 @@
+FROM --platform=${BUILDPLATFORM} golang:alpine AS build
+
+ARG TARGETPLATFORM
+ARG BUILDPLATFORM
+
+RUN \
+    # save build and version information to log
+    echo "Build Arch: ${BUILDPLATFORM}" > /log && \
+    echo "Target Arch: ${TARGETPLATFORM}" >> /log && \
+    echo "Alpine: <%= ${ALPINE_VERSION} %>" >> /log && \
+    echo "Nushell: <%= ${NUSHELL_VERSION} %>" >> /log
+
 FROM ghcr.io/bfren/nushell:<%= ${NUSHELL_VERSION} %>-alpine as nushell
 
-FROM alpine:<%= ${ALPINE_REVISION} %>
+FROM alpine:<%= ${ALPINE_VERSION} %>
+COPY --from=build /log /etc/bf/BUILD
 COPY --from=nushell / /
 
 LABEL org.opencontainers.image.description="Alpine base image with Nushell."
@@ -17,6 +30,8 @@ ENV \
     BF_DEBUG=0 \
     # path to bf executables
     BF_BIN=/usr/bin/bf \
+    # path to bf configuration
+    BF_ETC=/etc/bf \
     # upgrade packages during installation
     BF_UPGRADE_PACKAGES=0
 
@@ -25,7 +40,7 @@ ENV \
     PATH=${BF_BIN}:${PATH}
 
 COPY ./overlay /
-COPY ./<%= ${ALPINE_VERSION} %>/overlay /
+COPY ./<%= ${ALPINE_EDITION} %>/overlay /
 
 RUN chmod +x /preinstall && /preinstall
 RUN bf-install
