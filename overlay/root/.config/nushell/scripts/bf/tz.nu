@@ -1,5 +1,6 @@
 use fs.nu
 use del.nu
+use install.nu
 use write.nu
 
 # Set the container's timezone
@@ -11,7 +12,7 @@ export def main [
 
     # install timezone package
     write debug "Installing tzdata packages." tz
-    do { ^apk add --no-cache --virtual .tz tzdata } | ignore
+    install add [--virtual .tz tzdata]
 
     # check the specified timezone exists
     if (fs is_not_file $path) {
