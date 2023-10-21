@@ -39,6 +39,12 @@ jobs:
         run: echo "REPOSITORY_NAME=$(echo '${{ github.repository }}' | awk -F '/' '{print $2}')" >> $GITHUB_ENV
         shell: bash
       -
+        name: Read Alpine version - revision
+        uses: bfren/read-file@v2
+        with:
+          file: ./${{ matrix.alpine }}/ALPINE_REVISION
+        id: alpine_revision
+      -
         name: Read image version
         uses: bfren/read-file@v2
         with:
@@ -81,8 +87,10 @@ jobs:
           platforms: linux/amd64,linux/arm/v7,linux/arm64
           tags: |
             bfren/alpine:alpine${{ matrix.alpine }}-dev
-            bfren/alpine:alpine${{ matrix.alpine }}-${{ steps.version_minor.outputs.contents }}-beta
-            bfren/alpine:alpine${{ matrix.alpine }}-${{ steps.version.outputs.contents }}-beta
+            bfren/alpine:alpine${{ matrix.alpine }}-${{ steps.version_minor.outputs.contents }}-dev
+            bfren/alpine:alpine${{ matrix.alpine }}-${{ steps.version.outputs.contents }}-dev
+            bfren/alpine:alpine${{ steps.alpine_revision.outputs.contents }}-dev
+            bfren/alpine:alpine${{ steps.alpine_revision.outputs.contents }}-${{ steps.version.outputs.contents }}-dev
       -
         name: Build and push default tags
         id: docker_build_default
@@ -97,9 +105,9 @@ jobs:
           platforms: linux/amd64,linux/arm/v7,linux/arm64
           tags: |
             bfren/alpine:dev
-            bfren/alpine:${{ steps.version_major.outputs.contents }}-beta
-            bfren/alpine:${{ steps.version_minor.outputs.contents }}-beta
-            bfren/alpine:${{ steps.version.outputs.contents }}-beta
+            bfren/alpine:${{ steps.version_major.outputs.contents }}-dev
+            bfren/alpine:${{ steps.version_minor.outputs.contents }}-dev
+            bfren/alpine:${{ steps.version.outputs.contents }}-dev
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
