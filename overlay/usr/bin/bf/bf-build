@@ -1,0 +1,6 @@
+#!/usr/bin/nu
+
+use bf
+
+# Parse and display information from the build log
+def main [] { bf build }

@@ -1,0 +1,11 @@
+#!/usr/bin/nu
+
+use bf
+
+# Add an item to the build log
+def main [
+    key: string     # Key e.g. 'Build Arch'
+    value: string   # Value e.g. 'linux/amd64'
+] {
+    bf build add $key $value
+}
