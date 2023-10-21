@@ -6,8 +6,8 @@ FROM --platform=${BUILDPLATFORM} golang:alpine AS build
 ARG TARGETPLATFORM
 
 RUN \
-    # save build and version information to log
-    echo "Arch: ${TARGETPLATFORM}" >> /log && \
+    # save platform and version information to log
+    echo "Platform: ${TARGETPLATFORM}" >> /log && \
     echo "Alpine: <%= ${ALPINE_VERSION} %>" >> /log && \
     echo "Nushell: <%= ${NUSHELL_VERSION} %>" >> /log
 

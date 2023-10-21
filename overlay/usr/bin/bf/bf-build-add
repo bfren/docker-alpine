@@ -5,7 +5,7 @@ bf env load -x
 
 # Add an entry to the build log
 def main [
-    key: string     # Key e.g. 'Build Arch'
+    key: string     # Key e.g. 'Platform'
     value: string   # Value e.g. 'linux/amd64'
 ] {
     bf build add $key $value
