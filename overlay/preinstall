@@ -21,7 +21,6 @@ apk add --no-cache \
 
 NU=/etc/nu
 CFG=/root/.config/nushell
-
 mv ${CFG}/config.nu ${NU}
 mv ${CFG}/env.nu ${NU}
 
@@ -40,7 +39,7 @@ ln -s ${NU}/scripts ${CFG}/scripts
 # Set permissions.
 #======================================================================================================================
 
-echo "Setting permissions."
+echo "Setting bf-install permissions."
 chmod 0544 /usr/bin/bf/bf-install
 
 
