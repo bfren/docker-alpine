@@ -14,7 +14,7 @@ export def main [
     try {
         $env | get (add_prefix $key)
     } catch {
-        write error $"Unable to get environment variable (add_prefix $key)."
+        write error $"Unable to get environment variable (add_prefix $key)." env
     }
 }
 
@@ -49,7 +49,8 @@ export def --env hide [
     rm --force $"($env_dir)/($prefixed)"
 
     # output for debugging purposes
-    write debug $"($prefixed) removed." env/hide
+    # don't bother for BF_X - there are lots of these otherwise!
+    if $key != "X" { write debug $"($prefixed) removed." env/hide }
 }
 
 # Load shared environment into the current $env
@@ -99,7 +100,8 @@ export def --env set [
     apply_perms
 
     # output for debugging purposes
-    write debug $"($prefixed)=($value)." env
+    # don't bother for BF_X - there are lots of these otherwise!
+    if $key != "X" { write debug $"($prefixed)=($value)." env/set }
 }
 
 # Show all bfren platform environment variables
