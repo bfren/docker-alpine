@@ -1,0 +1,14 @@
+#!/usr/bin/nu
+
+use bf
+bf env load -x
+
+# Attempt to get an environment variable - if $default_value is not set and the variable does not exist,
+# an error will be thrown
+def main [
+    key: string         # Environment variable key - the BF_ prefix will be added automatically
+    default_value?: any # Optional default value to use if the variable cannot be found
+    --no-prefix (-P)    # Do not add the standard prefix
+] {
+    if $no_prefix { bf env --no-prefix $key $default_value } else { bf env $key $default_value }
+}

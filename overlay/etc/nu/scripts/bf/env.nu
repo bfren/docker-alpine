@@ -7,20 +7,29 @@ const env_dir = "/etc/bf/env.d"
 # bfren platform prefix for namespacing environment variables
 const prefix = "BF_"
 
-# Returns the value of an environment variable
+# Returns the value of an environment variable - if $default_value is not set and the variable does not exist,
+# an error will be thrown
 export def main [
     key: string         # Environment variable key - the BF_ prefix will be added automatically
-    --no-prefix (-P)    # Do not add the standard prefix
+    default_value?: any # Optional default value to use if the variable cannot be found
+    --no-prefix (-P)    # Do not add the BF_ prefix
 ] {
     # add (or don't add!) the BF_ prefix
     let prefixed = if $no_prefix { $key } else { add_prefix $key }
 
-    # attempt to get the variable
-    try {
-        $env | get $prefixed
-    } catch {
-        write error $"Unable to get environment variable ($prefixed)." env
+    # return the value if it exists
+    let value = safe --no-prefix $prefixed
+    if $value != null {
+        return $value
     }
+
+    # return the default value if it is set
+    if $default_value != null {
+        return $default_value
+    }
+
+    # otherwise output with an error
+    write error $"Unable to get environment variable ($prefixed)." env
 }
 
 # Adds the BF_ prefix to $key
@@ -33,7 +42,7 @@ export def apply_perms [] { do { ^nu -c $"use bf ch ; [($env_dir) \"root:root\" 
 # Returns true if $key exists in the environment and is equal to 1
 export def check [
     key: string         # Environment variable key - the BF_ prefix will be added automatically
-    --no-prefix (-P)    # Do not add the standard prefix
+    --no-prefix (-P)    # Do not add the BF_ prefix
 ] {
     # add (or don't add!) the BF_ prefix
     let prefixed = if $no_prefix { $key } else { add_prefix $key }
@@ -48,7 +57,7 @@ export def debug [] { check DEBUG }
 # Hide and remove an environment variable
 export def --env hide [
     key: string         # Environment variable key name - the BF_ prefix will be added automatically
-    --no-prefix (-P)    # Do not add the standard prefix
+    --no-prefix (-P)    # Do not add the BF_ prefix
 ] {
     # add (or don't add!) the BF_ prefix
     let prefixed = if $no_prefix { $key } else { add_prefix $key }
@@ -94,20 +103,20 @@ export def --env load [
 # if the variable doesn't exist, an empty string will be returned instead
 export def safe [
     key: string         # Environment variable key - the BF_ prefix will be added automatically
-    --no-prefix (-P)    # Do not add the standard prefix
+    --no-prefix (-P)    # Do not add the BF_ prefix
 ] {
     # add (or don't add!) the BF_ prefix
     let prefixed = if $no_prefix { $key } else { add_prefix $key }
 
     # ignore errors when getting the variable
-    $env | get --ignore-errors ($prefixed)
+    $env | get --ignore-errors --sensitive ($prefixed)
 }
 
 # Save an environment variable to the bfren environment
 export def --env set [
     key: string         # Environment variable key name - the BF_ prefix will be added automatically
     value: any          # Environment variable value
-    --no-prefix (-P)    # Do not add the standard prefix
+    --no-prefix (-P)    # Do not add the BF_ prefix
 ] {
     # add (or don't add!) the BF_ prefix
     let prefixed = if $no_prefix { $key } else { add_prefix $key }
