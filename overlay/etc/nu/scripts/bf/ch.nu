@@ -95,7 +95,7 @@ def apply_mod_recurse [
     mode: string    # Permissions mode
 ] {
     write debug $" .. ($path): chmod -R ($mode)" ch/apply_mod_recurse
-    if ($path | path exists) and ($path | path type) == "dir" { ^chmod -R $mode $path }
+    if ($path | path exists) { ^chmod -R $mode $path }
 }
 
 # Apply chmod to all paths of $type under $base
@@ -123,7 +123,7 @@ def apply_own_recurse [
     owner: string   # Owner
 ] {
     write debug $" .. ($path): chown -R ($owner)" ch/apply_own_recurse
-    if ($path | path exists) and ($path | path type) == "dir" { ^chown -R $owner $path }
+    if ($path | path exists) { ^chown -R $owner $path }
 }
 
 # Apply chown to all paths of $type under $base
