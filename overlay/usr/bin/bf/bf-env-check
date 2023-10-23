@@ -3,10 +3,11 @@
 use bf
 bf env x_set
 
-# Returns true if $key exists in the environment and is equal to 1
+# Exits 0 if $key exists in the environment and is equal to 1
 def main [
     key: string         # Environment variable key - the BF_ prefix will be added automatically
     --no-prefix (-P)    # Do not add the standard prefix
 ] {
-    if $no_prefix { bf env check --no-prefix $key } else { bf env check $key }
+    let check = if $no_prefix { bf env check --no-prefix $key } else { bf env check $key }
+    if $check { exit 0 } else { exit 1 }
 }
