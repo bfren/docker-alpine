@@ -28,7 +28,7 @@ def add_prefix [key: string] { $prefix + $key }
 
 # Apply permissions for the environment variables directory -
 # we do this in a separate shell so we don't get log output every time a variable is set
-export def apply_perms [] { do { ^nu -c $"use bf ch; [($env_dir) \"root:root\" 0666] | ch apply" } | ignore }
+export def apply_perms [] { do { ^nu -c $"use bf ch ; [($env_dir) \"root:root\" 0666] | ch apply" } | ignore }
 
 # Returns true if $key exists in the environment and is equal to 1
 export def check [
