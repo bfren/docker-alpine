@@ -10,10 +10,14 @@ export def add [
     let use_gid = if $gid != null { $gid } else { $uid }
     write $"Adding user ($name) with UID ($uid) and GID ($use_gid)." user/add
 
-    # add group first
+    # add group and user
     let home = $"/home/($name)"
-    do { ^addgroup --gid ($use_gid) $name } | ignore
-    do { ^adduser --uid $uid --home $home --disabled-password --ingroup $name $name } | ignore
+    let result = do {
+        ^addgroup --gid ($use_gid) $name
+        ^adduser --uid $uid --home $home --disabled-password --ingroup $name $name
+    } | complete
+
+    if $result.exit_code > 0 { write error --code $result.exit_code $result.stderr }
 
     # create links to Nushell files and directories
     create_nushell_links $name
@@ -39,6 +43,6 @@ export def create_nushell_links [
     # link the shared Nushell files and directories to the user's config directory
     ^ln -f $"($shared_nu)/config.nu" $"($user_nu)/config.nu"
     ^ln -f $"($shared_nu)/env.nu" $"($user_nu)/env.nu"
-    ^ln -sf $"($shared_nu)/plugins" $"($user_nu)/plugins"
+    #^ln -sf $"($shared_nu)/plugins" $"($user_nu)/plugins"
     ^ln -sf $"($shared_nu)/scripts" $"($user_nu)/scripts"
 }

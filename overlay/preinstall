@@ -31,7 +31,7 @@ mv ${CFG}/env.nu ${NU}
 
 ln ${NU}/config.nu ${CFG}/config.nu
 ln ${NU}/env.nu ${CFG}/env.nu
-ln -s ${NU}/plugins ${CFG}/plugins
+#ln -s ${NU}/plugins ${CFG}/plugins
 ln -s ${NU}/scripts ${CFG}/scripts
 
 
