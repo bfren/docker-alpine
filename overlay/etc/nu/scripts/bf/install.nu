@@ -40,10 +40,11 @@ export def main [] {
     # set permissions
     write "Setting permissions." install
     env apply_perms
-    ["/etc/nu" "root:root" 0666 0777] | ch apply
-    ["/init" "root:root" 0500 ] | ch apply
-    ["/tmp" "root:root" 1777 1777] | ch apply
-    ["/usr/bin/bf" "root:root" 0555] | ch apply
+    let root = "root:root"
+    ["/etc/nu" $root 0666 0777] | ch apply
+    ["/init" $root 0500 ] | ch apply
+    ["/tmp" $root 1777 1777] | ch apply
+    ["/usr/bin/bf" $root 0555] | ch apply
 
     # store versions
     write "Storing image information." install
