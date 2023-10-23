@@ -64,8 +64,11 @@ export def apply [] {
 
 # Apply permissions using a ch.d file
 export def apply_file [
-    path: string    # Absolute path to the ch.d file to read
+    file: string    # Path to ch.d file - if the file does not exist, will look in ch.d directory instead
 ] {
+    # if file is not a path that exists, prepend CH_D directory
+    let path = if ($file | path exists) { $file } else { $"(bf env ETC_CH_D)/($file)" }
+
     # check file exists
     if (fs is_not_file $path) {
         write notok $"($path) does not exist or is not a file." ch/apply_file
