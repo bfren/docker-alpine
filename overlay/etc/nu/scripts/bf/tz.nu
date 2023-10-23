@@ -1,6 +1,6 @@
 use fs.nu
 use del.nu
-use install.nu
+use pkg.nu
 use write.nu
 
 # Set the container's timezone
@@ -12,7 +12,7 @@ export def main [
 
     # install timezone package
     write debug "Installing tzdata packages." tz
-    install add [--virtual .tz tzdata]
+    pkg install [--virtual .tz tzdata]
 
     # check the specified timezone exists
     if (fs is_not_file $path) {
@@ -32,6 +32,6 @@ export def main [
 # Remove tzdata packages and info
 def clean [] {
     write debug "Removing tzdata packages." tz/clean
-    do { ^apk del .tz } | ignore
+    pkg remove [.tz]
     del force /usr/share/zoneinfo/*
 }

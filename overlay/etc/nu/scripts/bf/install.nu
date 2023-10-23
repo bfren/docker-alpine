@@ -9,11 +9,11 @@ use write.nu
 use x.nu
 
 # Run standard installation for the container:
+#   - show build information
 #   - show bfren environment
-#   - fix apk
 #   - run container's installation script
 #   - set permissions
-#   - save image version info
+#   - store image info
 #   - run cleanup
 #   - output image info
 export def main [] {
@@ -24,11 +24,6 @@ export def main [] {
     # output BF config
     write "bfren platform environment variables." install
     env show
-
-    # make sure apk is working correctly (fixes some strange 'no such file or directory errors' on apk FETCH)
-    write "Running apk fix and verify." install
-    do { ^apk fix } | ignore
-    do { ^apk verify } | ignore
 
     # run install script in /tmp
     const install = /tmp/install
@@ -60,20 +55,4 @@ export def main [] {
     # all finished
     write ok "Installation complete." install
     image
-}
-
-# Use apk to install a list of packages
-export def add [
-    packages: list<string>  # List of packages to isntall
-] {
-    # we need to do it like this because apk won't take a joined string directly
-    let pkg = $packages | str join " "
-    write debug $"Installing: ($pkg)." install/add
-    let result = do { sh -c $"apk add --no-cache ($pkg)" } | complete
-
-    # exit on error
-    if $result.exit_code > 0 {
-        $result.stderr | print
-        write error --code $result.exit_code "Error installing packages." install/add
-    }
 }

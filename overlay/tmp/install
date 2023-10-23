@@ -3,10 +3,10 @@
 use bf
 
 def main [] {
-    # upgrade to current versions of binaries
+    # upgrade to current versions of packages
     if (bf env check UPGRADE_PACKAGES) {
-        bf write "Upgrading binaries."
-        do { ^apk upgrade --no-cache } | ignore
+        bf write "Upgrading packages."
+        bf pkg upgrade
     }
 
     # get esh version and install
@@ -14,7 +14,7 @@ def main [] {
     try {
         let esh_version = cat ESH_BUILD
         bf write $"Installing esh v($esh_version)."
-        bf install add [$"esh=($esh_version)"]
+        bf pkg install [$"esh=($esh_version)"]
     } catch {
         bf write error "esh not installed."
     }
@@ -22,7 +22,7 @@ def main [] {
     # install additional packages
     try {
         bf write "Installing additional packages."
-        bf install add [figlet]
+        bf pkg install [figlet]
     } catch {
         bf write error "Unable to install additional packages."
     }
