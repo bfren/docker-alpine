@@ -41,10 +41,9 @@ export def main [] {
     write "Setting permissions." install
     env apply_perms
     ["/etc/nu" "root:root" 0666 0777] | ch apply
+    ["/init" "root:root" 0500 ] | ch apply
+    ["/tmp" "root:root" 1777 1777] | ch apply
     ["/usr/bin/bf" "root:root" 0555] | ch apply
-
-    const perms = /tmp/install-ch
-    if ($perms | path exists) { ch apply_file $perms }
 
     # store versions
     write "Storing image information." install
