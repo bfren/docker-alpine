@@ -1,3 +1,4 @@
+# ansi colours for display
 const colour = "reset"
 const colour_debug = "grey"
 const colour_ok = "green"
