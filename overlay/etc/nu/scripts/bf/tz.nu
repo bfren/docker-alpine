@@ -15,7 +15,7 @@ export def main [
     pkg install [--virtual .tz tzdata]
 
     # check the specified timezone exists
-    if (fs is_not_file $path) {
+    if ($path | fs is_not_file) {
         clean
         write error $"($tz) is not a recognise timezone." tz
     }

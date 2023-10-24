@@ -66,12 +66,11 @@ export def find_type_acc [
     $base_paths | each {|x| find_type $x $type } | reduce -f [] {|y, acc| $acc | append $y }
 }
 
-# Returns true unless path exists and is a file
-export def is_not_file [
-    path: string    # Absolute path to the file to check
-] {
-    ($path | path type) != "file"
-}
+# Returns true unless input path exists and is a directory
+export def is_not_dir [] { not ($in | path type) == "dir" }
+
+# Returns true unless input path exists and is a file
+export def is_not_file [] { not ($in | path type) == "file" }
 
 # Make a temporary directory in /tmp
 export def make_temp_dir [
@@ -87,7 +86,7 @@ export def make_temp_dir [
 
     # get absolute path to directory and ensure it exists
     let path = $"($root)/($result.stdout)"
-    if not ($path | path exists) { write error "Unable to create temporary directory." fs/make_temp_dir }
+    if ($path | is_not_dir) { write error "Unable to create temporary directory." fs/make_temp_dir }
 
     # return the path
     $path
@@ -101,7 +100,7 @@ export def read [
     let use_path = $path | path expand
 
     # ensure file exists
-    if (is_not_file $use_path) { write error $"File does not exist: ($use_path)." fs/read }
+    if ($use_path | is_not_file) { write error $"File does not exist: ($use_path)." fs/read }
 
     # get and trim raw contents
     open --raw $use_path | str trim

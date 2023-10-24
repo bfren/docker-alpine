@@ -7,7 +7,7 @@ export def main [
     output: string  # output file
 ] {
     # ensure template file exists
-    if (fs is_not_file $input) { write error $"Template file ($input) does not exist." esh }
+    if ($input | fs is_not_file) { write error $"Template file ($input) does not exist." esh }
 
     # generate output file and display any errors
     let result = do { ^esh -o $output $input } | complete
@@ -16,4 +16,19 @@ export def main [
     } else {
         write error $"Error using template: ($result.stderr)." esh
     }
+}
+
+export def template [
+    filename: string
+    output_dir: string
+] {
+    # build paths and ensure input file and output directory exist
+    let input = $"(bf env ETC_TEMPLATES)/($filename).esh"
+    let output = $"($output_dir)/($filename)"
+    if ($input | fs is_not_file) { write error $"Template ($input) does not exist." esh/template }
+    if ($output | fs is_not_dir) { write error $"Output directory ($output) does not exist." esh/template }
+
+    # output debug message and generate file
+    write debug $" .. ($filename)"
+    main $input $output
 }

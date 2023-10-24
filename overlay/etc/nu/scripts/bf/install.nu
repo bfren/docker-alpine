@@ -27,7 +27,7 @@ export def main [] {
 
     # run install script in /tmp
     const install = /tmp/install
-    if (fs is_not_file $install) { write error $"($install) does not exist." install }
+    if ($install | fs is_not_file) { write error $"($install) does not exist." install }
 
     write $"Executing ($install)." install
     x $install

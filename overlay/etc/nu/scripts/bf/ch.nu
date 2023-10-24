@@ -70,7 +70,7 @@ export def apply_file [
     let path = if ($file | path exists) { $file } else { $"($env.BF_ETC_CH_D)/($file)" }
 
     # check file exists
-    if (fs is_not_file $path) {
+    if ($path | fs is_not_file) {
         write notok $"($path) does not exist or is not a file." ch/apply_file
         return
     }
