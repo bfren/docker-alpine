@@ -27,7 +27,7 @@ export def template [
     let input = $"(env ETC_TEMPLATES)/($filename).esh"
     let output = $"($output_dir)/($filename)"
     if ($input | fs is_not_file) { write error $"Template ($input) does not exist." esh/template }
-    if ($output | fs is_not_dir) { write error $"Output directory ($output) does not exist." esh/template }
+    if ($output_dir | fs is_not_dir) { write error $"Output directory ($output_dir) does not exist." esh/template }
 
     # output debug message and generate file
     write debug $" .. ($filename)"
