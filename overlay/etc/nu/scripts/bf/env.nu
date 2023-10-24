@@ -82,6 +82,7 @@ export def --env load [
     let ignore = [
         CURRENT_FILE
         FILE_PWD
+        X
     ]
 
     # load environment variables from shared directory
