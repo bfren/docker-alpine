@@ -1,3 +1,4 @@
+use env.nu
 use fs.nu
 use write.nu
 
@@ -23,7 +24,7 @@ export def template [
     output_dir: string
 ] {
     # build paths and ensure input file and output directory exist
-    let input = $"(bf env ETC_TEMPLATES)/($filename).esh"
+    let input = $"(env ETC_TEMPLATES)/($filename).esh"
     let output = $"($output_dir)/($filename)"
     if ($input | fs is_not_file) { write error $"Template ($input) does not exist." esh/template }
     if ($output | fs is_not_dir) { write error $"Output directory ($output) does not exist." esh/template }
