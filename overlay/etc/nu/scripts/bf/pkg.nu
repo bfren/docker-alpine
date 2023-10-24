@@ -40,5 +40,5 @@ export def remove [
 export def upgrade [
     args: list<string> = []  # List of packages to upgrade / arguments
 ] {
-    action "upgrade" "Upgrading" $args "upgrade"
+    action "upgrade" "Upgrading" $args "upgrade --no-cache"
 }
