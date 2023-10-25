@@ -152,7 +152,7 @@ export def --env x_clear [] { hide X }
 export def x_get [
     x_prefix?: string # If set, will be added before the name of the current script
 ] {
-    if $x_prefix != null { $"($x_prefix)/" } | $"($in)($env.CURRENT_FILE | path basename)"
+    if $x_prefix != null { $"($x_prefix)/" } | $"($in)(main -P CURRENT_FILE | path basename)"
 }
 
 # Sets the BF_X environment variable to the name of the currently executing script
