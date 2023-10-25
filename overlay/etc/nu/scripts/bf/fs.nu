@@ -76,7 +76,7 @@ export def is_not_file [] { not ($in | path type) == "file" }
 export def make_temp_dir [
     --local (-l)    # If set the temporary directory will be created in the current working directory
 ] {
-    # move to requested root dir
+    # move to requested root dir - can't use bf env module env.ch needs ch.nu, and ch.nu needs fs.nu
     let root = if $local { $env.PWD } else { "/tmp" }
     cd $root
 
