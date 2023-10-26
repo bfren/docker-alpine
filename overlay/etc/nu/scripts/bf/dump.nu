@@ -4,8 +4,8 @@ export def main [
 ] {
     let input = $in
     if ($env | get --ignore-errors BF_DEBUG | into string) == "1" {
-        if $text != null { $text | print }
-        $input | print
+        if $text != null { $"(char newline)#== ($text) ==#" | print }
+        $input | to nuon --indent 2 | print
     }
     $input
 }
