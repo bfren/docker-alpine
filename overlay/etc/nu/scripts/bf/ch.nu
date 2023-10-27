@@ -33,9 +33,11 @@ export def main [
 
     # otherwise, execute chmod/chown on each path
     $paths | each {|x|
-        if $mode != null { apply_mod $x $type }
-        if $owner != null { apply_own $x $type }
+        if $mode != null { apply_mod $x $mode }
+        if $owner != null { apply_own $x $owner }
     }
+
+    return
 }
 
 # Apply permissions for a row container in a ch.d file:
