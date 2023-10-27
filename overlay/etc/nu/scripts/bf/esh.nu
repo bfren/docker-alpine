@@ -1,3 +1,4 @@
+use dump.nu
 use env.nu
 use fs.nu
 use write.nu
@@ -10,23 +11,28 @@ export def main [
     # ensure template file exists
     if ($input | fs is_not_file) { write error $"Template file ($input) does not exist." esh }
 
-    # generate output and return
-    if $output == null {
-        let result = do { ^esh $input } | complete
-        if ($result.exit_code == 0) {
-            return $result.stdout
-        } else {
-            write error $"Error using template ($input): ($result | to nuon)." esh
-        }
+    # dump esh output and write error message
+    let dump_output = {|x|
+        $x | dump -t "esh output"
+        write error $"Error using template ($input)." esh
     }
 
-    # generate output and save as file
-    if $output != null {
+    # generate template
+    #   and: return value if $output is not set
+    #   or:  save to file if $output is set
+    if $output == null {
+        let result = do { ^esh $input } | complete
+        if $result.exit_code == 0 {
+            $result.stdout
+        } else {
+            do $dump_output $result
+        }
+    } else {
         let result = do { ^esh -o $output $input } | complete
         if ($result.exit_code == 0) and ($output | path exists) {
             write debug $"($output) created." esh
         } else {
-            write error $"Error using template ($input): ($result | to nuon)." esh
+            do $dump_output $result
         }
     }
 }
