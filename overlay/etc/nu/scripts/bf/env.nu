@@ -19,14 +19,10 @@ export def main [
 
     # return the value if it exists
     let value = safe --no-prefix $prefixed
-    if $value != null {
-        return $value
-    }
+    if $value != null { return $value }
 
     # return the default value if it is set
-    if $default_value != null {
-        return $default_value
-    }
+    if $default_value != null { return $default_value }
 
     # otherwise output with an error
     write error $"Unable to get environment variable ($prefixed)." env
@@ -80,9 +76,9 @@ export def --env load [
 ] {
     # these environment variables are reserved, set only by nu
     let ignore = [
+        BF_X
         CURRENT_FILE
         FILE_PWD
-        X
     ]
 
     # load environment variables from shared directory
