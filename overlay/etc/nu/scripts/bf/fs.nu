@@ -1,3 +1,4 @@
+use handle.nu
 use write.nu
 
 # Check $type is valid (i.e. supported by posix find)
@@ -23,11 +24,9 @@ export def find_name [
     check_type $type
 
     # use posix find to search for items of a type, and split by lines into a list
-    let result = do { ^find $base_path -name $name -type $type } | complete
-    if $result.exit_code > 0 { write error $"Unable to find ($name) in ($base_path): ($result.stderr)." fs/find_name }
-
-    # split result by lines
-    $result.stdout | lines
+    let on_failure = {|code, err| write error --code $code $"Unable to find ($name) in ($base_path): ($err)." fs/find_name }
+    let on_success = {|out| $out | lines }
+    { ^find $base_path -name $name -type $type } | handle -f $on_failure -s $on_success
 }
 
 # Find all paths called $name in $base_paths and reduce to a single list
@@ -51,11 +50,9 @@ export def find_type [
     check_type $type
 
     # use posix find to search for items of a type, and split by lines into a list
-    let result = do { ^find $base_path -type $type } | complete
-    if $result.exit_code > 0 { write error $"Unable to find type ($type) in ($base_path): ($result.stderr)." fs/find_type }
-
-    # split result by lines
-    $result.stdout | lines
+    let on_failure = {|code, err| write error --code $code $"Unable to find type ($type) in ($base_path): ($err)." fs/find_type }
+    let on_success = {|out| $out | lines }
+    { ^find $base_path -type $type } | handle -f $on_failure -s $on_success
 }
 
 # Find all paths that are $type in $base_paths
@@ -81,11 +78,10 @@ export def make_temp_dir [
     cd $root
 
     # make temporary directory and capture output
-    let result = do { ^mktemp -d tmp.XXXXXX } | complete
-    if $result.exit_code > 0 { write error $"($result.stderr)." fs/make_temp_dir }
+    let result = { ^mktemp -d tmp.XXXXXX } | handle
 
     # get absolute path to directory and ensure it exists
-    let path = $"($root)/($result.stdout)"
+    let path = $"($root)/($result)"
     if ($path | is_not_dir) { write error "Unable to create temporary directory." fs/make_temp_dir }
 
     # return the path

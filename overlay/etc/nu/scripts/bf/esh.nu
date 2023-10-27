@@ -1,39 +1,28 @@
 use dump.nu
 use env.nu
 use fs.nu
+use handle.nu
 use write.nu
 
 # Generate output using input as an esh template
 export def main [
-    input: string   # input file
-    output?: string  # output file
+    input: string   # Input file
+    output?: string # Output file - if omitted the output will be returned instead of saved
 ] {
     # ensure template file exists
     if ($input | fs is_not_file) { write error $"Template file ($input) does not exist." esh }
 
     # dump esh output and write error message
-    let dump_output = {|x|
-        $x | dump -t "esh output"
-        write error $"Error using template ($input)." esh
-    }
+    let on_failure = { write error $"Error using template ($input)." esh }
+    let on_success = { if ($output | path exists) { write debug $"($output) created." esh } }
 
     # generate template
     #   and: return value if $output is not set
     #   or:  save to file if $output is set
     if $output == null {
-        let result = do { ^esh $input } | complete
-        if $result.exit_code == 0 {
-            $result.stdout
-        } else {
-            do $dump_output $result
-        }
+        { ^esh $input } | handle -f $on_failure -d "esh - no output"
     } else {
-        let result = do { ^esh -o $output $input } | complete
-        if ($result.exit_code == 0) and ($output | path exists) {
-            write debug $"($output) created." esh
-        } else {
-            do $dump_output $result
-        }
+        { ^esh -o $output $input } | handle -s $on_success -f $on_failure -d $"esh - output ($output)"
     }
 }
 

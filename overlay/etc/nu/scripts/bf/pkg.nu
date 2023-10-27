@@ -1,3 +1,4 @@
+use handle.nu
 use write.nu
 
 # Perform a package action, capturing result and outputting any errors
@@ -13,13 +14,8 @@ def action [
     # we need to do it like this because for some reason apk won't take a joined string directly
     let joined = $args | str join " "
     write debug $"($description): ($joined)." $script
-    let result = do { ^sh -c $"apk ($cmd) ($joined)" }  | complete
-
-    # exit on error
-    if $result.exit_code > 0 {
-        $result.stderr | print
-        write error --code $result.exit_code $"Error ($description | str downcase) packages." $script
-    }
+    let on_failure = {|code, err| write error --code $code $"Error ($description | str downcase) packages." $script }
+    { ^sh -c $"apk ($cmd) ($joined)" } | handle -f $on_failure -d $"($description) packages"
 }
 
 # Use apk to install a list of packages

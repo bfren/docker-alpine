@@ -1,3 +1,4 @@
+use handle.nu
 use write.nu
 
 # Add a non-login user and group of the specified name, optionally specifying UID and GID
@@ -12,12 +13,10 @@ export def add [
 
     # add group and user
     let home = $"/home/($name)"
-    let result = do {
+    {
         ^addgroup --gid ($use_gid) $name
         ^adduser --uid $uid --home $home --disabled-password --ingroup $name $name
-    } | complete
-
-    if $result.exit_code > 0 { write error --code $result.exit_code $result.stderr }
+    } | handle
 
     # create links to Nushell files and directories
     create_nushell_links $name
