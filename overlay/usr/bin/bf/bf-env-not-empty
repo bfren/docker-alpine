@@ -1,0 +1,13 @@
+#!/usr/bin/nu
+
+use bf
+bf env x_set
+
+# Exits 0 if $key exists in the environment and is not an empty string
+def main [
+    key: string         # Environment variable key - the BF_ prefix will be added automatically
+    --no-prefix (-P)    # Do not add the standard prefix
+] {
+    let value = if $no_prefix { bf env safe --no-prefix $key } else { bf env safe $key }
+    if $value == null { exit 1 }
+}
