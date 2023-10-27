@@ -7,11 +7,7 @@ export def force [
     --filename (-n): string # Only delete files matching this name within the specified paths
 ] {
     # get the paths to delete
-    let paths_to_delete = if $filename != null {
-        fs find_name_acc $paths $filename f
-    } else {
-        $paths
-    }
+    let paths_to_delete = if $filename != null { fs find_name_acc $paths $filename f } else { $paths }
 
     # loop through filtered paths, write and delete
     write $"Force deleting ($paths_to_delete)." rm/force
