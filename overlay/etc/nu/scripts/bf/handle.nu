@@ -9,12 +9,16 @@ use dump.nu
 export def main [
     script?: string             # The name of the calling script or executable
     --dump-result (-d): string  # On error, dump the full $result object with this text
+    --code-only (-c)            # If set, only the exit code will be returned - overrides all other options
     --ignore-errors (-i)        # If set, any errors will be ignored and $result.stdout will be returned whatever it is
     --on-failure (-f): closure  # On failure, optionally run this closure with $code and $stderr as inputs
     --on-success (-s): closure  # On success, optionally run this closure with $stdout as input
 ] {
     # capture input so it can be reused
     let result = do $in | complete
+
+    # return exit code
+    if $code_only { return $result.exit_code }
 
     # on success, run closure (if it has been set) and return
     if $result.exit_code == 0 {
