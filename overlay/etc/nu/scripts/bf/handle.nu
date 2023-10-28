@@ -33,10 +33,9 @@ export def main [
     if $dump_result != null { $result | dump -t $dump_result }
 
     # run closure (if it has been set) and return
-    if $on_failure != null {
-        do $on_failure $result.exit_code $result.stderr | return $in
-    }
+    if $on_failure != null { do $on_failure $result.exit_code $result.stderr | return $in }
 
-    # simply write the error
+    # use stderr and exit code to write the error
+    # we use the executable so handle can be used everywhere without causing cyclical import errors
     ^bf-write-error --code $result.exit_code ($result.stderr | str trim) $script
 }
