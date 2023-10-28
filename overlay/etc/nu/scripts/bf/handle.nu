@@ -9,6 +9,7 @@ use dump.nu
 export def main [
     script?: string             # The name of the calling script or executable
     --dump-result (-d): string  # On error, dump the full $result object with this text
+    --ignore-errors (-i)        # If set, any errors will be ignored and $result.stdout will be returned whatever it is
     --on-failure (-f): closure  # On failure, optionally run this closure with $code and $stderr as inputs
     --on-success (-s): closure  # On success, optionally run this closure with $stdout as input
 ] {
@@ -19,6 +20,9 @@ export def main [
     if $result.exit_code == 0 {
         if $on_success != null { do $on_success $result.stdout } else { $result.stdout | str trim } | return $in
     }
+
+    # if ignoring errors, return the $result object
+    if $ignore_errors { $result.stdout | str trim | return $in }
 
     # if we get here, the operation failed
     # if $dump_result is set, dump the result object (it won't show unless BF_DEBUG is 1)
