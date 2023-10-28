@@ -7,6 +7,7 @@ use dump.nu
 #   - on error the exit code and `stderr` are used to write to the console
 # The flags allow you to dump the full $result object or override what happens on success or error
 export def main [
+    script?: string             # The name of the calling script or executable
     --dump-result (-d): string  # On error, dump the full $result object with this text
     --on-failure (-f): closure  # On failure, optionally run this closure with $code and $stderr as inputs
     --on-success (-s): closure  # On success, optionally run this closure with $stdout as input
@@ -29,5 +30,5 @@ export def main [
     }
 
     # simply write the error
-    ^bf-write-error --code $result.exit_code ($result.stderr | str trim) handle
+    ^bf-write-error --code $result.exit_code ($result.stderr | str trim) $script
 }

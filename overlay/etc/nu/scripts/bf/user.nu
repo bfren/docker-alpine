@@ -16,7 +16,7 @@ export def add [
     {
         ^addgroup --gid ($use_gid) $name
         ^adduser --uid $uid --home $home --disabled-password --ingroup $name $name
-    } | handle
+    } | handle user/add
 
     # create links to Nushell files and directories
     create_nushell_links $name

@@ -26,7 +26,7 @@ export def find_name [
     # use posix find to search for items of a type, and split by lines into a list
     let on_failure = {|code, err| [] }
     let on_success = {|out| $out | lines }
-    { ^find $base_path -name $name -type $type } | handle -f $on_failure -d $"Find ($name) in ($base_path)." -s $on_success
+    { ^find $base_path -name $name -type $type } | handle -f $on_failure -d $"Find ($name) in ($base_path)." -s $on_success fs/find_name
 }
 
 # Find all paths called $name in $base_paths and reduce to a single list
@@ -52,7 +52,7 @@ export def find_type [
     # use posix find to search for items of a type, and split by lines into a list
     let on_failure = {|code, err| [] }
     let on_success = {|out| $out | lines }
-    { ^find $base_path -type $type } | handle -f $on_failure -d $"Find type ($type) in ($base_path)." -s $on_success
+    { ^find $base_path -type $type } | handle -f $on_failure -d $"Find type ($type) in ($base_path)." -s $on_success fs/find_type
 }
 
 # Find all paths that are $type in $base_paths
@@ -78,7 +78,7 @@ export def make_temp_dir [
     cd $root
 
     # make temporary directory and capture output
-    let result = { ^mktemp -d tmp.XXXXXX } | handle
+    let result = { ^mktemp -d tmp.XXXXXX } | handle fs/make_temp_dir
 
     # get absolute path to directory and ensure it exists
     let path = $"($root)/($result)"

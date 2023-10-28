@@ -15,7 +15,7 @@ def action [
     let joined = $args | str join " "
     write debug $"($description): ($joined)." $script
     let on_failure = {|code, err| write error --code $code $"Error ($description | str downcase) packages." $script }
-    { ^sh -c $"apk ($cmd) ($joined)" } | handle -f $on_failure -d $"($description) packages"
+    { ^sh -c $"apk ($cmd) ($joined)" } | handle -f $on_failure -d $"($description) packages" $script
 }
 
 # Use apk to install a list of packages

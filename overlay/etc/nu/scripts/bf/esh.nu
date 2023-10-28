@@ -20,9 +20,9 @@ export def main [
     #   and: return value if $output is not set
     #   or:  save to file if $output is set
     if $output == null {
-        { ^esh $input } | handle -f $on_failure -d "esh - no output"
+        { ^esh $input } | handle -f $on_failure -d "esh - no output" esh
     } else {
-        { ^esh -o $output $input } | handle -s $on_success -f $on_failure -d $"esh - output ($output)"
+        { ^esh -o $output $input } | handle -s $on_success -f $on_failure -d $"esh - output ($output)" esh
     }
 }
 
@@ -39,6 +39,6 @@ export def template [
     if ($output_dir | fs is_not_dir) { write error $"Output directory ($output_dir) does not exist." esh/template }
 
     # output debug message and generate file
-    write debug $" .. ($filename)"
+    write debug $" .. ($filename)" esh/template
     main $input $output
 }
