@@ -48,7 +48,7 @@ RUN \
     apk add --no-cache libcrypto3 libgcc libssl3 sqlite-libs && \
     # setup Nushell using preinstallation script
     chmod +x /preinstall && /preinstall && \
-    # use standard bf installation executable
+    # run standard bf installation executable
     <%= ${BF_BIN} %>/bf-install
 
 
