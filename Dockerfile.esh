@@ -30,15 +30,26 @@ COPY --from=nushell / /
 ARG BF_IMAGE
 ARG BF_VERSION
 
-ENV BF_ETC=<%= ${BF_ETC} %> \
-    BF_UPGRADE_PACKAGES=0 \
-    NUSHELL_VERSION=<%= ${NUSHELL_VERSION} %>
-
 COPY ./overlay /
 COPY ./<%= ${ALPINE_EDITION} %>/overlay /
 
-RUN chmod +x /preinstall && /preinstall
-RUN <%= ${BF_BIN} %>/bf-install
+ENV \
+    # path to bf configuration
+    BF_ETC=<%= ${BF_ETC} %> \
+    # whether or not to upgrade packages during installation
+    #   0: no
+    #   1: yes
+    BF_UPGRADE_PACKAGES=0 \
+    # Nushell version string to check against installed verion after installation
+    NUSHELL_VERSION=<%= ${NUSHELL_VERSION} %>
+
+RUN \
+    # install packages required by Nushell
+    apk add --no-cache libcrypto3 libgcc libssl3 sqlite-libs && \
+    # setup Nushell using preinstallation script
+    chmod +x /preinstall && /preinstall && \
+    # use standard bf installation executable
+    <%= ${BF_BIN} %>/bf-install
 
 
 #======================================================================================================================

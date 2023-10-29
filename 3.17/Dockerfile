@@ -30,15 +30,26 @@ COPY --from=nushell / /
 ARG BF_IMAGE
 ARG BF_VERSION
 
-ENV BF_ETC=/etc/bf \
-    BF_UPGRADE_PACKAGES=0 \
-    NUSHELL_VERSION=0.86.0
-
 COPY ./overlay /
 COPY ./3.17/overlay /
 
-RUN chmod +x /preinstall && /preinstall
-RUN /usr/bin/bf/bf-install
+ENV \
+    # path to bf configuration
+    BF_ETC=/etc/bf \
+    # whether or not to upgrade packages during installation
+    #   0: no
+    #   1: yes
+    BF_UPGRADE_PACKAGES=0 \
+    # Nushell version string to check against installed verion after installation
+    NUSHELL_VERSION=0.86.0
+
+RUN \
+    # install packages required by Nushell
+    apk add --no-cache libcrypto3 libgcc libssl3 sqlite-libs && \
+    # setup Nushell using preinstallation script
+    chmod +x /preinstall && /preinstall && \
+    # use standard bf installation executable
+    /usr/bin/bf/bf-install
 
 
 #======================================================================================================================
