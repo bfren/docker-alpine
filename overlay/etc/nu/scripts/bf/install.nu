@@ -44,7 +44,9 @@ export def main [] {
     # store versions
     write "Storing image information." install
     cd (env ETC)
-    fs read /etc/os-release | lines | parse "{key}={value}" | transpose -i -r -d | get VERSION_ID | save --force ALPINE
+    let distro = fs read /etc/os-release | lines | parse "{key}={value}" | transpose -i -r -d
+    $distro | get ID | save --force DISTRO_NAME
+    $distro | get VERSION_ID | into string | save --force DISTRO_VERSION
     env IMAGE | str replace "docker-" "" | save --force IMAGE
     env VERSION | save --force VERSION
 
