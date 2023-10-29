@@ -1,15 +1,52 @@
 use dump.nu
 
-# Handle an operation using `complete`, returning the operation result or printing an error message
+# Handle an operation using `complete`, returning the operation stdout or printing stderr and exiting the program
 #
-# With no flags:
-#   - on success the value of `stdout` is returned
-#   - on error the exit code and `stderr` are used to write to the console
-# The flags allow you to dump the full $result object or override what happens on success or error
+# ```nu
+# > { ^external } | bf handle
+# ```
+#   - `external` will be run using `do { } | complete`, capturing the exit code, stdout and stderr
+#   - if the exit code is 0, stdout will be trimmed and returned
+#   - if the exit code is not 0, stderr will be printed and the exit code used to exit the program
+#
+# ```nu
+# > { ^external } | bf handle --code-only
+# ```
+#   - `external` will be run using `do { } | complete`, capturing the exit code, stdout and stderr
+#   - the exit code will be returned
+#   - **this option overrides all others**
+#
+# ```nu
+# > { ^external } | bf handle --ignore-errors
+# ```
+#   - `external` will be run using `do { } | complete`, capturing the exit code, stdout and stderr
+#   - whatever the exit code is, stdout will be trimmed and returned
+#   - **this option overrides `--dump-result` and `--on-failure`**
+#
+# ```nu
+# > { ^external } | bf handle --dump-result "Some Operation"
+# ```
+#   - `external` will be run using `do { } | complete`, capturing the exit code, stdout and stderr
+#   - if the exit code is not 0, and BF_DEBUG is 1, the entire $result object will be dumped with 'Some Operation' used as a heading
+#   - stderr will be printed and the exit code used to exit the program
+#
+# ```nu
+# > { ^external } | bf handle --on-failure {|code, err| $"($err): ($code)" | print }
+# ```
+#   - `external` will be run using `do { } | complete`, capturing the exit code, stdout and stderr
+#   - if the exit code is 0, stdout will be trimmed and returned
+#   - if the exit code is not 0, $on_failure will be run - in this case the stderr and exit code will be printed
+#
+# ```nu
+# > { ^external } | bf handle --on-success {|out| $out | print }
+# ```
+#   - `external` will be run using `do { } | complete`, capturing the exit code, stdout and stderr
+#   - if the exit code is 0, $on_success will be run - in this case stdout will be printed
+#   - if the exit code is not 0, stderr will be printed and the exit code used to exit the program
 export def main [
     script?: string             # The name of the calling script or executable
-    --dump-result (-d): string  # On error, dump the full $result object with this text
     --code-only (-c)            # If set, only the exit code will be returned - overrides all other options
+    --dump-result (-d): string  # On error, dump the full $result object with this text
     --ignore-errors (-i)        # If set, any errors will be ignored and $result.stdout will be returned whatever it is
     --on-failure (-f): closure  # On failure, optionally run this closure with $code and $stderr as inputs
     --on-success (-s): closure  # On success, optionally run this closure with $stdout as input
@@ -25,14 +62,14 @@ export def main [
         if $on_success != null { do $on_success $result.stdout } else { $result.stdout | str trim } | return $in
     }
 
-    # if ignoring errors, return the $result object
+    # if ignoring errors, return the $result.stdout string
     if $ignore_errors { $result.stdout | str trim | return $in }
 
     # if we get here, the operation failed
-    # if $dump_result is set, dump the result object (it won't show unless BF_DEBUG is 1)
+    # if $dump_result flag is set, dump the $result object (it won't show unless BF_DEBUG is 1)
     if $dump_result != null { $result | dump -t $dump_result }
 
-    # run closure (if it has been set) and return
+    # run $on_failure closure (if it has been set) and return
     if $on_failure != null { do $on_failure $result.exit_code $result.stderr | return $in }
 
     # use stderr and exit code to write the error
