@@ -25,13 +25,6 @@ export def main [] {
     write "bfren platform environment variables." install
     env show
 
-    # run install script in /tmp
-    const install = /tmp/install
-    if ($install | fs is_not_file) { write error $"($install) does not exist." install }
-
-    write $"Executing ($install)." install
-    x $install
-
     # set permissions
     write "Setting permissions." install
     env apply_perms
@@ -40,6 +33,13 @@ export def main [] {
     ["/init" $root 0500 ] | ch apply
     ["/tmp" $root 1777 1777] | ch apply
     ["/usr/bin/bf" $root 0555] | ch apply
+
+    # run install script in /tmp
+    const install = /tmp/install
+    if ($install | fs is_not_file) { write error $"($install) does not exist." install }
+
+    write $"Executing ($install)." install
+    x $install
 
     # store versions
     write "Storing image information." install
