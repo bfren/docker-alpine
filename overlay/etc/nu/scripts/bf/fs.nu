@@ -26,7 +26,7 @@ export def find_name [
     # use posix find to search for items of a type, and split by lines into a list
     let on_failure = {|code, err| [] }
     let on_success = {|out| $out | lines }
-    { ^find $base_path -name $name -type $type } | handle -f $on_failure -d $"Find ($name) in ($base_path)." -s $on_success fs/find_name
+    { ^find $base_path -name $name -type $type } | handle -d $"Find ($name) in ($base_path)." -f $on_failure -s $on_success fs/find_name
 }
 
 # Find all paths called $name in $base_paths and reduce to a single list
@@ -52,7 +52,7 @@ export def find_type [
     # use posix find to search for items of a type, and split by lines into a list
     let on_failure = {|code, err| [] }
     let on_success = {|out| $out | lines }
-    { ^find $base_path -type $type } | handle -f $on_failure -d $"Find type ($type) in ($base_path)." -s $on_success fs/find_type
+    { ^find $base_path -type $type } | handle -d $"Find type ($type) in ($base_path)." -f $on_failure -s $on_success fs/find_type
 }
 
 # Find all paths that are $type in $base_paths

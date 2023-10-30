@@ -20,9 +20,9 @@ export def main [
     #   and: return value if $output is not set
     #   or:  save to file if $output is set
     if $output == null {
-        { ^esh $input } | handle -f $on_failure -d "esh - no output" esh
+        { ^esh $input } | handle -d "esh - to stdout" -f $on_failure esh
     } else {
-        { ^esh -o $output $input } | handle -s $on_success -f $on_failure -d $"esh - output ($output)" esh
+        { ^esh -o $output $input } | handle -d $"esh - to file ($output)" -f $on_failure  -s $on_success esh
     }
 }
 
