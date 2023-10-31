@@ -7,8 +7,8 @@ use write.nu
 #   - placeholders can be used multiple times
 # There will be an error if there are any unmatched placeholders.
 export def format [
-    values: record  # Values to use when replacing placeholders
     input: string   # String to format - placeholds should be record keys surrounded by braces, e.g. {a}
+    values: record  # Values to use when replacing placeholders
 ] {
     # replace values
     write debug $"Using ($values) to replace placeholders in ($input)." str/format
