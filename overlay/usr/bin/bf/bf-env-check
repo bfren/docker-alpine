@@ -1,7 +1,6 @@
 #!/usr/bin/nu
 
 use bf
-bf env x_set
 
 # Exits 0 if $key exists in the environment and is equal to 1
 def main [
