@@ -1,4 +1,4 @@
-use ch.nu
+use handle.nu
 use write.nu
 
 # Path to the environment variable store
@@ -32,8 +32,8 @@ export def main [
 def add_prefix [key: string] { $prefix + $key }
 
 # Apply permissions for the environment variables directory -
-# we do this in a separate shell so we don't get log output every time a variable is set
-export def apply_perms [] { do { ^nu -c $"use bf ch ; [($env_dir) \"root:root\" 0666] | ch apply" } | ignore }
+# we do this directly using chmod so env can be used in the ch module
+export def apply_perms [] { { ^chmod -R 0666 $env_dir } | handle -i }
 
 # Returns true if $key exists in the environment and is equal to 1
 export def check [
@@ -74,23 +74,9 @@ export def --env load [
     x_prefix?: string       # If $set_executable is added, $prefix will be added before the name of the current script
     --set-executable (-x)   # Whether or not to set BF_X to the current script
 ] {
-    # these environment variables are reserved, set only by nu
-    let ignore = [
-        BF_X
-        CURRENT_FILE
-        FILE_PWD
-    ]
-
     # load environment variables from shared directory
-    ls -f $env_dir | get name | each {|x|
-        {name: ($x | path basename | str upcase), path: $x}
-    } | where {|x|
-        $x.name not-in $ignore
-    } | each {|x|
-        open --raw $x.path | str trim | {$x.name: $in}
-    } | reduce -f {} {|y, acc|
-        $acc | merge $y
-    } | load-env
+    let loaded = { ^bf-withenv env } | handle env/load | lines | parse "{key}={val}" | transpose -i -r -d
+    load-env $loaded
 
     # set current script
     if $set_executable { x_set $x_prefix }
@@ -121,13 +107,12 @@ export def --env set [
     # save to current environment
     load-env {$prefixed: $value}
 
-    # create persistence file
+    # create persistence file and apply permissions
     $value | save --force $"($env_dir)/($prefixed)"
     apply_perms
 
     # output for debugging purposes
-    # don't bother for BF_X - there are lots of these otherwise!
-    if $key != "X" { write debug $"($prefixed)=($value)." env/set }
+    write debug $"($prefixed)=($value)." env/set
 }
 
 # Show all bfren platform environment variables
@@ -137,23 +122,32 @@ export def show [] {
 
 # Store incoming environment variables
 export def store [] {
-    ^env | lines | parse "{key}={value}" | each {|x| $x.value | save --force $"($env_dir)/($x.key)" } | ignore
+    # these environment variables are reserved, set only by nu
+    const ignore = [
+        CURRENT_FILE
+        FILE_PWD
+        PWD
+    ]
+
+    # load incoming environment, parse and save to environment directory
+    ^env | lines | parse "{key}={val}" | each {|x| if $x.key not-in $ignore { $x.val | save --force $"($env_dir)/($x.key)" } } | ignore
+
+    # apply permissions to files
     apply_perms
 }
 
 # Clears the BF_X environment variable
 export def --env x_clear [] { hide X }
 
-# Gets the name of the currently executing script
-export def x_get [
-    x_prefix?: string # If set, will be added before the name of the current script
-] {
-    if $x_prefix != null { $"($x_prefix)/" } | $"($in)(main -P CURRENT_FILE | path basename)"
-}
-
 # Sets the BF_X environment variable to the name of the currently executing script
 export def --env x_set [
     x_prefix?: string # If set, will be added before the name of the current script
 ] {
-    set X (x_get $x_prefix)
+    # get name of current file
+    let current_file = try { $env.CURRENT_FILE | path basename }
+    if $current_file == null { write error "Unable to determine current file." env/x_set }
+
+    # set prefixed variable
+    let prefixed = add_prefix X
+    load-env {$prefixed: (if $x_prefix != null { $"($x_prefix)/" } | $"($in)($current_file)")}
 }
