@@ -141,10 +141,11 @@ export def --env x_clear [] { hide X }
 
 # Sets the BF_X environment variable to the name of the currently executing script
 export def --env x_set [
-    x_prefix?: string # If set, will be added before the name of the current script
+    x_prefix?: string       # If set, will be added before the name of the current script
+    --override (-o): string # If set, will be used instead of CURRENT_FILE
 ] {
     # get name of current file
-    let current_file = try { $env.CURRENT_FILE | path basename }
+    let current_file = if $override != null { $override } else { try { $env.CURRENT_FILE | path basename } }
     if $current_file == null { write error "Unable to determine current file." env/x_set }
 
     # set prefixed variable
