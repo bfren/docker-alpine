@@ -76,7 +76,7 @@ export def --env load [
 ] {
     # load environment variables from shared directory
     let loaded = { ^bf-withenv env } | handle env/load | lines | parse "{key}={val}" | transpose -i -r -d
-    load-env $loaded
+    try { load-env $loaded }
 
     # set current script
     if $set_executable { x_set $x_prefix }
