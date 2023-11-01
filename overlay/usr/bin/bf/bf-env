@@ -1,7 +1,6 @@
 #!/usr/bin/nu
 
 use bf
-#bf env x_set
 
 # Attempt to get an environment variable - if $default_value is not set and the variable does not exist,
 # an error will be thrown
