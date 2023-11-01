@@ -1,3 +1,4 @@
+use env.nu
 use fs.nu
 use write.nu
 
@@ -69,7 +70,7 @@ export def apply_file [
     file: string    # Path to ch.d file - if the file does not exist, will look in ch.d directory instead
 ] {
     # if file is not a path that exists, prepend CH_D directory
-    let path = if ($file | path exists) { $file } else { $"($env.BF_ETC_CH_D)/($file)" }
+    let path = if ($file | path exists) { $file } else { $"(env ETC_CH_D)/($file)" }
 
     # check file exists
     if ($path | fs is_not_file) {
