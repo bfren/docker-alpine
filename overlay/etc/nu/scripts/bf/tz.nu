@@ -1,5 +1,6 @@
 use fs.nu
 use del.nu
+use dump.nu
 use pkg.nu
 use write.nu
 

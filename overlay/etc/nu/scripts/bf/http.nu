@@ -1,3 +1,4 @@
+use dump.nu
 use write.nu
 
 # Load a URL, outputting any errors or OK on success

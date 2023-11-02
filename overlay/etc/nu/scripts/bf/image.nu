@@ -1,4 +1,5 @@
 use build.nu
+use dump.nu
 use env.nu
 use fs.nu
 

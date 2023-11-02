@@ -1,4 +1,5 @@
 use del.nu
+use dump.nu
 use write.nu
 
 # clean temporary directories, caches and installation files
