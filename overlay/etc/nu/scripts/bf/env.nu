@@ -33,7 +33,7 @@ def add_prefix [key: string] { $prefix + $key }
 
 # Apply permissions for the environment variables directory -
 # we do this directly using chmod so env can be used in the ch module
-export def apply_perms [] { { ^chmod -R 0666 $env_dir } | handle -i }
+export def apply_perms [] { { ^chmod -R a+rwX $env_dir } | handle -i }
 
 # Returns true if $key exists in the environment and is equal to 1
 export def check [
