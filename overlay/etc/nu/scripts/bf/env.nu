@@ -147,9 +147,10 @@ export def --env x_set [
 ] {
     # get name of current file
     let current_file = if $override != null { $override } else { try { $env.CURRENT_FILE | path basename } }
-    if $current_file == null { write error "Unable to determine current file." env/x_set }
+    if $current_file == null { write error "Unable to determine current file - please use --override." env/x_set }
 
-    # set prefixed variable
+    # set prefixed variable - we do it directly because it doesn't need to be persisted to the environment
+    # directory - it only applies to the current operation / request
     let prefixed = add_prefix X
     load-env {$prefixed: (if $x_prefix != null { $"($x_prefix)/" } | $"($in)($current_file)")}
 }
