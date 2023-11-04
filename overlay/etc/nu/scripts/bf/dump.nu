@@ -7,8 +7,11 @@ export def main [
 
     # check BF_DEBUG directly so dump can be used everywhere (including env.nu module)
     if ($env | get --ignore-errors BF_DEBUG | into string) == "1" {
+        # print newline as a spacer
+        char newline | print
+
         # output optional text heading
-        if $text != null { $"(char newline)#== ($text) ==#" | print }
+        if $text != null { $"#== ($text) ==#" | print }
 
         # attempt to output as nuon - if that fails (e.g. list<error>) use an expanded table instead
         try {
@@ -16,6 +19,9 @@ export def main [
         } catch {
             $input | table --expand
         }
+
+        # print newline as a spacer
+        char newline | print
     }
 
     # return the original input unchanged
