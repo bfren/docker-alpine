@@ -46,3 +46,10 @@ export def create_nushell_links [
     #^ln -sf $"($shared_nu)/plugins" $"($user_nu)/plugins"
     ^ln -sf $"($shared_nu)/scripts" $"($user_nu)/scripts"
 }
+
+# Checks whether or not user $name exists in /etc/passwd
+export def exists [
+    name: string    # The user name
+] {
+    { ^getent passwd $name } | handle -c | $in == 0
+}
