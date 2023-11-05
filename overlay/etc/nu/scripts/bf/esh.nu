@@ -14,7 +14,7 @@ export def main [
 
     # dump esh output and write error message
     let on_failure = { write error $"Error using template ($input)." esh }
-    let on_success = { if ($output | path exists) { write debug $"($output) created." esh } }
+    let on_success = { if ($output | path exists) { write debug $" .. ($output) created." esh } }
 
     # generate template
     #   and: return value if $output is not set
@@ -26,19 +26,22 @@ export def main [
     }
 }
 
-# It is common to generate a file using an esh template in the /etc/bf/templates directory,
-# so this makes that easier
+# It is common to generate a file using an esh template in the bf templates directory, so this makes that easier
+# - it assumes a file with the same name as $output, plus '.esh' exists in the templates directory, and that
+# the $output directory exists as well
 export def template [
-    filename: string
-    output_dir: string
+    output: string  # Absolute path to the output file
 ] {
-    # build paths and ensure input file and output directory exist
+    # get filenames and paths
+    let filename = $output | path basename
+    let output_dir = $output | path dirname
     let input = $"(env ETC_TEMPLATES)/($filename).esh"
-    let output = $"($output_dir)/($filename)"
-    if ($input | fs is_not_file) { write error $"Template ($input) does not exist." esh/template }
+
+    # ensure input file and output directory exist
+    if ($input | fs is_not_file) { write error $"Template file ($input) does not exist." esh/template }
     if ($output_dir | fs is_not_dir) { write error $"Output directory ($output_dir) does not exist." esh/template }
 
     # output debug message and generate file
-    write debug $" .. ($filename)" esh/template
+    write debug $" .. ($filename).esh"
     main $input $output
 }
