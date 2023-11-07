@@ -45,6 +45,8 @@ COPY ./3.17/overlay /
 ENV \
     # path to bf configuration
     BF_ETC=/etc/bf \
+    # set container to this timezone
+    BF_TZ=Europe/London \
     # whether or not to upgrade packages during installation
     #   0: no
     #   1: yes
