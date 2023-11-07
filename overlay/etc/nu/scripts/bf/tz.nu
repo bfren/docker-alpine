@@ -4,12 +4,28 @@ use dump.nu
 use pkg.nu
 use write.nu
 
+# path to current timezone info
+const localtime = "/etc/localtime"
+
+# path to file containing name of current timezone
+const timezone = "/etc/timezone"
+
+# path to installed timezone definition files
+const zoneinfo = "/usr/share/zoneinfo"
+
 # Set the container's timezone
 export def main [
     tz: string  # The name of the timezone to use
 ] {
+    # if current timezone is already $tz, do nothing
+    let current = fs read --quiet $timezone
+    if $current == $tz {
+        write $"Timezone is already ($tz)." tz
+        return
+    }
+
     # get path to timezone definiton
-    let path = $"/usr/share/zoneinfo/($tz)"
+    let path = $"($zoneinfo)/($tz)"
 
     # install timezone package
     write debug "Installing tzdata packages." tz
@@ -21,9 +37,10 @@ export def main [
         write error $"($tz) is not a recognise timezone." tz
     }
 
-    # copy timezone info
+    # copy timezone info and write to file
     write $"Setting timezone to ($tz)." tz
-    cp $path /etc/localtime
+    cp $path $localtime
+    $tz | save --force $timezone
     clean
 
     # return nothing
@@ -34,5 +51,5 @@ export def main [
 def clean [] {
     write debug "Removing tzdata packages." tz/clean
     pkg remove [.tz]
-    del force /usr/share/zoneinfo/*
+    del force $"($zoneinfo)/*"
 }
