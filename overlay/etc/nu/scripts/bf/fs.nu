@@ -91,14 +91,27 @@ export def make_temp_dir [
 
 # Read a file, trim contents and return
 export def read [
-    path: string
+    path: string    # Absolute path to the file to read
+    --quiet (-q)    # If set, no error will be output if $path does not exist
 ] {
     # attempt to get full path
     let use_path = $path | path expand
 
     # ensure file exists
-    if ($use_path | is_not_file) { write error $"File does not exist: ($use_path)." fs/read }
+    if ($use_path | is_not_file) {
+        # share error between debug and error output
+        let error = $"File does not exist: ($use_path)."
 
-    # get and trim raw contents
+        # if quiet is enabled, write to debug output and return
+        if $quiet {
+            write debug $error fs/read
+            return
+        }
+
+        # write an error message so execution halts
+        write error $error fs/read
+    }
+
+    # file exists so get and trim raw contents
     open --raw $use_path | str trim
 }
