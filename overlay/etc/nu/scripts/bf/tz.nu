@@ -53,3 +53,6 @@ def clean [] {
     pkg remove [.tz]
     del force $"($zoneinfo)/*"
 }
+
+# Return the name of the current timezone
+export def current [] { fs read $timezone }
