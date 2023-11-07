@@ -43,7 +43,7 @@ COPY ./overlay /
 COPY ./3.18/overlay /
 
 ENV \
-    # path to bf configuration
+    # path to bf configuration - installation script requires this
     BF_ETC=/etc/bf \
     # set container to this timezone
     BF_TZ=Europe/London \
