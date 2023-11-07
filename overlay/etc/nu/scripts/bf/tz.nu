@@ -25,21 +25,21 @@ export def main [
     }
 
     # get path to timezone definiton
-    let path = $"($zoneinfo)/($tz)"
+    let zone = $"($zoneinfo)/($tz)"
 
     # install timezone package
     write debug "Installing tzdata packages." tz
     pkg install [--virtual .tz tzdata]
 
     # check the specified timezone exists
-    if ($path | fs is_not_file) {
+    if ($zone | fs is_not_file) {
         clean
         write error $"($tz) is not a recognise timezone." tz
     }
 
     # copy timezone info and write to file
     write $"Setting timezone to ($tz)." tz
-    cp $path $localtime
+    cp $zone $localtime
     $tz | save --force $timezone
     clean
 
