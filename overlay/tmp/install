@@ -27,6 +27,11 @@ def main [] {
         bf write error "Unable to install additional packages."
     }
 
+    # add environment loader and bf module to config
+    bf write "Adding environment loader and bf module to config."
+    bf fs read "env-load.nu" | bf config
+    bf config use bf
+
     # set timezone
     bf tz (bf env TZ)
 }
