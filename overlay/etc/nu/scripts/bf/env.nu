@@ -14,16 +14,20 @@ export def main [
     key: string         # Environment variable key - the BF_ prefix will be added automatically
     default_value?: any # Optional default value to use if the variable cannot be found
     --no-prefix (-P)    # Do not add the BF_ prefix
+    --safe (-s)         # If set, an empty string will be returned if the value is not found in $env
 ] {
     # add (or don't add!) the BF_ prefix
     let prefixed = if $no_prefix { $key } else { add_prefix $key }
 
     # return the value if it exists
-    let value = safe --no-prefix $prefixed
+    let value = $env | get --ignore-errors --sensitive $prefixed
     if $value != null { return $value }
 
     # return the default value if it is set
     if $default_value != null { return $default_value }
+
+    # return nothing if $safe is set
+    if $safe { return "" }
 
     # otherwise output with an error
     write error $"Unable to get environment variable ($prefixed)." env
@@ -41,33 +45,33 @@ export def check [
     key: string         # Environment variable key - the BF_ prefix will be added automatically
     --no-prefix (-P)    # Do not add the BF_ prefix
 ] {
-    # add (or don't add!) the BF_ prefix
-    let prefixed = if $no_prefix { $key } else { add_prefix $key }
-
-    # return whether or not the key value equals 1
-    (safe --no-prefix $prefixed | into string) == "1"
+    let value = "1"
+    if $no_prefix { is -P $key $value } else { is $key $value }
 }
 
 # Returns true if the BF_DEBUG environment variable is set to 1
 export def debug [] { check DEBUG }
 
-# Hide and remove an environment variable
-export def --env hide [
-    key: string         # Environment variable key name - the BF_ prefix will be added automatically
+# Returns true if $key does not exist in the environment, or is empty
+export def empty [
+    key: string         # Environment variable key - the BF_ prefix will be added automatically
+    --no-prefix (-P)    # Do not add the BF_ prefix
+] {
+    let value = ""
+    if $no_prefix { is -P $key $value } else { is $key $value }
+}
+
+# Returns true if $key is equal to $value
+def is [
+    key: string         # Environment variable key - the BF_ prefix will be added automatically
+    value: string       # The value to compare against
     --no-prefix (-P)    # Do not add the BF_ prefix
 ] {
     # add (or don't add!) the BF_ prefix
     let prefixed = if $no_prefix { $key } else { add_prefix $key }
 
-    # hide from the current environment
-    hide-env --ignore-errors $prefixed
-
-    # delete persistence file
-    rm --force $"($env_dir)/($prefixed)"
-
-    # output for debugging purposes
-    # don't bother for BF_X - there are lots of these otherwise!
-    if $key != "X" { write debug $"($prefixed) removed." env/hide }
+    # return whether or not the key value equals $value
+    (main --no-prefix $prefixed | into string) == $value
 }
 
 # Load shared environment into the current $env
@@ -83,19 +87,6 @@ export def --env load [
     if $set_executable { x_set $x_prefix }
 }
 
-# Safely returns the value of an environment variable -
-# if the variable doesn't exist, an empty string will be returned instead
-export def safe [
-    key: string         # Environment variable key - the BF_ prefix will be added automatically
-    --no-prefix (-P)    # Do not add the BF_ prefix
-] {
-    # add (or don't add!) the BF_ prefix
-    let prefixed = if $no_prefix { $key } else { add_prefix $key }
-
-    # ignore errors when getting the variable
-    $env | get --ignore-errors --sensitive ($prefixed)
-}
-
 # Save an environment variable to the bfren environment
 export def --env set [
     key: string         # Environment variable key name - the BF_ prefix will be added automatically
@@ -104,6 +95,12 @@ export def --env set [
 ] {
     # add (or don't add!) the BF_ prefix
     let prefixed = if $no_prefix { $key } else { add_prefix $key }
+
+    # if the value is empty, unset / hide the variable
+    if $value == null or $value == "" {
+        unset --no-prefix $prefixed
+        return
+    }
 
     # save to current environment
     load-env {$prefixed: $value}
@@ -117,9 +114,7 @@ export def --env set [
 }
 
 # Show all bfren platform environment variables
-export def show [] {
-    $env | transpose key value | where {|x| $x.key | str starts-with $prefix } | | transpose -i -r -d | print
-}
+export def show [] { $env | transpose key value | where {|x| $x.key | str starts-with $prefix } | | transpose -i -r -d | print }
 
 # Store incoming environment variables
 export def store [] {
@@ -135,6 +130,25 @@ export def store [] {
 
     # apply permissions to files
     apply_perms
+}
+
+# Unset, hide and remove an environment variable
+export def --env unset [
+    key: string         # Environment variable key name - the BF_ prefix will be added automatically
+    --no-prefix (-P)    # Do not add the BF_ prefix
+] {
+    # add (or don't add!) the BF_ prefix
+    let prefixed = if $no_prefix { $key } else { add_prefix $key }
+
+    # hide from the current environment
+    hide-env --ignore-errors $prefixed
+
+    # delete persistence file
+    rm --force $"($env_dir)/($prefixed)"
+
+    # output for debugging purposes
+    # don't bother for BF_X - there are lots of these otherwise!
+    if $key != "X" { write debug $"($prefixed) removed." env/hide }
 }
 
 # Clears the BF_X environment variable
