@@ -11,7 +11,7 @@ export def main [
     text: string    # The text to write
     script?: string # The name of the calling script or executable
 ] {
-    p $text $colour $script
+    fmt $text $colour $script | print
 }
 
 # Write text in grey with the current date / time, if BF_DEBUG is enabled
@@ -20,7 +20,7 @@ export def debug [
     script?: string # The name of the calling script or executable
 ] {
     if ($env | get --ignore-errors BF_DEBUG | into string) == "1" {
-        p $text $colour_debug $script | print --no-newline $"(ansi $colour_debug)($in)(ansi reset)"
+        fmt $text $colour_debug $script | $"(ansi $colour_debug)($in)(ansi reset)" | print
     }
 }
 
@@ -30,7 +30,7 @@ export def error [
     script?: string         # The name of the calling script or executable
     --code (-c): int = 1    # The error code to emit after the message
 ] {
-    notok $error $script | print --no-newline --stderr $in
+    fmt $error $colour_notok $script | print --stderr
     exit $code
 }
 
@@ -39,7 +39,7 @@ export def notok [
     text: string    # The text to write
     script?: string # The name of the calling script or executable
 ] {
-    p $text $colour_notok $script
+    fmt $text $colour_notok $script | print
 }
 
 # Write text in green with the current date / time
@@ -47,11 +47,11 @@ export def ok [
     text: string    # The text to write
     script?: string # The name of the calling script or executable
 ] {
-    p $text $colour_ok $script
+    fmt $text $colour_ok $script | print
 }
 
-# Write text, optionally in a specified colour, with the current date / time and script name
-def p [
+# Format text, optionally in a specified colour, with the current date / time and script name
+def fmt [
     text: string    # The text to write
     colour: string  # ANSI colour code to use for the text
     script?: string # The name of the calling script or executable
@@ -75,5 +75,5 @@ def p [
 
     # format date and write text
     let date = date now | format date "%Y-%m-%d %H:%M:%S"
-    print $"[bf] ($date) | (ansi $colour)($prefix)($text)($suffix)(ansi reset)"
+    $"[bf] ($date) | (ansi $colour)($prefix)($text)($suffix)(ansi reset)"
 }
