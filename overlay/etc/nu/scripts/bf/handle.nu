@@ -74,6 +74,5 @@ export def main [
 
     # use stderr and exit code to write the error
     # we use the executable so handle can be used everywhere without causing cyclical import errors
-    ^bf-write-notok ($result.stderr | str trim) $"($script)"
-    exit $result.exit_code
+    ^bf-write-error --code $result.exit_code ($result.stderr | str trim) $"($script)"
 }
