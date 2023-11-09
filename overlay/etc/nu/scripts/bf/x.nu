@@ -4,6 +4,9 @@ use dump.nu
 export def main [
     path: string            # Absolute path to the file to execute
 ] {
+    # if the file path is long, use the filename instead of the full path
     let name = if ($path | str length) > 15 { $path | path basename } else { $path }
+
+    # set X variable and execute
     with-env {BF_X: $name} { ^nu $path }
 }
