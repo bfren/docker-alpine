@@ -37,7 +37,7 @@ export def main [
 def add_prefix [key: string] { $prefix + $key }
 
 # Apply permissions for the environment variables directory -
-# we do this directly using chmod so env can be used in the ch module
+# we do this using the external chmod so the env.nu submodule can be used in ch.nu
 export def apply_perms [] { { ^chmod -R a+rwX $env_dir } | handle -i }
 
 # Returns true if $key exists in the environment and is equal to 1
@@ -46,7 +46,7 @@ export def check [
     --no-prefix (-P)    # Do not add the BF_ prefix
 ] {
     let value = "1"
-    if $no_prefix { is -P $key $value } else { is $key $value }
+    if $no_prefix { test -P $key $value } else { test $key $value }
 }
 
 # Returns true if the BF_DEBUG environment variable is set to 1
@@ -58,11 +58,11 @@ export def empty [
     --no-prefix (-P)    # Do not add the BF_ prefix
 ] {
     let value = ""
-    if $no_prefix { is -P $key $value } else { is $key $value }
+    if $no_prefix { test -P $key $value } else { test $key $value }
 }
 
 # Returns true if $key is equal to $value
-def is [
+def test [
     key: string         # Environment variable key - the BF_ prefix will be added automatically
     value: string       # The value to compare against
     --no-prefix (-P)    # Do not add the BF_ prefix
@@ -71,7 +71,7 @@ def is [
     let prefixed = if $no_prefix { $key } else { add_prefix $key }
 
     # return whether or not the key value equals $value
-    (main --no-prefix $prefixed | into string) == $value
+    (main --no-prefix --safe $prefixed | into string) == $value
 }
 
 # Load shared environment into the current $env
@@ -148,7 +148,7 @@ export def --env unset [
 
     # output for debugging purposes
     # don't bother for BF_X - there are lots of these otherwise!
-    if $key != "X" { write debug $"($prefixed) removed." env/hide }
+    if $key != "X" { write debug $"($prefixed) removed." env/unset }
 }
 
 # Clears the BF_X environment variable
