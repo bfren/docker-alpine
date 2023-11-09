@@ -13,12 +13,8 @@ export def main [
         # output optional text heading
         if $text != null { $"#== ($text) ==#" | print }
 
-        # attempt to output as nuon - if that fails (e.g. list<error>) use an expanded table instead
-        try {
-            $input | to nuon --indent 2 | print
-        } catch {
-            $input | table --expand
-        }
+        # output as an expanded table
+        $input | table --expand | print
 
         # print newline as a spacer
         char newline | print
