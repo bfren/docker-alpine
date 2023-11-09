@@ -9,20 +9,23 @@ export def main [
     input: string   # Input file
     output?: string # Output file - if omitted the output will be returned instead of saved
 ] {
+    # debug message
+    write debug $"Generating esh template." esh
+
     # ensure template file exists
-    if ($input | fs is_not_file) { write error $"Template file ($input) does not exist." esh }
+    if ($input | fs is_not_file) { write error $"Template ($input) does not exist." esh }
 
     # dump esh output and write error message
     let on_failure = { write error $"Error using template ($input)." esh }
-    let on_success = { if ($output | path exists) { write debug $" .. ($output) created." esh } }
+    let on_success = {|o| $o | save --force $output }
 
     # generate template
     #   and: return value if $output is not set
     #   or:  save to file if $output is set
     if $output == null {
-        { ^esh $input } | handle -d "esh - to stdout" -f $on_failure esh
+        { ^esh $input } | handle -d "esh: to stdout" -f $on_failure esh
     } else {
-        { ^esh -o $output $input } | handle -d $"esh - to file ($output)" -f $on_failure  -s $on_success esh
+        { ^esh $input } | handle -d $"esh: to file ($output)" -f $on_failure  -s $on_success esh
     }
 }
 
