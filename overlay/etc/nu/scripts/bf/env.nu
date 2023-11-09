@@ -61,19 +61,6 @@ export def empty [
     if $no_prefix { test -P $key $value } else { test $key $value }
 }
 
-# Returns true if $key is equal to $value
-def test [
-    key: string         # Environment variable key - the BF_ prefix will be added automatically
-    value: string       # The value to compare against
-    --no-prefix (-P)    # Do not add the BF_ prefix
-] {
-    # add (or don't add!) the BF_ prefix
-    let prefixed = if $no_prefix { $key } else { add_prefix $key }
-
-    # return whether or not the key value equals $value
-    (main --no-prefix --safe $prefixed | into string) == $value
-}
-
 # Load shared environment into the current $env
 export def --env load [
     x_prefix?: string       # If $set_executable is added, $prefix will be added before the name of the current script
@@ -130,6 +117,19 @@ export def store [] {
 
     # apply permissions to files
     apply_perms
+}
+
+# Returns true if $key is equal to $value
+export def test [
+    key: string         # Environment variable key - the BF_ prefix will be added automatically
+    value: string       # The value to compare against
+    --no-prefix (-P)    # Do not add the BF_ prefix
+] {
+    # add (or don't add!) the BF_ prefix
+    let prefixed = if $no_prefix { $key } else { add_prefix $key }
+
+    # return whether or not the key value equals $value
+    (main --no-prefix --safe $prefixed | into string) == $value
 }
 
 # Unset, hide and remove an environment variable
