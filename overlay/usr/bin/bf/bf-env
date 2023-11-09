@@ -9,6 +9,6 @@ def main [
     default_value?: any # Optional default value to use if the variable cannot be found
     --no-prefix (-P)    # Do not add the standard prefix
 ] {
-    let value = if $no_prefix { bf env --no-prefix $key $default_value } else { bf env $key $default_value }
+    let value = if $no_prefix { bf env -P $key $default_value } else { bf env $key $default_value }
     $value | print --no-newline
 }
