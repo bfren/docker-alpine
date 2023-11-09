@@ -21,7 +21,7 @@ export def main [] {
 
     # output image info
     do $border
-    $"bfren | ($image)" | ^figlet
+    $"bfren | ($image)" | ^figlet -w 120
     char newline | print
     $"bfren/($image):($version) [($distro.name | str downcase):($distro.version)] [($last.name | str downcase):($last.version)]" | print
     $"Built on (ls IMAGE | first | get modified)" | print
