@@ -70,6 +70,9 @@ export def is_not_dir [] { not ($in | path type) == "dir" }
 # Returns true unless input path exists and is a file
 export def is_not_file [] { not ($in | path type) == "file" }
 
+# Returns true unless input path exists and is a symlink
+export def is_not_symlink [] { not ($in | path type) == "symlink" }
+
 # Make a temporary directory in /tmp
 export def make_temp_dir [
     --local (-l)    # If set the temporary directory will be created in the current working directory
