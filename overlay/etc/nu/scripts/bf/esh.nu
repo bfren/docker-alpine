@@ -35,8 +35,8 @@ export def main [
 }
 
 # It is common to generate a file using an esh template in the bf templates directory, so this makes that easier
-# - it assumes a file with the same name as $output, plus '.esh' exists in the templates directory, and that
-# the $output directory exists as well
+# - it assumes a file with the same basename as $output plus '.esh' exists in the templates directory
+# - and that the $output directory exists
 export def template [
     output: string  # Absolute path to the output file
 ] {
