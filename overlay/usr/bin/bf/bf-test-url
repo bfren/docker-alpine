@@ -1,67 +1,16 @@
-#!/bin/sh
+#!/usr/bin/nu
 
-set -euo pipefail
+use bf
+bf env load -x
 
-
-#======================================================================================================================
-# Executable usage.
-#======================================================================================================================
-
-usage () {
-    echo "Usage: `basename ${0}` -m full|simple URL" 2>&1
-    echo
-    echo "    -m    Either 'full' (checks HTTP status) or 'simple' (default)."
-    echo "    -h    Show this usage message."
-    exit 2
+# Test a URL and return whether or not it gives an error HTTP status code
+def main [
+    url: string             # URL to load
+    --return-status (-s)    # Enable to return status instead of false
+] {
+    if $return_status {
+        bf http test_url --return-status $url
+    } else {
+        bf http test_url $url
+    }
 }
-
-while getopts ":hm:" C ; do
-    case ${C} in
-        h) usage ;;
-        m) MODE="${OPTARG}" ;;
-        ?) bf-notok "Invalid option: -${OPTARG}" "bf-test-url" && usage ;;
-    esac
-done
-
-shift $(($OPTIND -1))
-
-[[ -z "${MODE-}" ]] && MODE="simple"
-
-URL="${1-}"
-[[ -z "${URL-}" ]] && bf-error "You must provide the URL to test." "bf-test-url"
-
-
-#======================================================================================================================
-# Attempt to load the URL using wget.
-#======================================================================================================================
-
-if [ "${MODE}" = "simple" ] ; then
-
-    bf-debug "Loading ${URL}." "bf-test-url"
-    wget --no-verbose --spider --timeout=10 --tries=1 "${URL}" || exit 1
-
-elif [ "${MODE}" = "full" ] ; then
-
-    # get status
-    STATUS=$(bf-http-status "${URL}" || true)
-
-    # if STATUS is not a number, something went wrong loading the URL
-    if echo "${STATUS}" | grep -q '[^0-9]' ; then
-        bf-error "Invalid or inaccessible URL: ${URL}." "bf-test-url"
-    fi
-
-    # output the status and result
-    bf-debug "Status ${STATUS}:" "bf-test-url"
-    if [ "${STATUS}" -ge 200 ] && [ "${STATUS}" -le 399 ] ; then
-        bf-debug "  OK." "bf-test-url"
-    elif [ "${STATUS}" -ge 400 ] && [ "${STATUS}" -le 499 ] ; then
-        bf-error "  content error." "bf-test-url"
-    else
-        bf-error "  unknown error." "bf-test-url"
-    fi
-
-else
-
-    bf-error "Unknown mode: ${MODE-}" "bf-test-url"
-
-fi

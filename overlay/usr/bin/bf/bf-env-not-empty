@@ -1,0 +1,12 @@
+#!/usr/bin/nu
+
+use bf
+
+# Exits 0 if $key exists in the environment and is not empty
+def main [
+    key: string         # Environment variable key - the BF_ prefix will be added automatically
+    --no-prefix (-P)    # Do not add the standard prefix
+] {
+    let empty = if $no_prefix { bf env empty -P $key } else { bf env empty $key }
+    if not $empty { exit 0 } else { exit 1 }
+}

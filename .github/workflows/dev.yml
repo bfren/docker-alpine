@@ -12,10 +12,10 @@ jobs:
     steps:
       -
         name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       -
         name: Checkout shUnit2
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: kward/shunit2
           ref: v2.1.8
@@ -28,16 +28,22 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        alpine: [ "3.8", "3.9", "3.10", "3.11", "3.12", "3.13", "3.14", "3.15", "3.16", "3.17", "3.18", "edge" ]
+        alpine: [ "3.15", "3.16", "3.17", "3.18" ]
     runs-on: ubuntu-latest
     steps:
       -
         name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       -
         name: Get repository name
         run: echo "REPOSITORY_NAME=$(echo '${{ github.repository }}' | awk -F '/' '{print $2}')" >> $GITHUB_ENV
         shell: bash
+      -
+        name: Read Alpine version - revision
+        uses: bfren/read-file@v2
+        with:
+          file: ./${{ matrix.alpine }}/ALPINE_REVISION
+        id: alpine_revision
       -
         name: Read image version
         uses: bfren/read-file@v2
@@ -58,20 +64,20 @@ jobs:
         id: version
       -
         name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
       -
         name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
       -
         name: Login to DockerHub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
         name: Build and push
         id: docker_build
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           file: ./${{ matrix.alpine }}/Dockerfile
           build-args: |
@@ -81,13 +87,15 @@ jobs:
           platforms: linux/amd64,linux/arm/v7,linux/arm64
           tags: |
             bfren/alpine:alpine${{ matrix.alpine }}-dev
-            bfren/alpine:alpine${{ matrix.alpine }}-${{ steps.version_minor.outputs.contents }}-beta
-            bfren/alpine:alpine${{ matrix.alpine }}-${{ steps.version.outputs.contents }}-beta
+            bfren/alpine:alpine${{ matrix.alpine }}-${{ steps.version_minor.outputs.contents }}-dev
+            bfren/alpine:alpine${{ matrix.alpine }}-${{ steps.version.outputs.contents }}-dev
+            bfren/alpine:alpine${{ steps.alpine_revision.outputs.contents }}-dev
+            bfren/alpine:alpine${{ steps.alpine_revision.outputs.contents }}-${{ steps.version.outputs.contents }}-dev
       -
         name: Build and push default tags
         id: docker_build_default
         if: matrix.alpine == '3.18'
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           file: ./${{ matrix.alpine }}/Dockerfile
           build-args: |
@@ -97,9 +105,9 @@ jobs:
           platforms: linux/amd64,linux/arm/v7,linux/arm64
           tags: |
             bfren/alpine:dev
-            bfren/alpine:${{ steps.version_major.outputs.contents }}-beta
-            bfren/alpine:${{ steps.version_minor.outputs.contents }}-beta
-            bfren/alpine:${{ steps.version.outputs.contents }}-beta
+            bfren/alpine:${{ steps.version_major.outputs.contents }}-dev
+            bfren/alpine:${{ steps.version_minor.outputs.contents }}-dev
+            bfren/alpine:${{ steps.version.outputs.contents }}-dev
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}

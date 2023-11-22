@@ -1,12 +1,7 @@
-#!/bin/sh
+#!/usr/bin/nu
 
-set -euo pipefail
+use bf
+bf env load -x
 
-
-#======================================================================================================================
-# Output image version.
-#======================================================================================================================
-
-printf "bfren | %s" `cat /BF_IMAGE` | figlet
-bf-echo "bfren `cat /BF_IMAGE` v`cat /BF_VERSION` (alpine/`cat /BF_ALPINE`)" "bf-image"
-bf-echo "https://github.com/bfren/docker-`cat /BF_IMAGE`" "bf-image"
+# Output information about the current image including name and version
+def main [] { bf image }

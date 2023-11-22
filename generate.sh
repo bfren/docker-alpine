@@ -4,36 +4,41 @@ set -euo pipefail
 
 docker pull bfren/alpine
 
-ALPINE_VERSIONS="3.8 3.9 3.10 3.11 3.12 3.13 3.14 3.15 3.16 3.17 3.18 edge"
-for V in ${ALPINE_VERSIONS} ; do
+BUSYBOX_VERSION="1.36.1"
+NUSHELL_VERSION="0.87.0"
+ALPINE_EDITIONS="3.15 3.16 3.17 3.18"
 
-    echo "Alpine ${V}"
-    ALPINE_REVISION=`cat ./${V}/ALPINE_REVISION`
+for E in ${ALPINE_EDITIONS} ; do
+
+    echo "Alpine ${E}"
+    ALPINE_VERSION=`cat ./${E}/ALPINE_REVISION`
+    BUSYBOX_IMAGE="${BUSYBOX_VERSION}-alpine${E}"
 
     DOCKERFILE=$(docker run \
         -v ${PWD}:/ws \
         -e BF_DEBUG=0 \
         bfren/alpine esh \
         "/ws/Dockerfile.esh" \
-        ALPINE_VERSION=${V} \
-        ALPINE_REVISION=${ALPINE_REVISION}
+        ALPINE_EDITION=${E} \
+        ALPINE_VERSION=${ALPINE_VERSION} \
+        BUSYBOX_IMAGE=${BUSYBOX_IMAGE} \
+        BUSYBOX_VERSION=${BUSYBOX_VERSION} \
+        BF_BIN=/usr/bin/bf \
+        BF_ETC=/etc/bf \
+        NUSHELL_VERSION=${NUSHELL_VERSION}
     )
 
-    echo "${DOCKERFILE}" > ./${V}/Dockerfile
-
-    if [ "${V}" = "3.8" ] || [ "${V}" = "edge" ] ; then
-        continue
-    fi
+    echo "${DOCKERFILE}" > ./${E}/Dockerfile
 
     REPOS=$(docker run \
         -v ${PWD}:/ws \
         -e BF_DEBUG=0 \
         bfren/alpine esh \
         "/ws/repositories.esh" \
-        ALPINE_MINOR=${V}
+        ALPINE_MINOR=${E}
     )
 
-    echo "${REPOS}" > ./${V}/overlay/etc/apk/repositories
+    echo "${REPOS}" > ./${E}/overlay/etc/apk/repositories
 
 done
 
