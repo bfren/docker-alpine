@@ -14,12 +14,12 @@ mv ${CFG}/env.nu ${NU}
 
 
 #======================================================================================================================
-# Link Nushell scripts directory
+# Create user links to Nushell config
 #======================================================================================================================
 
-ln ${NU}/config.nu ${CFG}/config.nu
-ln ${NU}/env.nu ${CFG}/env.nu
-ln -s ${NU}/scripts ${CFG}/scripts
+ln -sf ${NU}/config.nu ${CFG}/config.nu
+ln -sf ${NU}/env.nu ${CFG}/env.nu
+ln -sf ${NU}/scripts ${CFG}/scripts
 
 
 #======================================================================================================================

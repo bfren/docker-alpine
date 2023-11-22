@@ -41,8 +41,8 @@ export def create_nushell_links [
     ^chown $"($name):($name)" $user_nu
 
     # link the shared Nushell files and directories to the user's config directory
-    ^ln -f $"($shared_nu)/config.nu" $"($user_nu)/config.nu"
-    ^ln -f $"($shared_nu)/env.nu" $"($user_nu)/env.nu"
+    ^ln -sf $"($shared_nu)/config.nu" $"($user_nu)/config.nu"
+    ^ln -sf $"($shared_nu)/env.nu" $"($user_nu)/env.nu"
     #^ln -sf $"($shared_nu)/plugins" $"($user_nu)/plugins"
     ^ln -sf $"($shared_nu)/scripts" $"($user_nu)/scripts"
 }
