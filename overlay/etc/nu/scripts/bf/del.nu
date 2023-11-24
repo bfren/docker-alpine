@@ -41,13 +41,13 @@ export def old [
     }
 
     # process input values to use in query
-    let minutes_ago = $duration / 1min | (date now) - $in
+    let expiry = (date now) - $duration
     let use_root_dir = $root_dir | str trim --char "/" --right | $"($in)/*"
 
     # perform deletion
-    write debug $"Removing ($use_type)s older than ($duration)." del/old
+    write debug $"Removing ($use_type)s older than ($expiry)." del/old
     let print_and_delete = {|x| write debug $" .. ($x.name)" del/old ; if $live { rm -rf $x.name } }
-    ls $use_root_dir | where type == $use_type and modified < $minutes_ago | each {|x| do $print_and_delete $x }
+    ls $use_root_dir | where type == $use_type and modified < $expiry | each {|x| do $print_and_delete $x }
 
     # return nothing
     return
