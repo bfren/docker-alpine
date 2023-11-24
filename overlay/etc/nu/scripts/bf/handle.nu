@@ -46,6 +46,7 @@ use dump.nu
 export def main [
     script?: string             # The name of the calling script or executable
     --code-only (-c)            # If set, only the exit code will be returned - overrides all other options
+    --debug (-D)                # If set, the result object will be dumped immediately before any processing
     --dump-result (-d): string  # On error, dump the full $result object with this text
     --ignore-errors (-i)        # If set, any errors will be ignored and $result.stdout will be returned whatever it is
     --on-failure (-f): closure  # On failure, optionally run this closure with $code and $stderr as inputs
@@ -53,6 +54,9 @@ export def main [
 ] {
     # capture input so it can be reused
     let result = do $in | complete
+
+    # if debugging is enabled, dump the $result object (it won't show unless BF_DEBUG is 1)
+    if $debug { $result | dump }
 
     # return exit code
     if $code_only { return $result.exit_code }
@@ -74,5 +78,6 @@ export def main [
 
     # use stderr and exit code to write the error
     # we use the executable so handle can be used everywhere without causing cyclical import errors
-    ^bf-write-error --code $result.exit_code ($result.stderr | str trim) $"($script)"
+    ^bf-write-notok ($result.stderr | str trim) $"($script)"
+    exit $result.exit_code
 }
