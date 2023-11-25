@@ -37,10 +37,12 @@ export def main [] {
 
     # run install script in /tmp
     const install = /tmp/install
-    if ($install | fs is_not_file) { write error $"($install) does not exist." install }
-
-    write $"Executing ($install)." install
-    x $install
+    if ($install | fs is_not_file) {
+        write debug $"($install) does not exist." install
+    } else {
+        write $"Executing ($install)." install
+        x $install
+    }
 
     # store versions
     write "Storing image information." install
