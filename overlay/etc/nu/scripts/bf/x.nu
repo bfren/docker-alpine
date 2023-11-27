@@ -1,4 +1,5 @@
 use dump.nu
+use handle.nu
 
 # Set BF_X to the name of the script and then execute it
 export def main [
@@ -8,5 +9,6 @@ export def main [
     let name = if ($path | str length) > 15 { $path | path basename } else { $path }
 
     # set X variable and execute
-    with-env {BF_X: $name} { ^nu $path }
+    let on_failure = {|code, err| print --no-newline --stderr $err ; exit $code }
+    { with-env [BF_X $name] { ^nu $path } } | handle x -f $on_failure
 }
