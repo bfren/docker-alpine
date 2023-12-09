@@ -10,17 +10,18 @@
 
 You can pin by Alpine version:
 
-- **latest, 2, 2.0, 2.0.0, alpine3.18, alpine3.18.4** (EOL: 2025-05-09)
-- **alpine3.17, alpine3.17.5** (EOL: 2024-11-22)
-- **alpine3.16, alpine3.16.7** (EOL: 2024-05-23)
-- **alpine3.15, alpine3.15.10** (EOL: 2023-11-01)
+- **alpine3.19, alpine3.19.x** (EOL: 2025-12-01)
+- **alpine3.18, alpine3.18.x** (EOL: 2025-05-09)
+- **alpine3.17, alpine3.17.x** (EOL: 2024-11-22)
+- **alpine3.16, alpine3.16.x** (EOL: 2024-05-23)
+- **alpine3.15, alpine3.15.x** (EOL: 2023-11-01)
 
 Or if you want a specific base image build you can add a version suffix, e.g.:
 
 - alpine3.18-2.0
-- alpine3.17-2.0.0
+- alpine3.17-2.0.5
 
-These pin to v2.0.x of my Alpine 3.18 image and v2.0.0 of my Alpine 3.17 image respectively.
+These pin to v2.0.x of my Alpine 3.18 image and v2.0.5 of my Alpine 3.17 image respectively.
 
 ## Licence
 
