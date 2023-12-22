@@ -81,11 +81,11 @@ export def make_temp_dir [
     let root = if $local { $env.PWD } else { "/tmp" }
     cd $root
 
-    # make temporary directory and capture output
-    let result = { ^mktemp -d tmp.XXXXXX } | handle fs/make_temp_dir
+    # make temporary directory
+    let tmpdir = mktemp --directory tmp.XXXXXX
 
     # get absolute path to directory and ensure it exists
-    let path = $"($root)/($result)"
+    let path = $"($root)/($tmpdir)"
     if ($path | is_not_dir) { write error "Unable to create temporary directory." fs/make_temp_dir }
 
     # return the path
