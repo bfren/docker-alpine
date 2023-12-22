@@ -6,6 +6,7 @@ use dump.nu
 use env.nu
 use fs.nu
 use image.nu
+use test.nu
 use write.nu
 use x.nu
 
@@ -20,7 +21,7 @@ use x.nu
 export def main [] {
     # run tests with a blank environment - unless we are running test.sh
     if not (env check TESTING) {
-        ^env -i nu -c "use nupm test ; test --dir /etc/nu/scripts"
+        test
     }
 
     # output build info

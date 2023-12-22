@@ -18,7 +18,7 @@ for E in ${ALPINE_EDITIONS} ; do
     echo "Running tests."
     docker run \
         -e BF_TESTING=1 \
-        alpine${E}-test env -i nu -c "use nupm test ; test --dir /etc/nu/scripts/bf"
+        alpine${E}-test env -i nu -c "use bf test ; test"
 
     echo ""
 
