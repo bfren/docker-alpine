@@ -79,13 +79,11 @@ export def make_temp_dir [
 ] {
     # move to requested root dir - can't use bf env module env.ch needs ch.nu, and ch.nu needs fs.nu
     let root = if $local { $env.PWD } else { "/tmp" }
-    cd $root
 
     # make temporary directory
-    let tmpdir = mktemp --directory tmp.XXXXXX
+    let path = mktemp --directory --tmpdir-path $root tmp.XXXXXX
 
     # get absolute path to directory and ensure it exists
-    let path = $"($root)/($tmpdir)"
     if ($path | is_not_dir) { write error "Unable to create temporary directory." fs/make_temp_dir }
 
     # return the path
