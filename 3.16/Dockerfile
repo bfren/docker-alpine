@@ -41,6 +41,7 @@ ARG BF_VERSION
 
 COPY ./overlay /
 COPY ./3.16/overlay /
+ADD https://github.com/nushell/nupm.git /tmp
 
 ENV \
     # path to bf configuration - installation script requires this

@@ -12,4 +12,7 @@ export def main [] {
 
     write debug "Deleting caches." clean
     del force /tmp/* /var/cache/apk/*
+
+    write debug "Deleting tests." clean
+    del force /etc/nu/scripts/tests
 }

@@ -18,6 +18,11 @@ use x.nu
 #   - run cleanup
 #   - output image info
 export def main [] {
+    # run tests with a blank environment - unless we are running test.sh
+    if not (env check TESTING) {
+        ^env -i nu -c "use nupm test ; test --dir /etc/nu/scripts"
+    }
+
     # output build info
     write "Build information." install
     build show

@@ -6,7 +6,7 @@ use write.nu
 const env_dir = "/etc/bf/env.d"
 
 # bfren platform prefix for namespacing environment variables
-const prefix = "BF_"
+export const prefix = "BF_"
 
 # Returns the value of an environment variable - if $default_value is not set and the variable does not exist,
 # an error will be thrown
@@ -46,7 +46,7 @@ export def check [
     --no-prefix (-P)    # Do not add the BF_ prefix
 ] {
     let value = "1"
-    if $no_prefix { test -P $key $value } else { test $key $value }
+    test --no-prefix=($no_prefix) $key $value
 }
 
 # Returns true if the BF_DEBUG environment variable is set to 1
@@ -58,7 +58,7 @@ export def empty [
     --no-prefix (-P)    # Do not add the BF_ prefix
 ] {
     let value = ""
-    if $no_prefix { test -P $key $value } else { test $key $value }
+    test --no-prefix=($no_prefix) $key $value
 }
 
 # Load shared environment into the current $env
