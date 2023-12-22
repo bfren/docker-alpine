@@ -10,5 +10,5 @@ def main [
     --no-prefix (-P)    # Do not add the BF_ prefix
     --safe (-s)         # If set, an empty string will be returned if the value is not found in $env
 ] {
-    bf env --no-prefix=($no_prefix) --safe=($safe) $default_value | print --no-newline
+    bf env --no-prefix=($no_prefix) --safe=($safe) $key $default_value | print --no-newline
 }
