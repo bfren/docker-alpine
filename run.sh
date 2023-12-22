@@ -1,7 +1,7 @@
 #!/bin/sh
 
 IMAGE=`cat VERSION`
-ALPINE=${1:-3.18}
+ALPINE=${1:-3.19}
 
 docker buildx build \
     --load \
@@ -12,4 +12,4 @@ docker buildx build \
     -t alpine${ALPINE}-dev \
     . \
     && \
-    docker run -it -e BF_DEBUG=1 alpine${ALPINE}-dev sh
+    docker run -it -e BF_DEBUG=1 alpine${ALPINE}-dev nu

@@ -10,5 +10,5 @@ export def main [
 
     # set X variable and execute
     let on_failure = {|code, err| print --no-newline --stderr $err ; exit $code }
-    { with-env [BF_X $name] { ^nu $path } } | handle x -f $on_failure
+    with-env [BF_X $name] { ^nu $path }
 }

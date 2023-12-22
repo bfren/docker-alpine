@@ -7,6 +7,6 @@ def main [
     key: string         # Environment variable key - the BF_ prefix will be added automatically
     --no-prefix (-P)    # Do not add the standard prefix
 ] {
-    let empty = if $no_prefix { bf env empty -P $key } else { bf env empty $key }
+    let empty = bf env empty --no-prefix=($no_prefix) $key
     if not $empty { exit 0 } else { exit 1 }
 }

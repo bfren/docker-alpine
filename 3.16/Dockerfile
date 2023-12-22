@@ -10,21 +10,21 @@ RUN \
     echo "Platform: ${TARGETPLATFORM}" >> /log && \
     echo "Alpine: 3.16.8" >> /log && \
     echo "Busybox: 1.36.1" >> /log && \
-    echo "Nushell: 0.87.1" >> /log
+    echo "Nushell: 0.88.1" >> /log
 
 
 #======================================================================================================================
 # STAGE 1: load Nushell
 #======================================================================================================================
 
-FROM ghcr.io/bfren/nushell:0.87.1 as nushell
+FROM ghcr.io/bfren/nushell:0.88.1 as nushell
 
 
 #======================================================================================================================
 # STAGE 2: load busybox
 #======================================================================================================================
 
-FROM ghcr.io/bfren/busybox:1.36.1-alpine3.16 AS busybox
+FROM ghcr.io/bfren/busybox:1.36.1-alpine3.16.8 AS busybox
 
 
 #======================================================================================================================
@@ -37,10 +37,12 @@ COPY --from=busybox / /bin
 COPY --from=nushell / /
 
 ARG BF_IMAGE
+ARG BF_PUBLISHING
 ARG BF_VERSION
 
 COPY ./overlay /
 COPY ./3.16/overlay /
+ADD https://github.com/nushell/nupm.git /tmp
 
 ENV \
     # path to bf configuration - installation script requires this
@@ -52,7 +54,7 @@ ENV \
     #   1: yes
     BF_UPGRADE_PACKAGES=0 \
     # Nushell version string to check against installed verion after installation
-    NUSHELL_VERSION=0.87.1
+    NUSHELL_VERSION=0.88.1
 
 RUN \
     # install busybox

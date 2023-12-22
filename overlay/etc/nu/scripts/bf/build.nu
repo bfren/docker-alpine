@@ -3,8 +3,8 @@ use dump.nu
 use fs.nu
 use string.nu
 
-const build_file = "BUILD"
-const log_format = "{k}: {v}"
+export const build_file = "BUILD"
+export const log_format = "{k}: {v}"
 
 # Parse and return information from the build log
 export def main [] { fs read $"(env ETC)/($build_file)" | lines | parse $log_format | transpose -i -r -d }

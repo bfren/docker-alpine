@@ -6,6 +6,7 @@ use dump.nu
 use env.nu
 use fs.nu
 use image.nu
+use test.nu
 use write.nu
 use x.nu
 
@@ -18,6 +19,11 @@ use x.nu
 #   - run cleanup
 #   - output image info
 export def main [] {
+    # run tests with a blank environment - unless we are running test.sh
+    if not (env check TESTING) {
+        test
+    }
+
     # output build info
     write "Build information." install
     build show

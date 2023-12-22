@@ -5,14 +5,14 @@ set -euo pipefail
 docker pull bfren/alpine
 
 BUSYBOX_VERSION="1.36.1"
-NUSHELL_VERSION="0.87.1"
+NUSHELL_VERSION="0.88.1"
 ALPINE_EDITIONS="3.15 3.16 3.17 3.18 3.19"
 
 for E in ${ALPINE_EDITIONS} ; do
 
     echo "Alpine ${E}"
     ALPINE_VERSION=`cat ./${E}/ALPINE_REVISION`
-    BUSYBOX_IMAGE="${BUSYBOX_VERSION}-alpine${E}"
+    BUSYBOX_IMAGE="${BUSYBOX_VERSION}-alpine${ALPINE_VERSION}"
 
     DOCKERFILE=$(docker run \
         -v ${PWD}:/ws \
