@@ -3,7 +3,6 @@
 set -euo pipefail
 
 ALPINE_EDITIONS="3.15 3.16 3.17 3.18 3.19"
-MOD_DIR="/etc/nu/scripts/tests"
 for E in ${ALPINE_EDITIONS} ; do
 
     echo "Building Alpine ${E}."
@@ -19,7 +18,6 @@ for E in ${ALPINE_EDITIONS} ; do
     echo "Running tests."
     docker run \
         -e BF_TESTING=1 \
-        -v `pwd`/overlay${MOD_DIR}:${MOD_DIR} \
         alpine${E}-test env -i nu -c "use nupm test ; test --dir /etc/nu/scripts/bf"
 
     echo ""

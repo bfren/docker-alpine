@@ -37,6 +37,7 @@ COPY --from=busybox / /bin
 COPY --from=nushell / /
 
 ARG BF_IMAGE
+ARG BF_PUBLISHING
 ARG BF_VERSION
 
 COPY ./overlay /
