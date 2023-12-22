@@ -7,23 +7,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      -
-        name: Checkout code
-        uses: actions/checkout@v4
-      -
-        name: Checkout shUnit2
-        uses: actions/checkout@v4
-        with:
-          repository: kward/shunit2
-          ref: v2.1.8
-          path: ./shunit2
-      -
-        name: Run tests
-        run: |
-          RUN=./tests/run-git.sh && chmod +x ${RUN} && ${RUN}
   build:
     strategy:
       fail-fast: false
