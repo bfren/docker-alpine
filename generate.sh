@@ -12,7 +12,7 @@ for E in ${ALPINE_EDITIONS} ; do
 
     echo "Alpine ${E}"
     ALPINE_VERSION=`cat ./${E}/ALPINE_REVISION`
-    BUSYBOX_IMAGE="${BUSYBOX_VERSION}-alpine${E}"
+    BUSYBOX_IMAGE="${BUSYBOX_VERSION}-alpine${ALPINE_VERSION}"
 
     DOCKERFILE=$(docker run \
         -v ${PWD}:/ws \
