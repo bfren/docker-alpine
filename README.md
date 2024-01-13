@@ -29,4 +29,4 @@ These pin to v2.0.x of my Alpine 3.18 image and v2.0.5 of my Alpine 3.17 image r
 
 ## Copyright
 
-> Copyright (c) 2021-2023 [bfren](https://bfren.dev) (unless otherwise stated)
+> Copyright (c) 2021-2024 [bfren](https://bfren.dev) (unless otherwise stated)
