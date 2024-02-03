@@ -112,7 +112,7 @@ def apply_mod_type [
     mode: string    # Permissions mode
 ] {
     write debug $" .. ($base): -($type) chmod ($mode)" ch/apply_mod_type
-    if ($base | path exists) { ^find $base -type $type -exec chmod $mode {} + }
+    if ($base | path exists) { ^busybox find $base -type $type -exec chmod $mode {} + }
 }
 
 # Apply chown to $path
@@ -140,5 +140,5 @@ def apply_own_type [
     owner: string   # Owner
 ] {
     write debug $" .. ($base): -($type) chown ($owner)" ch/apply_own_type
-    if ($base | path exists) { ^find $base -type $type -exec chown $owner {} + }
+    if ($base | path exists) { ^busybox find $base -type $type -exec chown $owner {} + }
 }

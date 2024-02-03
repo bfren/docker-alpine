@@ -1,7 +1,6 @@
 #!/usr/bin/env nu
 
 use bf
-bf env load
 
 # Write text in green with the current date / time
 def main [
