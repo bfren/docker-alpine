@@ -15,8 +15,8 @@ export def add [
     # add group and user
     let home = $"/home/($name)"
     {
-        ^addgroup --gid ($use_gid) $name
-        ^adduser --uid $uid --home $home --disabled-password --ingroup $name $name
+        ^busybox addgroup --gid ($use_gid) $name
+        ^busybox adduser --uid $uid --home $home --disabled-password --ingroup $name $name
     } | handle user/add
 
     # create links to Nushell files and directories
