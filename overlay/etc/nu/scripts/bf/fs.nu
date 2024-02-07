@@ -93,7 +93,7 @@ export def make_temp_dir [
 # Read a file, trim contents and return
 export def read [
     path: string    # Absolute path to the file to read
-    --quiet (-q)    # If set, no error will be output if $path does not exist
+    --quiet (-q)    # If set, no error will be output if $path does not exist and an empty string will be returned instead
 ] {
     # attempt to get full path
     let use_path = $path | path expand
@@ -106,7 +106,7 @@ export def read [
         # if quiet is enabled, write to debug output and return
         if $quiet {
             write debug $error fs/read
-            return
+            return ""
         }
 
         # write an error message so execution halts
