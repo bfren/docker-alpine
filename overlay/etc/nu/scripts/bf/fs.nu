@@ -65,13 +65,13 @@ export def find_type_acc [
 }
 
 # Returns true unless input path exists and is a directory
-export def is_not_dir [] { not ($in | path type) == "dir" }
+export def is_not_dir [] { not ($in | path type | $in == "dir") }
 
 # Returns true unless input path exists and is a file
-export def is_not_file [] { not ($in | path type) == "file" }
+export def is_not_file [] { not ($in | path type | $in == "file") }
 
 # Returns true unless input path exists and is a symlink
-export def is_not_symlink [] { not ($in | path type) == "symlink" }
+export def is_not_symlink [] { not ($in | path type | $in == "symlink") }
 
 # Make a temporary directory in /tmp
 export def make_temp_dir [
