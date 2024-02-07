@@ -15,7 +15,7 @@ export def force [
 
     # get the paths to delete
     write debug $"Force deleting files matching ($filename) in ($paths)." del/force
-    lfs find_name_acc $paths $filename f | each {|x|
+    fs find_name_acc $paths $filename f | each {|x|
         if (glob $x | length) > 0 {
             write debug $" .. ($x)" del/force
             rm --force --recursive $x
