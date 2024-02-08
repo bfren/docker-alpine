@@ -55,8 +55,8 @@ export def apply [] {
     # get values - path and owner are required, fmode and dmode are optional
     let path = $row | get 0
     let owner = $row | get 1
-    let fmode = $row | get -i 2
-    let dmode = $row | get -i 3
+    let fmode = $row | get -i 2 | into string
+    let dmode = $row | get -i 3 | into string
 
     # apply ownership changes
     apply_own_recurse $path $owner

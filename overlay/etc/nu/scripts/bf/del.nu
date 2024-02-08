@@ -7,12 +7,15 @@ export def force [
     ...paths: string        # The paths to delete
     --filename (-n): string # Only delete files matching this name within the specified paths
 ] {
-    # get the paths to delete
-    let paths_to_delete = if $filename != null { fs find_name_acc $paths $filename f } else { $paths }
+    # simply use rm on each path
+    if $filename == null {
+        $paths | each {|x| rm --force --recursive $x }
+        return
+    }
 
-    # loop through filtered paths, write and delete
-    write debug $"Force deleting ($paths_to_delete)." del/force
-    $paths_to_delete | each {|x|
+    # get the paths to delete
+    write debug $"Force deleting files matching ($filename) in ($paths)." del/force
+    fs find_name_acc $paths $filename f | each {|x|
         if (glob $x | length) > 0 {
             write debug $" .. ($x)" del/force
             rm --force --recursive $x
@@ -46,7 +49,7 @@ export def old [
 
     # perform deletion
     write debug $"Removing ($use_type)s older than ($expiry)." del/old
-    let print_and_delete = {|x| write debug $" .. ($x.name)" del/old ; if $live { rm -rf $x.name } }
+    let print_and_delete = {|x| write debug $" .. ($x.name)" del/old ; if $live { rm --force --recursive $x.name } }
     ls $use_root_dir | where type == $use_type and modified < $expiry | each {|x| do $print_and_delete $x }
 
     # return nothing
