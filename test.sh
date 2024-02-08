@@ -1,25 +1,14 @@
-#!/bin/bash
+#!/bin/sh
 
-set -euo pipefail
+IMAGE=`cat VERSION`
+ALPINE=${1:-3.19}
 
-ALPINE_EDITIONS="3.15 3.16 3.17 3.18 3.19"
-for E in ${ALPINE_EDITIONS} ; do
-
-    echo "Building Alpine ${E}."
-    docker buildx build \
-        --load \
-        --quiet \
-        --build-arg BF_IMAGE=alpine \
-        --build-arg BF_VERSION=0.1.0 \
-        -f ${E}/Dockerfile \
-        -t alpine${E}-test \
-        .
-
-    echo "Running tests."
-    docker run \
-        -e BF_TESTING=1 \
-        alpine${E}-test env -i nu -c "use bf test ; test"
-
-    echo ""
-
-done
+docker buildx build \
+    --load \
+    --build-arg BF_IMAGE=alpine \
+    --build-arg BF_VERSION=${IMAGE} \
+    -f ${ALPINE}/Dockerfile \
+    -t alpine${ALPINE}-test \
+    . \
+    && \
+    docker run -it -e BF_TESTING=1 alpine${ALPINE}-test env -i nu -c "use bf test ; test"
