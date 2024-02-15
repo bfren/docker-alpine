@@ -53,7 +53,7 @@ export def debug__value_is_not_1__returns_false [] {
 }
 
 export def debug__value_is_not_set__returns_false [] {
-    let result = debug
+    let result = do { hide-env BF_DEBUG ; debug }
     let expect = false
 
     assert equal $expect $result "debug does not return false when value is not set"
