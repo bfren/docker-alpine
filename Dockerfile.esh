@@ -42,7 +42,6 @@ ARG BF_VERSION
 
 COPY ./overlay /
 COPY ./<%= ${ALPINE_EDITION} %>/overlay /
-ADD https://github.com/nushell/nupm.git /tmp
 
 ENV \
     # path to bf configuration - installation script requires this

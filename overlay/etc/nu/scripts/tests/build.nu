@@ -16,7 +16,7 @@ export def main__parses_build_log [] {
     let result = with-env [BF_ETC $tmpdir] { build } | get $k
     let expect = $v
 
-    assert equal $result $expect "incorrect value found"
+    assert equal $expect $result "incorrect value found"
 }
 
 
@@ -32,5 +32,5 @@ export def add__appends_key_and_value [] {
     let result = with-env [BF_ETC $tmpdir] { add $k $v } | open --raw $"($tmpdir)/($build_file)"
     let expect = format $log_format {k: $k, v: $v} | $"($in)\n"
 
-    assert equal $result $expect "build log entry not saved correctly"
+    assert equal $expect $result "build log entry not saved correctly"
 }
