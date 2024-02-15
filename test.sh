@@ -11,4 +11,4 @@ docker buildx build \
     -t alpine${ALPINE}-test \
     . \
     && \
-    docker run -it -e BF_TESTING=1 alpine${ALPINE}-test env -i nu -c "use bf test ; test"
+    docker run --rm alpine${ALPINE}-test env -i nu -c "use bf test ; test"
