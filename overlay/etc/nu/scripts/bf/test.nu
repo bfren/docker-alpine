@@ -1,9 +1,10 @@
-use dump.nu
 use write.nu
 
 # Run test suite if tests exist
 # Inspired by https://github.com/nushell/nupm/blob/main/nupm/test.nu to work in this ecosystem
-export def main [] {
+export def main [] { with-env [BF_DEBUG 1] { execute_tests } }
+
+def execute_tests [] {
     # ensure tests directory contains a mod.nu file
     let scripts_dir = "/etc/nu/scripts"
     if ($scripts_dir | path join "tests/mod.nu" | path type) != "file" {
@@ -12,9 +13,8 @@ export def main [] {
     }
 
     # get list of tests
-    cd $scripts_dir
+    #cd $scripts_dir
     let tests = ^nu ...[
-        --no-config-file
         --commands
         'use tests
 
@@ -26,6 +26,9 @@ export def main [] {
         | to nuon
         '
     ] | from nuon
+
+    # if no tests are found, exit
+    if ($tests | length) == 0 { write error "No tests found." }
 
     # execute each test
     write $"Found ($tests | length) tests."
