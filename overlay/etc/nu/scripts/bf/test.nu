@@ -1,19 +1,19 @@
+use fs.nu
 use write.nu
 
-# Run test suite if tests exist
+# Execute tests with debug switch enabled
 # Inspired by https://github.com/nushell/nupm/blob/main/nupm/test.nu to work in this ecosystem
-export def main [] { with-env [BF_DEBUG 1] { execute_tests } }
+export def main [] { with-env [BF_DEBUG 1] { discover | execute } }
 
-def execute_tests [] {
+# Discover tests to execute
+def discover [] {
     # ensure tests directory contains a mod.nu file
-    let scripts_dir = "/etc/nu/scripts"
-    if ($scripts_dir | path join "tests/mod.nu" | path type) != "file" {
+    if ("/etc/nu/scripts/tests/mod.nu" | fs is_not_file) {
         write notok "The tests directory does not contain a mod.nu file."
         exit
     }
 
     # get list of tests
-    #cd $scripts_dir
     let tests = ^nu ...[
         --commands
         'use tests
@@ -32,14 +32,22 @@ def execute_tests [] {
 
     # execute each test
     write $"Found ($tests | length) tests."
-    let results = $tests | par-each {|x|
+
+    # return
+    $tests
+}
+
+# Execute each discovered test
+def execute [] {
+    # execute each test
+    let results = $in | sort | each {|x|
         # capture result
         let result = do { ^nu -c $"use tests * ; ($x)" } | complete
 
         # output result on success
-        if $result.exit_code == 0 { $"Test ($x) (ansi gb)OK(ansi reset)" | print }
+        if $result.exit_code == 0 { $"(ansi gb)OK(ansi reset) ($x)" | print }
 
-        # store result
+        # return result
         {
             test: $x
             stdout: $result.stdout
@@ -48,16 +56,16 @@ def execute_tests [] {
         }
     }
 
-    # get successes and failures
-    let successes_length = $results | where exit_code == 0 | length
+    # if no failures, print success message
     let failures = $results | where exit_code != 0
-    $failures | each {|x|
-        $"(char newline)(ansi rb)Test ($x.test) failed.(ansi reset)(char newline)($x.stderr)" | print
+    if ($failures | length) == 0 {
+        write ok $"Executed all ($results | length) tests successfully."
+        exit
     }
 
-    # show result message
-    write $"Ran ($results | length) tests. ($successes_length) succeeded, ($failures | length) failed."
-
-    # on failure, ensure error code exit
-    if ($failures | length) > 0 { write error "Some tests failed." }
+    # output each failure and error message
+    $failures | each {|x|
+        $"(char newline)(ansi rb)FAILED(ansi reset) ($x.test)(char newline)($x.stderr)" | print
+    }
+    error make --unspanned {msg: $"($failures | length) of ($results | length) tests failed."}
 }
