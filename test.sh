@@ -1,14 +1,16 @@
 #!/bin/sh
 
-IMAGE=`cat VERSION`
+IMAGE=alpine
+VERSION=`cat VERSION`
 ALPINE=${1:-3.19}
+TAG=${IMAGE}-test
 
 docker buildx build \
     --load \
-    --build-arg BF_IMAGE=alpine \
-    --build-arg BF_VERSION=${IMAGE} \
+    --build-arg BF_IMAGE=${IMAGE} \
+    --build-arg BF_VERSION=${VERSION} \
     -f ${ALPINE}/Dockerfile \
-    -t alpine${ALPINE}-test \
+    -t ${TAG} \
     . \
     && \
-    docker run --rm alpine${ALPINE}-test env -i nu -c "use bf test ; test"
+    docker run --entrypoint "/usr/bin/env" ${TAG} -i nu -c "use bf test ; test"
