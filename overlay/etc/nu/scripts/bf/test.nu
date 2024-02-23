@@ -9,7 +9,7 @@ export def main [] { with-env [BF_DEBUG 1] { discover | execute } }
 def discover [] {
     # ensure tests directory contains a mod.nu file
     if ("/etc/nu/scripts/tests/mod.nu" | fs is_not_file) {
-        write notok "The tests directory does not contain a mod.nu file."
+        write notok "The tests directory does not exist, or does not contain a mod.nu file."
         exit
     }
 
@@ -28,7 +28,10 @@ def discover [] {
     ] | from nuon
 
     # if no tests are found, exit
-    if ($tests | length) == 0 { write error "No tests found." }
+    if ($tests | length) == 0 {
+        write "No tests found."
+        exit
+    }
 
     # execute each test
     write $"Found ($tests | length) tests."
@@ -60,7 +63,7 @@ def execute [] {
     let failures = $results | where exit_code != 0
     if ($failures | length) == 0 {
         write ok $"Executed all ($results | length) tests successfully."
-        exit
+        return
     }
 
     # output each failure and error message
