@@ -9,8 +9,7 @@ export def main [] { with-env [BF_DEBUG 1] { discover | execute } }
 def discover [] {
     # ensure tests directory contains a mod.nu file
     if ("/etc/nu/scripts/tests/mod.nu" | fs is_not_file) {
-        write notok "The tests directory does not exist, or does not contain a mod.nu file."
-        exit
+        write error "The tests directory does not exist, or does not contain a mod.nu file."
     }
 
     # get list of tests
