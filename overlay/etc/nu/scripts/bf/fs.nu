@@ -30,15 +30,6 @@ export def find_name [
     { ^busybox find $base_path -name $name -type $type } | handle -d $"Find ($name) in ($base_path)." -f $on_failure -s $on_success fs/find_name
 }
 
-# Find all paths called $name in $base_paths and reduce to a single list
-export def find_name_acc [
-    base_paths: list<string>    # List of base paths to search
-    name: string                # Name to search within $base_paths
-    type: string = "f"          # Limit results to paths of this type - supported are directories (d), files (f) or symlinks (l)
-] {
-    $base_paths | each {|x| find_name $x $name $type } | reduce -f [] {|y, acc| $acc | append $y }
-}
-
 # Find all paths that are $type in $base_path
 export def find_type [
     base_path: string   # Base path to search

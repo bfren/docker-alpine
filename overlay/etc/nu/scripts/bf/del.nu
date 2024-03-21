@@ -4,25 +4,10 @@ use write.nu
 
 # Force and recursively remove all files and directories paths
 export def force [
-    ...paths: string        # The paths to delete
-    --filename (-n): string # Only delete files matching this name within the specified paths
+    ...paths: glob          # The paths to delete
 ] {
-    # simply use rm on each path
-    if $filename == null {
-        $paths | each {|x| rm --force --recursive $x }
-        return
-    }
-
-    # get the paths to delete
-    write debug $"Force deleting files matching ($filename) in ($paths)." del/force
-    fs find_name_acc $paths $filename f | each {|x|
-        if (glob $x | length) > 0 {
-            write debug $" .. ($x)" del/force
-            rm --force --recursive $x
-        }
-    }
-
-    # return nothing
+    # use rm on each path
+    $paths | each {|x| rm --force --recursive $x }
     return
 }
 
@@ -45,7 +30,7 @@ export def old [
 
     # process input values to use in query
     let expiry = (date now) - $duration
-    let use_root_dir = $root_dir | str trim --char "/" --right | $"($in)/*"
+    let use_root_dir = $root_dir | str trim --char "/" --right | $"($in)/*" | into glob
 
     # perform deletion
     write debug $"Removing ($use_type)s older than ($expiry)." del/old
