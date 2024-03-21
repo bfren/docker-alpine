@@ -9,7 +9,7 @@ export def main [] {
     del force /preinstall
 
     write debug "Deleting .empty files." clean
-    del force --filename .empty /
+    del force **/.empty
 
     write debug "Deleting caches." clean
     del force /tmp/* /var/cache/apk/*
