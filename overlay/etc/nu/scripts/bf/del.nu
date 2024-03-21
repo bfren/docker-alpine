@@ -4,10 +4,10 @@ use write.nu
 
 # Force and recursively remove all files and directories paths
 export def force [
-    ...paths: glob          # The paths to delete
+    ...paths: string    # The paths to delete
 ] {
     # use rm on each path
-    $paths | each {|x| rm --force --recursive $x }
+    $paths | each {|x| echo $x | into glob | rm --force --recursive $in }
     return
 }
 
