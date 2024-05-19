@@ -10,14 +10,14 @@ RUN \
     echo "Platform: ${TARGETPLATFORM}" >> /log && \
     echo "Alpine: 3.16.9" >> /log && \
     echo "Busybox: 1.36.1" >> /log && \
-    echo "Nushell: 0.92.1" >> /log
+    echo "Nushell: 0.93.0" >> /log
 
 
 #======================================================================================================================
 # STAGE 1: load Nushell
 #======================================================================================================================
 
-FROM ghcr.io/bfren/nushell:0.92.1 as nushell
+FROM ghcr.io/bfren/nushell:0.93.0 as nushell
 
 
 #======================================================================================================================
@@ -53,13 +53,13 @@ ENV \
     #   1: yes
     BF_UPGRADE_PACKAGES=0 \
     # Nushell version string to check against installed verion after installation
-    NUSHELL_VERSION=0.92.1
+    NUSHELL_VERSION=0.93.0
 
 RUN \
     # install busybox
     busybox --install && \
     # add packages required by Nushell
-    apk add --no-cache libcrypto3 libgcc libssl3 sqlite-libs && \
+    apk add --no-cache libcrypto3 libgcc libssl3 mimalloc2 sqlite-libs && \
     # setup Nushell using preinstallation script
     chmod +x /preinstall && /preinstall && \
     # run standard bf installation executable
