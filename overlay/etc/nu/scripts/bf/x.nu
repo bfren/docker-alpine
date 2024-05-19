@@ -9,5 +9,5 @@ export def main [
     let name = if ($path | str length) > 15 { $path | path basename } else { $path }
 
     # set X variable and execute script
-    with-env [BF_X $name] { ^nu $path }
+    with-env { BF_X: $name } { ^nu $path }
 }
