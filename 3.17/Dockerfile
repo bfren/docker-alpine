@@ -59,7 +59,7 @@ RUN \
     # install busybox
     busybox --install && \
     # add packages required by Nushell
-    apk add --no-cache libcrypto3 libgcc libssl3 mimalloc2 sqlite-libs && \
+    apk add --no-cache libcrypto3 libgcc libssl3 mimalloc2@edgecomm sqlite-libs && \
     # setup Nushell using preinstallation script
     chmod +x /preinstall && /preinstall && \
     # run standard bf installation executable
