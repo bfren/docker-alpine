@@ -15,7 +15,7 @@ export def main [
     default_value?: any # Optional default value to use if the variable cannot be found
     --no-prefix (-P)    # Do not add the BF_ prefix
     --safe (-s)         # If set, an empty string will be returned if the value is not found in $env
-] {
+]: nothing -> any {
     # add (or don't add!) the BF_ prefix
     let prefixed = if $no_prefix { $key } else { add_prefix $key }
 
@@ -34,29 +34,29 @@ export def main [
 }
 
 # Adds the BF_ prefix to $key
-def add_prefix [key: string] { $prefix + $key }
+def add_prefix [key: string]: nothing -> string { $prefix + $key }
 
 # Apply permissions for the environment variables directory -
 # we do this using the external chmod so the env.nu submodule can be used in ch.nu
-export def apply_perms [] { { ^chmod -R a+rwX $env_dir } | handle -i }
+export def apply_perms []: nothing -> string { { ^chmod -R a+rwX $env_dir } | handle -i }
 
 # Returns true if $key exists in the environment and is equal to 1
 export def check [
     key: string         # Environment variable key - the BF_ prefix will be added automatically
     --no-prefix (-P)    # Do not add the BF_ prefix
-] {
+]: nothing -> bool {
     let value = "1"
     test --no-prefix=($no_prefix) $key $value
 }
 
 # Returns true if the BF_DEBUG environment variable is set to 1
-export def debug [] { check DEBUG }
+export def debug []: nothing -> bool { check DEBUG }
 
 # Returns true if $key does not exist in the environment, or is empty
 export def empty [
     key: string         # Environment variable key - the BF_ prefix will be added automatically
     --no-prefix (-P)    # Do not add the BF_ prefix
-] {
+]: nothing -> bool {
     let value = ""
     test --no-prefix=($no_prefix) $key $value
 }
@@ -65,7 +65,7 @@ export def empty [
 export def --env load [
     x_prefix?: string       # If $set_executable is added, $prefix will be added before the name of the current script
     --set-executable (-x)   # Whether or not to set BF_X to the current script
-] {
+]: nothing -> nothing {
     # load environment variables from shared directory
     let loaded = { ^bf-withenv env } | handle env/load | lines | parse "{key}={val}" | transpose -i -r -d
     try { load-env $loaded }
@@ -79,7 +79,7 @@ export def --env set [
     key: string         # Environment variable key name - the BF_ prefix will be added automatically
     value: any          # Environment variable value
     --no-prefix (-P)    # Do not add the BF_ prefix
-] {
+]: nothing -> nothing {
     # add (or don't add!) the BF_ prefix
     let prefixed = if $no_prefix { $key } else { add_prefix $key }
 
@@ -101,10 +101,10 @@ export def --env set [
 }
 
 # Show all bfren platform environment variables
-export def show [] { $env | transpose key value | where {|x| $x.key | str starts-with $prefix } | | transpose -i -r -d | print }
+export def show []: nothing -> nothing { $env | transpose key value | where {|x| $x.key | str starts-with $prefix } | | transpose -i -r -d | print }
 
 # Store incoming environment variables
-export def store [] {
+export def store []: nothing -> string {
     # these environment variables are reserved, set only by nu
     const ignore = [
         CURRENT_FILE
@@ -124,7 +124,7 @@ export def test [
     key: string         # Environment variable key - the BF_ prefix will be added automatically
     value: string       # The value to compare against
     --no-prefix (-P)    # Do not add the BF_ prefix
-] {
+]: nothing -> bool {
     # add (or don't add!) the BF_ prefix
     let prefixed = if $no_prefix { $key } else { add_prefix $key }
 
@@ -136,7 +136,7 @@ export def test [
 export def --env unset [
     key: string         # Environment variable key name - the BF_ prefix will be added automatically
     --no-prefix (-P)    # Do not add the BF_ prefix
-] {
+]: nothing -> nothing {
     # add (or don't add!) the BF_ prefix
     let prefixed = if $no_prefix { $key } else { add_prefix $key }
 
@@ -152,13 +152,13 @@ export def --env unset [
 }
 
 # Clears the BF_X environment variable
-export def --env x_clear [] { hide X }
+export def --env x_clear []: nothing -> nothing { hide X }
 
 # Sets the BF_X environment variable to the name of the currently executing script
 export def --env x_set [
     x_prefix?: string       # If set, will be added before the name of the current script
     --override (-o): string # If set, will be used instead of CURRENT_FILE
-] {
+]: nothing -> nothing {
     # get name of current file
     let current_file = if $override != null { $override } else { try { $env.CURRENT_FILE | path basename } }
     if $current_file == null { write error "Unable to determine current file - please use --override." env/x_set }

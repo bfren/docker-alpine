@@ -18,7 +18,7 @@ use x.nu
 #   - store image info
 #   - run cleanup
 #   - output image info
-export def main [] {
+export def main []: nothing -> nothing {
     # output build info
     write "Build information." install
     build show

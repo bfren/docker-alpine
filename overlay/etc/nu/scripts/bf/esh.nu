@@ -8,7 +8,7 @@ use write.nu
 export def main [
     input: string   # Input file
     output?: string # Output file - if omitted the output will be returned instead of saved
-] {
+]: nothing -> nothing {
     # debug message
     write debug $"Parsing esh template ($input)." esh
 
@@ -30,8 +30,10 @@ export def main [
     if $output == null {
         { ^esh $input } | handle -f $on_failure esh
     } else {
-        { ^esh -o $output $input } | handle -f $on_failure  -s $on_success esh
+        { ^esh -o $output $input } | handle -f $on_failure -s $on_success esh
     }
+
+    return
 }
 
 # It is common to generate a file using an esh template in the bf templates directory, so this makes that easier
@@ -39,7 +41,7 @@ export def main [
 # - and that the $output directory exists
 export def template [
     output: string  # Absolute path to the output file
-] {
+]: nothing -> nothing {
     # get filenames and paths
     let filename = $output | path basename
     let output_dir = $output | path dirname

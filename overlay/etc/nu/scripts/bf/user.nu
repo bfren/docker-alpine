@@ -44,7 +44,7 @@ export def add_user_and_group [
 export def create_nushell_links [
     name: string    # The user name
     home: string    # The user's home directory
-] {
+]: nothing -> nothing {
     # create paths to directories
     let shared_nu = "/etc/nu"
     let user_home = if $home != null { $home } else { $"/home/($name)" }
@@ -58,11 +58,13 @@ export def create_nushell_links [
     { ^ln -sf $"($shared_nu)/config.nu" $"($user_nu)/config.nu" }  | handle user/create_nushell_links
     { ^ln -sf $"($shared_nu)/env.nu" $"($user_nu)/env.nu" } | handle user/create_nushell_links
     { ^ln -sf $"($shared_nu)/scripts" $"($user_nu)/scripts" } | handle user/create_nushell_links
+
+    return
 }
 
 # Checks whether or not user $name exists in /etc/passwd
 export def exists [
     name: string    # The user name
-] {
+]: nothing -> bool {
     { ^getent passwd $name } | handle -c user/exists | $in == 0
 }

@@ -5,9 +5,10 @@ use write.nu
 # Force and recursively remove all files and directories paths
 export def force [
     ...paths: string    # The paths to delete
-] {
+]: nothing -> nothing {
     # use rm on each path
     $paths | each {|x| echo $x | into glob | rm --force --recursive $in }
+
     return
 }
 
@@ -37,6 +38,5 @@ export def old [
     let print_and_delete = {|x| write debug $" .. ($x.name)" del/old ; if $live { rm --force --recursive $x.name } }
     ls $use_root_dir | where type == $use_type and modified < $expiry | each {|x| do $print_and_delete $x }
 
-    # return nothing
     return
 }

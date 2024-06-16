@@ -5,7 +5,7 @@ use write.nu
 # Check $type is valid (i.e. supported by posix find)
 def check_type [
     type: string    # Type to check - supported are directories (d), files (f) or symlinks (l)
-] {
+]: nothing -> any {
     match $type {
         "d" | "f" | "l" => $type
         _ => { write error $"($type) is not supported." fs/find_type }
@@ -17,7 +17,7 @@ export def find_name [
     base_path: string   # Base path to search
     name: string        # Name to search within $base_path
     type: string = "f"  # Limit results to paths of this type - supported are directories (d), files (f) or symlinks (l)
-] {
+]: nothing -> list<string> {
     # if the glob / file cannot be found, return an empty list
     if (glob $base_path | length) == 0 { return [] }
 
@@ -34,7 +34,7 @@ export def find_name [
 export def find_type [
     base_path: string   # Base path to search
     type: string        # Limit results to paths of this type - supported are directories (d), files (f) or symlinks (l)
-] {
+]: nothing -> list<string> {
     # if the glob / file cannot be found, return an empty list
     if (glob $base_path | length) == 0 { return [] }
 
@@ -51,23 +51,23 @@ export def find_type [
 export def find_type_acc [
     base_paths: list<string>    # List of base paths to search
     type: string                # Limit results to paths of this type - supported are directories (d), files (f) or symlinks (l)
-] {
+]: nothing -> list<string> {
     $base_paths | each {|x| find_type $x $type } | reduce -f [] {|y, acc| $acc | append $y }
 }
 
 # Returns true unless input path exists and is a directory
-export def is_not_dir [] { not ($in | path type | $in == "dir") }
+export def is_not_dir []: string -> bool { not ($in | path type | $in == "dir") }
 
 # Returns true unless input path exists and is a file
-export def is_not_file [] { not ($in | path type | $in == "file") }
+export def is_not_file []: string -> bool { not ($in | path type | $in == "file") }
 
 # Returns true unless input path exists and is a symlink
-export def is_not_symlink [] { not ($in | path type | $in == "symlink") }
+export def is_not_symlink []: string -> bool { not ($in | path type | $in == "symlink") }
 
 # Make a temporary directory in /tmp
 export def make_temp_dir [
     --local (-l)    # If set the temporary directory will be created in the current working directory
-] {
+]: nothing -> string {
     # move to requested root dir - can't use bf env module env.ch needs ch.nu, and ch.nu needs fs.nu
     let root = if $local { $env.PWD } else { "/tmp" }
 
@@ -85,7 +85,7 @@ export def make_temp_dir [
 export def read [
     path: string    # Absolute path to the file to read
     --quiet (-q)    # If set, no error will be output if $path does not exist and an empty string will be returned instead
-] {
+]: nothing -> string {
     # attempt to get full path
     let use_path = $path | path expand
 

@@ -4,7 +4,7 @@ use env.nu
 use fs.nu
 
 # Output information about the current image including name and version
-export def main [] {
+export def main []: nothing -> nothing {
     # get build values - the second row (index 1) contains the distro version
     # the last row contains the most recent item in the build log
     let build = build | transpose name version
@@ -28,4 +28,6 @@ export def main [] {
     char newline | print
     $"https://github.com/bfren/docker-($image)" | print
     do $border
+
+    return
 }
