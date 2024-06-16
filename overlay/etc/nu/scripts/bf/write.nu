@@ -10,7 +10,7 @@ const colour_notok = "red_bold"
 export def main [
     text: string    # The text to write
     script?: string # The name of the calling script or executable
-] {
+]: nothing -> nothing {
     fmt $text $colour $script | print
 }
 
@@ -18,7 +18,7 @@ export def main [
 export def debug [
     text: string    # The text to write
     script?: string # The name of the calling script or executable
-] {
+]: nothing -> nothing {
     if ($env | get --ignore-errors BF_DEBUG | into string) == "1" {
         fmt $text $colour_debug $script | $"(ansi $colour_debug)($in)(ansi reset)" | print
     }
@@ -29,7 +29,7 @@ export def error [
     error: string           # The error text to write
     script?: string         # The name of the calling script or executable
     --code (-c): int = 1    # The error code to emit after the message
-] {
+]: nothing -> nothing {
     fmt $error $colour_notok $script | print --stderr
     exit $code
 }
@@ -38,7 +38,7 @@ export def error [
 export def notok [
     text: string    # The text to write
     script?: string # The name of the calling script or executable
-] {
+]: nothing -> nothing {
     fmt $text $colour_notok $script | print
 }
 
@@ -46,7 +46,7 @@ export def notok [
 export def ok [
     text: string    # The text to write
     script?: string # The name of the calling script or executable
-] {
+]: nothing -> nothing {
     fmt $text $colour_ok $script | print
 }
 
@@ -55,7 +55,7 @@ def fmt [
     text: string    # The text to write
     colour: string  # ANSI colour code to use for the text
     script?: string # The name of the calling script or executable
-] {
+]: nothing -> string {
     # get the name of the base executable
     let bf_x = $env | get --ignore-errors BF_X | $"($in)" | str trim
 

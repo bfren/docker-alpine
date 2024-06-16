@@ -4,7 +4,7 @@ use env.nu
 use write.nu
 
 # clean temporary directories, caches and installation files
-export def main [] {
+export def main []: nothing -> nothing {
     write debug "Deleting preinstallation script." clean
     del force /preinstall
 
@@ -18,4 +18,6 @@ export def main [] {
         write debug "Deleting tests module." clean
         del force /etc/nu/scripts/tests
     }
+
+    return
 }

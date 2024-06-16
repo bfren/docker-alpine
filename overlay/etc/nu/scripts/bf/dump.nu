@@ -1,7 +1,7 @@
 # Dump input value if debug is enabled, then return original value
 export def main [
     --text (-t): string # Optional string to print before input
-] {
+]: any -> any {
     # capture input variable so we can reuse it
     let input = $in
 

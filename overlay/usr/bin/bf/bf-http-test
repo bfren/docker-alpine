@@ -1,0 +1,11 @@
+#!/usr/bin/nu
+
+use bf
+bf env x_set
+
+# Test a URL and return whether or not it gives an error HTTP status code
+def main [
+    url: string # URL to load
+]: nothing -> bool {
+    $url | bf http test_url
+}

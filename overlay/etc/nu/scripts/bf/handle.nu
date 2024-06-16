@@ -51,7 +51,7 @@ export def main [
     --ignore-errors (-i)        # If set, any errors will be ignored and $result.stdout will be returned whatever it is
     --on-failure (-f): closure  # On failure, optionally run this closure with $code and $stderr as inputs
     --on-success (-s): closure  # On success, optionally run this closure with $stdout as input
-] {
+]: closure -> any {
     # capture input so it can be reused
     let result = do $in | complete
 

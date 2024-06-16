@@ -11,7 +11,7 @@ export def main [
     --owner (-o): string        # Use chown: Set ownership to this user & group
     --recurse (-r)              # Adds -R to chmod / chown to recurse (overrides type if that is set too)
     --type (-t): string         # Apply to directories (d), files (f) or symlinks (l)
-] {
+]: nothing -> nothing {
     # override debug
     if $debug { $env.BF_DEBUG = "1" }
 
@@ -47,7 +47,7 @@ export def main [
 #   2. owner (for chown)
 #   3. optional: file mode (for chmod)
 #   4. optional: directory mode (for chmod)
-export def apply [] {
+export def apply []: [string -> nothing, list<string> -> nothing] {
     # we need at least two values: glob and owner
     let row = $in
     if ($row | length) < 2 { return }
@@ -64,12 +64,14 @@ export def apply [] {
     # apply mode changes
     if $fmode != null { apply_mod_type $path f $fmode }
     if $dmode != null { apply_mod_type $path d $dmode }
+
+    return
 }
 
 # Apply permissions using a ch.d file
 export def apply_file [
     file: string    # Path to ch.d file - if the file does not exist, will look in ch.d directory instead
-] {
+]: nothing -> nothing {
     # if file is not a path that exists, prepend CH_D directory
     let path = if ($file | path exists) { $file } else { $"(env ETC_CH_D)/($file)" }
 
@@ -83,7 +85,6 @@ export def apply_file [
     write $"Applying ($path)." ch/apply_file
     open $path | from ssv --minimum-spaces 1 --noheaders | each {|x| $x | values | apply }
 
-    # return nothing
     return
 }
 
@@ -91,18 +92,24 @@ export def apply_file [
 def apply_mod [
     path: string    # File / directory path
     mode: string    # Permissions mode
-] {
+]: nothing -> nothing {
+    # use external chmod
     write debug $" .. ($path): chmod ($mode)" ch/apply_mod
     if ($path | path exists) { ^chmod $mode $path }
+
+    return
 }
 
 # Apply chmod to $path recursively
 def apply_mod_recurse [
     path: string    # File / directory path
     mode: string    # Permissions mode
-] {
+]: nothing -> nothing {
+    # use external chmod
     write debug $" .. ($path): chmod -R ($mode)" ch/apply_mod_recurse
     if ($path | path exists) { ^chmod -R $mode $path }
+
+    return
 }
 
 # Apply chmod to all paths of $type under $base
@@ -110,27 +117,36 @@ def apply_mod_type [
     base: string    # Base directory
     type: string    # Path type (i.e. 'd', 'f', 'l')
     mode: string    # Permissions mode
-] {
+]: nothing -> nothing {
+    # use external find
     write debug $" .. ($base): -($type) chmod ($mode)" ch/apply_mod_type
     if ($base | path exists) { ^busybox find $base -type $type -exec chmod $mode {} + }
+
+    return
 }
 
 # Apply chown to $path
 def apply_own [
     path: string    # File / directory path
     owner: string   # Owner
-] {
+]: nothing -> nothing {
+    # use external chown
     write debug $" .. ($path): chown ($owner)" ch/apply_own
     if ($path | path exists) { ^chown $owner $path }
+
+    return
 }
 
 # Apply chown to $path recursively
 def apply_own_recurse [
     path: string    # File / directory path
     owner: string   # Owner
-] {
+]: nothing -> nothing {
+    # use external chown
     write debug $" .. ($path): chown -R ($owner)" ch/apply_own_recurse
     if ($path | path exists) { ^chown -R $owner $path }
+
+    return
 }
 
 # Apply chown to all paths of $type under $base
@@ -138,7 +154,10 @@ def apply_own_type [
     base: string    # Base directory
     type: string    # Path type (i.e. 'd', 'f', 'l')
     owner: string   # Owner
-] {
+]: nothing -> nothing {
+    # use external find
     write debug $" .. ($base): -($type) chown ($owner)" ch/apply_own_type
     if ($base | path exists) { ^busybox find $base -type $type -exec chown $owner {} + }
+
+    return
 }

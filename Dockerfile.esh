@@ -17,7 +17,7 @@ RUN \
 # STAGE 1: load Nushell
 #======================================================================================================================
 
-FROM ghcr.io/bfren/nushell:<%= ${NUSHELL_VERSION} %> as nushell
+FROM ghcr.io/bfren/nushell:<%= ${NUSHELL_VERSION} %>-alpine as nushell
 
 
 #======================================================================================================================
@@ -59,7 +59,7 @@ RUN \
     # install busybox
     busybox --install && \
     # add packages required by Nushell
-    apk add --no-cache libcrypto3 libgcc libssl3 mimalloc2@edgecomm sqlite-libs && \
+    apk add --no-cache libcrypto3 libgcc libssl3 sqlite-libs && \
     # setup Nushell using preinstallation script
     chmod +x /preinstall && /preinstall && \
     # run standard bf installation executable

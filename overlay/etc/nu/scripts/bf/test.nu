@@ -40,7 +40,7 @@ def discover [] {
 }
 
 # Execute each discovered test
-def execute [] {
+def execute []: list<string> -> any {
     # execute each test
     let results = $in | sort | each {|x|
         # capture result

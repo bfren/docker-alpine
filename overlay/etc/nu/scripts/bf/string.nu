@@ -10,7 +10,7 @@ use write.nu
 export def format [
     input: string   # String to format - placeholds should be record keys surrounded by braces, e.g. {a}
     values: record  # Values to use when replacing placeholders
-] {
+]: nothing -> string {
     # replace values
     write debug $"Using ($values) to replace placeholders in ($input)." str/format
     let result = $values | transpose k v | reduce -f $input {|x, acc| $acc | str replace --all $"{($x.k)}" $x.v }
