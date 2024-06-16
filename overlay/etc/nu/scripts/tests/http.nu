@@ -30,16 +30,16 @@ export def get_status__invalid_url__returns_400 [] {
 export def test__valid_status__returns_true [] {
     let valid_statuses = 200..399
 
-    let result = $valid_statuses | each {|x| $"https://bfren.dev/status/($x)" | test }
+    let result = $valid_statuses | par-each {|x| $"https://bfren.dev/status/($x)" | test }
     let expect = $valid_statuses | each { true }
 
     assert equal $expect $result "test does not return true for all valid statuses"
 }
 
 export def test__invalid_status__returns_false [] {
-    let invalid_statuses = 400..500
+    let invalid_statuses = 400..599
 
-    let result = $invalid_statuses | each {|x| $"https://bfren.dev/status/($x)" | test }
+    let result = $invalid_statuses | par-each {|x| $"https://bfren.dev/status/($x)" | test }
     let expect = $invalid_statuses | each { false }
 
     assert equal $expect $result "test does not return false for all invalid statuses"
