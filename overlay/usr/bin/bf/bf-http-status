@@ -1,0 +1,11 @@
+#!/usr/bin/nu
+
+use bf
+bf env x_set
+
+# Return the status code for a given URL
+def main [
+    url: string # URL to load
+]: nothing -> int {
+    $url | bf http get_status
+}
