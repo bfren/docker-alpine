@@ -42,8 +42,10 @@ chmod 0500 /usr/bin/bf/bf-install
 #======================================================================================================================
 
 echo "Testing Nushell version."
-INSTALLED_VERSION=$(nu -v 2> /dev/null)
-if [ "${INSTALLED_VERSION}" != "${NUSHELL_VERSION}" ] ; then
+INSTALLED_VERSION=$(nu -v)
+if [ "${INSTALLED_VERSION}" == "${NUSHELL_VERSION}" ] ; then
+    echo "Nushell ${INSTALLED_VERSION} detected."
+else
     echo "Detected Nushell version '${INSTALLED_VERSION}' - expecting '${NUSHELL_VERSION}'."
     exit 1
 fi
