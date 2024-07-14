@@ -1,5 +1,5 @@
 #======================================================================================================================
-# STAGE 0: get build information
+# STAGE 0: get build information and download envdir
 #======================================================================================================================
 
 FROM --platform=${BUILDPLATFORM} golang:alpine AS build
@@ -11,24 +11,9 @@ RUN \
     echo "Alpine: 3.18.6" >> /log && \
     echo "Nushell: 0.94.2" >> /log
 
-
-#======================================================================================================================
-# STAGE 1: load Nushell
-#======================================================================================================================
-
-FROM ghcr.io/bfren/nushell:0.94.2-alpine as nushell
-
-
-#======================================================================================================================
-# STAGE 2: download envdir
-#======================================================================================================================
-
-FROM --platform=${BUILDPLATFORM} golang:alpine AS envdir
-ARG TARGETPLATFORM
-
 WORKDIR /tmp
 RUN \
-    # build a URL to download envdir binary
+    # build a URL to download and extract justc-envdir binary
     echo "Downloading justc-envdir." && \
     FILE="justc-envdir-1.0.1-linux" && \
     case "${TARGETPLATFORM}" in \
@@ -44,12 +29,19 @@ RUN \
 
 
 #======================================================================================================================
-# STAGE 3: install bfren platform
+# STAGE 1: load Nushell
+#======================================================================================================================
+
+FROM ghcr.io/bfren/nushell:0.94.2-alpine as nushell
+
+
+#======================================================================================================================
+# STAGE 2: install bfren platform
 #======================================================================================================================
 
 FROM alpine:3.18.6 as install
 COPY --from=build /log /etc/bf/BUILD
-COPY --from=envdir /usr/bin/envdir /usr/bin/
+COPY --from=build /usr/bin/envdir /usr/bin/
 COPY --from=nushell / /
 
 ARG BF_IMAGE
@@ -81,7 +73,7 @@ RUN \
 
 
 #======================================================================================================================
-# STAGE 4: create final image
+# STAGE 3: create final image
 #======================================================================================================================
 
 FROM scratch as final
