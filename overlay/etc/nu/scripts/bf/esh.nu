@@ -27,7 +27,7 @@ export def main [
     # generate template
     #   and: return value if $output is not set
     #   or:  save to file if $output is set
-    if $output == null {
+    if ($output | is-empty) {
         { ^esh $input } | handle -f $on_failure esh
     } else {
         { ^esh -o $output $input } | handle -f $on_failure -s $on_success esh
