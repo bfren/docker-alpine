@@ -18,25 +18,25 @@ export def main [
     # if recurse is set, execute chmod/chown on each path with recursion
     if $recurse {
         $paths | each {|x|
-            if $mode != null { apply_mod_recurse $x $mode }
-            if $owner != null { apply_own_recurse $x $owner }
+            if ($mode | is-not-empty) { apply_mod_recurse $x $mode }
+            if ($owner | is-not-empty) { apply_own_recurse $x $owner }
         }
         return
     }
 
     # if type is set, find all paths of type within each path and execute chmod/chown on them
-    if $type != null {
+    if ($type | is-not-empty) {
         $paths | each {|x|
-            if $mode != null { apply_mod_type $x $type $mode }
-            if $owner != null { apply_own_type $x $type $owner }
+            if ($mode | is-not-empty) { apply_mod_type $x $type $mode }
+            if ($owner | is-not-empty) { apply_own_type $x $type $owner }
         }
         return
     }
 
     # otherwise, execute chmod/chown on each path
     $paths | each {|x|
-        if $mode != null { apply_mod $x $mode }
-        if $owner != null { apply_own $x $owner }
+        if ($mode | is-not-empty) { apply_mod $x $mode }
+        if ($owner | is-not-empty) { apply_own $x $owner }
     }
 
     return
@@ -62,8 +62,8 @@ export def apply []: [string -> nothing, list<string> -> nothing] {
     apply_own_recurse $path $owner
 
     # apply mode changes
-    if $fmode != null { apply_mod_type $path f $fmode }
-    if $dmode != null { apply_mod_type $path d $dmode }
+    if ($fmode | is-not-empty) { apply_mod_type $path f $fmode }
+    if ($dmode | is-not-empty) { apply_mod_type $path d $dmode }
 
     return
 }

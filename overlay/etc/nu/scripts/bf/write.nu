@@ -60,7 +60,7 @@ def fmt [
     let bf_x = $env | get --ignore-errors BF_X | $"($in)" | str trim
 
     # use BF_X or the calling script as the prefix
-    let prefix = if $script != null {
+    let prefix = if ($script | is-not-empty) {
         if $bf_x != "" {
             $"($bf_x): "
         } else {
@@ -71,7 +71,7 @@ def fmt [
     }
 
     # if script and BF_X are both set, BF_X is the prefix, so use script as the suffix
-    let suffix = if $script != null and $bf_x != "" { $" \(($script)\)" }
+    let suffix = if ($script | is-not-empty) and ($bf_x | is-not-empty ) { $" \(($script)\)" }
 
     # format date and write text
     let date = date now | format date "%Y-%m-%d %H:%M:%S"

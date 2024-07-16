@@ -21,10 +21,10 @@ export def main [
 
     # return the value if it exists
     let value = $env | get --ignore-errors --sensitive $prefixed
-    if $value != null { return $value }
+    if ($value | is-not-empty) { return $value }
 
     # return the default value if it is set
-    if $default_value != null { return $default_value }
+    if ($default_value | is-not-empty) { return $default_value }
 
     # return nothing if $safe is set
     if $safe { return "" }
@@ -84,7 +84,7 @@ export def --env set [
     let prefixed = if $no_prefix { $key } else { add_prefix $key }
 
     # if the value is empty, unset / hide the variable
-    if $value == null or $value == "" {
+    if ($value | is-empty) {
         unset --no-prefix $prefixed
         return
     }
@@ -160,11 +160,11 @@ export def --env x_set [
     --override (-o): string # If set, will be used instead of CURRENT_FILE
 ]: nothing -> nothing {
     # get name of current file
-    let current_file = if $override != null { $override } else { try { $env.CURRENT_FILE | path basename } }
-    if $current_file == null { write error "Unable to determine current file - please use --override." env/x_set }
+    let current_file = if ($override | is-not-empty) { $override } else { try { $env.CURRENT_FILE | path basename } }
+    if ($current_file | is-empty) { write error "Unable to determine current file - please use --override." env/x_set }
 
     # set prefixed variable - we do it directly because it doesn't need to be persisted to the environment
     # directory - it only applies to the current operation / request
     let prefixed = add_prefix X
-    load-env {$prefixed: (if $x_prefix != null { $"($x_prefix)/" } | $"($in)($current_file)")}
+    load-env {$prefixed: (if ($x_prefix | is-not-empty) { $"($x_prefix)/" } | $"($in)($current_file)")}
 }

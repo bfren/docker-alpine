@@ -8,7 +8,7 @@ export def main [
     # check BF_DEBUG directly so dump can be used everywhere (including env.nu module)
     if ($env | get --ignore-errors BF_DEBUG | into string) == "1" {
         # output optional text heading
-        if $text != null { $"(char newline)#== ($text) ==#" | print }
+        if ($text | is-not-empty) { $"(char newline)#== ($text) ==#" | print }
 
         # output as an expanded table
         $input | table --expand | print

@@ -63,7 +63,7 @@ export def main [
 
     # on success, run closure (if it has been set) and return
     if $result.exit_code == 0 {
-        if $on_success != null { do $on_success $result.stdout } else { $result.stdout | str trim } | return $in
+        if ($on_success | is-not-empty) { do $on_success $result.stdout } else { $result.stdout | str trim } | return $in
     }
 
     # if ignoring errors, return the $result.stdout string
@@ -71,10 +71,10 @@ export def main [
 
     # if we get here, the operation failed
     # if $dump_result flag is set, dump the $result object (it won't show unless BF_DEBUG is 1)
-    if $dump_result != null { $result | dump -t $dump_result }
+    if ($dump_result | is-not-empty) { $result | dump -t $dump_result }
 
     # run $on_failure closure (if it has been set) and return
-    if $on_failure != null { do $on_failure $result.exit_code $result.stderr | return $in }
+    if ($on_failure | is-not-empty) { do $on_failure $result.exit_code $result.stderr | return $in }
 
     # use stderr and exit code to write the error
     # we use the executable so handle can be used everywhere without causing cyclical import errors

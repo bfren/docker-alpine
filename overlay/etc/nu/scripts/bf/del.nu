@@ -20,7 +20,7 @@ export def old [
     --type (-t): string # The type of path to delete, either 'd' (directory) or 'f' (file)
 ] {
     # duration must be set
-    if $duration == null { write error "Duration must be set." del/old }
+    if ($duration | is-empty) { write error "Duration must be set." del/old }
 
     # ensure only valid types are used
     let use_type = match $type {

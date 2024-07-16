@@ -13,7 +13,7 @@ export def add [
 
     # if GID is set, use it, otherwise use UID
     let home = $"/home/($name)"
-    let use_gid = if $gid != null { $gid } else { $uid }
+    let use_gid = if ($gid | is-not-empty) { $gid } else { $uid }
     write $"Adding user ($name) with UID ($uid) and GID ($use_gid)." user/add
 
     # add group and user
@@ -47,7 +47,7 @@ export def create_nushell_links [
 ]: nothing -> nothing {
     # create paths to directories
     let shared_nu = "/etc/nu"
-    let user_home = if $home != null { $home } else { $"/home/($name)" }
+    let user_home = if ($home | is-not-empty) { $home } else { $"/home/($name)" }
     let user_nu = $"($user_home)/.config/nushell"
 
     # ensure user's Nushell config directory exists and they own it
