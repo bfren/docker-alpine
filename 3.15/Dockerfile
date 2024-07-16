@@ -32,14 +32,14 @@ RUN \
 # STAGE 1: load Nushell
 #======================================================================================================================
 
-FROM ghcr.io/bfren/nushell:0.94.2-alpine as nushell
+FROM ghcr.io/bfren/nushell:0.94.2-alpine AS nushell
 
 
 #======================================================================================================================
 # STAGE 2: install bfren platform
 #======================================================================================================================
 
-FROM alpine:3.15.11 as install
+FROM alpine:3.15.11 AS install
 COPY --from=build /log /etc/bf/BUILD
 COPY --from=build /usr/bin/envdir /usr/bin/
 COPY --from=nushell / /
@@ -76,7 +76,7 @@ RUN \
 # STAGE 3: create final image
 #======================================================================================================================
 
-FROM scratch as final
+FROM scratch AS final
 COPY --from=install / /
 
 LABEL org.opencontainers.image.description="Alpine Linux with Nushell."
