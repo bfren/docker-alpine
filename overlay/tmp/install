@@ -9,16 +9,6 @@ def main [] {
         bf pkg upgrade
     }
 
-    # get esh version and install
-    cd /tmp
-    try {
-        let esh_version = cat ESH_BUILD
-        bf write $"Installing esh v($esh_version)."
-        bf pkg install [$"esh=($esh_version)"]
-    } catch {
-        bf write error "esh not installed."
-    }
-
     # install additional packages
     try {
         bf write "Installing additional packages."
@@ -27,7 +17,11 @@ def main [] {
         bf write error "Unable to install additional packages."
     }
 
+    # make esh script executable
+    bf ch --mode +x /usr/bin/esh
+
     # add environment loader and bf module to config
+    cd /tmp
     bf write "Adding environment loader and bf module to config."
     bf fs read "env-load.nu" | bf config
     bf config use bf
