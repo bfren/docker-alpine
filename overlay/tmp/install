@@ -18,7 +18,7 @@ def main [] {
     }
 
     # make esh script executable
-    bf ch --mode +x /usr/bin/esh
+    bf ch --mode 0555 /usr/bin/esh
 
     # add environment loader and bf module to config
     cd /tmp
