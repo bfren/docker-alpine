@@ -66,7 +66,7 @@ jobs:
       -
         name: Build and push
         id: docker_build
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: ./${{ matrix.alpine }}/Dockerfile
@@ -93,7 +93,7 @@ jobs:
         name: Build and push default tags
         id: docker_build_default
         if: matrix.alpine == '3.20'
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: ./${{ matrix.alpine }}/Dockerfile
