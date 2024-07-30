@@ -9,7 +9,7 @@ RUN \
     # save platform and version information to log
     echo "Platform: ${TARGETPLATFORM}" >> /log && \
     echo "Alpine: 3.19.2" >> /log && \
-    echo "Nushell: 0.94.2" >> /log
+    echo "Nushell: 0.96.1" >> /log
 
 WORKDIR /tmp
 RUN \
@@ -32,7 +32,7 @@ RUN \
 # STAGE 1: load Nushell
 #======================================================================================================================
 
-FROM ghcr.io/bfren/nushell:0.94.2-alpine AS nushell
+FROM ghcr.io/bfren/nushell:0.96.1-alpine AS nushell
 
 
 #======================================================================================================================
@@ -61,7 +61,7 @@ ENV \
     #   1: yes
     BF_UPGRADE_PACKAGES=0 \
     # Nushell version string to check against installed verion after installation
-    NUSHELL_VERSION=0.94.2
+    NUSHELL_VERSION=0.96.1
 
 RUN \
     # add packages required by Nushell
