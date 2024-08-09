@@ -9,6 +9,6 @@ def main [
     default_value?: any # Optional default value to use if the variable cannot be found
     --no-prefix (-P)    # Do not add the BF_ prefix
     --safe (-s)         # If set, an empty string will be returned if the value is not found in $env
-] {
+]: nothing -> any {
     bf env --no-prefix=($no_prefix) --safe=($safe) $key $default_value | print --no-newline
 }

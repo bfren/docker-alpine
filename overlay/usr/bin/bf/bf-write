@@ -6,7 +6,7 @@ use bf
 def main [
     text: string    # The text to write
     script?: string # The name of the calling script or executable
-] {
+]: nothing -> nothing {
     match $script {
         $s if $s != "" => (bf write $text $s),
         _ => (bf write $text)

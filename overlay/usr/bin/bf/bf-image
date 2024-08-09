@@ -4,4 +4,4 @@ use bf
 bf env load -x
 
 # Output information about the current image including name and version
-def main [] { bf image }
+def main []: nothing -> nothing { bf image }

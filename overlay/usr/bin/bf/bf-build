@@ -4,4 +4,4 @@ use bf
 bf env load -x
 
 # Parse and display information from the build log
-def main [] { bf build show }
+def main []: nothing -> nothing { bf build show }
