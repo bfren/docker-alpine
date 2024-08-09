@@ -7,7 +7,7 @@ def main [
     error: string           # The error text to write
     script?: string         # The name of the calling script or executable
     --code (-c): int = 1    # The error code to emit after the message
-] {
+]: nothing -> nothing {
     match $script {
         $s if $s != "" => (bf write error --code $code $error $s),
         _ => (bf write error --code $code $error)

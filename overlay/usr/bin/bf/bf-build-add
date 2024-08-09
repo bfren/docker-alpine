@@ -7,6 +7,6 @@ bf env load -x
 def main [
     key: string     # Key e.g. 'Platform'
     value: string   # Value e.g. 'linux/amd64'
-] {
+]: nothing -> nothing {
     bf build add $key $value
 }
