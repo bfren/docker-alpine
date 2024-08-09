@@ -5,6 +5,7 @@ const colour = "reset"
 const colour_debug = "grey"
 const colour_ok = "green"
 const colour_notok = "red_bold"
+const colour_warn = "yellow"
 
 # Write text in standard colour with the current date / time
 export def main [
@@ -48,6 +49,14 @@ export def ok [
     script?: string # The name of the calling script or executable
 ]: nothing -> nothing {
     fmt $text $colour_ok $script | print
+}
+
+# Write text in yellow with the current date / time
+export def warn [
+    text: string    # The text to write
+    script?: string # The name of the calling script or executable
+]: nothing -> nothing {
+    fmt $text $colour_warn $script | print
 }
 
 # Format text, optionally in a specified colour, with the current date / time and script name

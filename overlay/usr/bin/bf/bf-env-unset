@@ -1,0 +1,11 @@
+#!/usr/bin/nu
+
+use bf
+
+# Unset, hide and remove an environment variable
+def main [
+    key: string         # Environment variable key - the BF_ prefix will be added automatically
+    --no-prefix (-P)    # Do not add the BF_ prefix
+]: nothing -> nothing {
+    bf env unset --no-prefix=($no_prefix) $key
+}
