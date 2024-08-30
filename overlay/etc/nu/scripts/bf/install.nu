@@ -37,7 +37,7 @@ export def main []: nothing -> nothing {
     ["/usr/bin/bf" $root 0555] | ch apply
 
     # run install script in /tmp
-    const install = /tmp/install
+    const install = "/tmp/install"
     if ($install | fs is_not_file) {
         write debug $"($install) does not exist." install
     } else {
