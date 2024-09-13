@@ -8,7 +8,7 @@ ARG TARGETPLATFORM
 RUN \
     # save platform and version information to log
     echo "Platform: ${TARGETPLATFORM}" >> /log && \
-    echo "Alpine: 3.20.2" >> /log && \
+    echo "Alpine: 3.20.3" >> /log && \
     echo "Nushell: 0.97.1" >> /log
 
 WORKDIR /tmp
@@ -39,7 +39,7 @@ FROM ghcr.io/bfren/nushell:0.97.1-alpine AS nushell
 # STAGE 2: install bfren platform
 #======================================================================================================================
 
-FROM alpine:3.20.2 AS install
+FROM alpine:3.20.3 AS install
 COPY --from=build /log /etc/bf/BUILD
 COPY --from=build /usr/bin/envdir /usr/bin/
 COPY --from=nushell / /
