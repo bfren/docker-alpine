@@ -1,5 +1,5 @@
 #======================================================================================================================
-# STAGE 0: get build information and download envdir
+# STAGE 0: store build information
 #======================================================================================================================
 
 FROM --platform=${BUILDPLATFORM} golang:alpine AS build
@@ -11,22 +11,6 @@ RUN \
     echo "Alpine: 3.19.4" >> /log && \
     echo "Nushell: 0.97.1" >> /log
 
-WORKDIR /tmp
-RUN \
-    # build a URL to download and extract justc-envdir binary
-    echo "Downloading justc-envdir." && \
-    FILE="justc-envdir-1.0.1-linux" && \
-    case "${TARGETPLATFORM}" in \
-        linux/amd64) ARCH="amd64" ;; \
-        linux/arm/v7) ARCH="armhf" ;; \
-        linux/arm64) ARCH="aarch64" ;; \
-        *) echo "Unsupported target platform: ${TARGETPLATFORM}." && exit 1 ;; \
-    esac && \
-    printf "%s" "${ARCH}" > ARCH && \
-    wget https://github.com/just-containers/justc-envdir/releases/download/v1.0.1-1/${FILE}-${ARCH}.tar.gz && \
-    tar -xvf ${FILE}-${ARCH}.tar.gz && \
-    mv usr/bin/justc-envdir /usr/bin/envdir
-
 
 #======================================================================================================================
 # STAGE 1: load Nushell
@@ -36,12 +20,20 @@ FROM ghcr.io/bfren/nushell:0.97.1-alpine AS nushell
 
 
 #======================================================================================================================
-# STAGE 2: install bfren platform
+# STAGE 2: load busybox
+#======================================================================================================================
+
+FROM ghcr.io/bfren/busybox:1.36.1-alpine3.19.4-240913 AS busybox
+
+
+#======================================================================================================================
+# STAGE 3: install bfren platform
 #======================================================================================================================
 
 FROM alpine:3.19.4 AS install
 COPY --from=build /log /etc/bf/BUILD
 COPY --from=build /usr/bin/envdir /usr/bin/
+COPY --from=busybox / /bin
 COPY --from=nushell / /
 
 ARG BF_IMAGE
@@ -66,6 +58,8 @@ ENV \
 RUN \
     # add packages required by Nushell
     apk add --no-cache libcrypto3 libgcc libssl3 sqlite-libs && \
+    # install busybox
+    busybox --install && \
     # setup Nushell using preinstallation script
     chmod +x /preinstall && /preinstall && \
     # run standard bf installation executable
@@ -73,7 +67,7 @@ RUN \
 
 
 #======================================================================================================================
-# STAGE 3: create final image
+# STAGE 4: create final image
 #======================================================================================================================
 
 FROM scratch AS final
