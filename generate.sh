@@ -26,7 +26,7 @@ for E in ${ALPINE_EDITIONS} ; do
         BUSYBOX_VERSION=${BUSYBOX_VERSION} \
         BF_BIN=/usr/bin/bf \
         BF_ETC=/etc/bf \
-        NU_CONFIG=/root/.config/nushell \
+        NU_CONFIG=/etc/nu \
         NU_VERSION=${NU_VERSION}
     )
 

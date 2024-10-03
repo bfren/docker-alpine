@@ -1,5 +1,5 @@
 #======================================================================================================================
-# STAGE 0: store build information
+# STAGE 0: store build information and download Nushell
 #======================================================================================================================
 
 FROM --platform=${BUILDPLATFORM} golang:alpine AS build
@@ -35,7 +35,7 @@ RUN \
 
 
 #======================================================================================================================
-# STAGE 1: bring Nushell files together
+# STAGE 1: create blank image containing Nushell executable, plugins and config in the correct locations
 #======================================================================================================================
 
 FROM scratch AS nushell

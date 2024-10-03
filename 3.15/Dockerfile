@@ -1,5 +1,5 @@
 #======================================================================================================================
-# STAGE 0: store build information
+# STAGE 0: store build information and download Nushell
 #======================================================================================================================
 
 FROM --platform=${BUILDPLATFORM} golang:alpine AS build
@@ -35,14 +35,14 @@ RUN \
 
 
 #======================================================================================================================
-# STAGE 1: bring Nushell files together
+# STAGE 1: create blank image containing Nushell executable, plugins and config in the correct locations
 #======================================================================================================================
 
 FROM scratch AS nushell
 COPY --from=build /nu/nu /usr/bin/
-COPY --from=build /nu/nu_plugin* /root/.config/nushell/plugins/
-ADD https://raw.githubusercontent.com/bfren/nushell/main/0.98.0/config.nu /root/.config/nushell/config.nu
-ADD https://raw.githubusercontent.com/bfren/nushell/main/0.98.0/env.nu /root/.config/nushell/env.nu
+COPY --from=build /nu/nu_plugin* /etc/nu/plugins/
+ADD https://raw.githubusercontent.com/bfren/nushell/main/0.98.0/config.nu /etc/nu/config.nu
+ADD https://raw.githubusercontent.com/bfren/nushell/main/0.98.0/env.nu /etc/nu/env.nu
 
 
 
