@@ -9,14 +9,37 @@ RUN \
     # save platform and version information to log
     echo "Platform: ${TARGETPLATFORM}" >> /log && \
     echo "Alpine: 3.19.4" >> /log && \
-    echo "Nushell: 0.97.1" >> /log
+    echo "Nushell: 0.98.0" >> /log
+
+WORKDIR /tmp
+RUN \
+    # build a URL to download Nushell
+    echo "Downloading Nushell." && \
+    case "${TARGETPLATFORM}" in \
+        linux/amd64) ARCH="x86_64" ;; \
+        linux/arm/v7) ARCH="armv7" ;; \
+        linux/arm64) ARCH="aarch64" ;; \
+        *) echo "Unsupported target platform: ${TARGETPLATFORM}." && exit 1 ;; \
+    esac && \
+    printf "%s" "${ARCH}" > ARCH && \
+    RELEASES=https://github.com/nushell/nushell/releases/download/0.98.0 && \
+    FILE=nu-0.98.0-${ARCH}-unknown-linux-musl.tar.gz && \
+    URL=${RELEASES}/${FILE} && \
+    wget ${URL} && \
+    tar -xf ${FILE} -C /nu-0.98.0
 
 
 #======================================================================================================================
-# STAGE 1: load Nushell
+# STAGE 1: bring Nushell files together
 #======================================================================================================================
 
-FROM ghcr.io/bfren/nushell:0.97.1-alpine AS nushell
+ARG NUSHELL_CONFIG=/root/.config/nushell
+FROM scratch AS nushell
+COPY --from=build /nu-0.98.0/nu /usr/bin/
+COPY --from=build /nu-0.98.0/nu_plugin* ${NUSHELL_CONFIG}/plugins/
+ADD https://raw.githubusercontent.com/bfren/nushell/main/0.98.0/config.nu ${NUSHELL_CONFIG}/config.nu
+ADD https://raw.githubusercontent.com/bfren/nushell/main/0.98.0/env.nu ${NUSHELL_CONFIG}/env.nu
+
 
 
 #======================================================================================================================
@@ -32,7 +55,6 @@ FROM ghcr.io/bfren/busybox:1.36.1-alpine3.19.4-240913 AS busybox
 
 FROM alpine:3.19.4 AS install
 COPY --from=build /log /etc/bf/BUILD
-COPY --from=build /usr/bin/envdir /usr/bin/
 COPY --from=busybox / /bin
 COPY --from=nushell / /
 
@@ -53,7 +75,7 @@ ENV \
     #   1: yes
     BF_UPGRADE_PACKAGES=0 \
     # Nushell version string to check against installed verion after installation
-    NUSHELL_VERSION=0.97.1
+    NUSHELL_VERSION=0.98.0
 
 RUN \
     # add packages required by Nushell

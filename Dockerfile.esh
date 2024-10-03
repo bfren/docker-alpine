@@ -11,12 +11,35 @@ RUN \
     echo "Alpine: <%= ${ALPINE_VERSION} %>" >> /log && \
     echo "Nushell: <%= ${NUSHELL_VERSION} %>" >> /log
 
+WORKDIR /tmp
+RUN \
+    # build a URL to download Nushell
+    echo "Downloading Nushell." && \
+    case "${TARGETPLATFORM}" in \
+        linux/amd64) ARCH="x86_64" ;; \
+        linux/arm/v7) ARCH="armv7" ;; \
+        linux/arm64) ARCH="aarch64" ;; \
+        *) echo "Unsupported target platform: ${TARGETPLATFORM}." && exit 1 ;; \
+    esac && \
+    printf "%s" "${ARCH}" > ARCH && \
+    RELEASES=https://github.com/nushell/nushell/releases/download/<%= ${NUSHELL_VERSION} %> && \
+    FILE=nu-<%= ${NUSHELL_VERSION} %>-${ARCH}-unknown-linux-musl.tar.gz && \
+    URL=${RELEASES}/${FILE} && \
+    wget ${URL} && \
+    tar -xf ${FILE} -C /nu-<%= ${NUSHELL_VERSION} %>
+
 
 #======================================================================================================================
-# STAGE 1: load Nushell
+# STAGE 1: bring Nushell files together
 #======================================================================================================================
 
-FROM ghcr.io/bfren/nushell:<%= ${NUSHELL_VERSION} %>-alpine AS nushell
+ARG NUSHELL_CONFIG=/root/.config/nushell
+FROM scratch AS nushell
+COPY --from=build /nu-<%= ${NUSHELL_VERSION} %>/nu /usr/bin/
+COPY --from=build /nu-<%= ${NUSHELL_VERSION} %>/nu_plugin* ${NUSHELL_CONFIG}/plugins/
+ADD https://raw.githubusercontent.com/bfren/nushell/main/<%= ${NUSHELL_VERSION} %>/config.nu ${NUSHELL_CONFIG}/config.nu
+ADD https://raw.githubusercontent.com/bfren/nushell/main/<%= ${NUSHELL_VERSION} %>/env.nu ${NUSHELL_CONFIG}/env.nu
+
 
 
 #======================================================================================================================
@@ -32,7 +55,6 @@ FROM ghcr.io/bfren/busybox:<%= ${BUSYBOX_IMAGE} %> AS busybox
 
 FROM alpine:<%= ${ALPINE_VERSION} %> AS install
 COPY --from=build /log /etc/bf/BUILD
-COPY --from=build /usr/bin/envdir /usr/bin/
 COPY --from=busybox / /bin
 COPY --from=nushell / /
 
