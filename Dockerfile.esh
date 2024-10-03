@@ -32,7 +32,6 @@ FROM ghcr.io/bfren/busybox:<%= ${BUSYBOX_IMAGE} %> AS busybox
 
 FROM alpine:<%= ${ALPINE_VERSION} %> AS install
 COPY --from=build /log /etc/bf/BUILD
-COPY --from=build /usr/bin/envdir /usr/bin/
 COPY --from=busybox / /bin
 COPY --from=nushell / /
 
