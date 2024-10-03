@@ -6,7 +6,7 @@ docker pull bfren/alpine
 
 BUSYBOX_VERSION="1.36.1"
 BUSYBOX_BUILD="240913"
-NUSHELL_VERSION="0.98.0"
+NU_VERSION="0.98.0"
 ALPINE_EDITIONS="3.15 3.16 3.17 3.18 3.19 3.20"
 
 for E in ${ALPINE_EDITIONS} ; do
@@ -26,7 +26,8 @@ for E in ${ALPINE_EDITIONS} ; do
         BUSYBOX_VERSION=${BUSYBOX_VERSION} \
         BF_BIN=/usr/bin/bf \
         BF_ETC=/etc/bf \
-        NUSHELL_VERSION=${NUSHELL_VERSION}
+        NU_CONFIG=/root/.config/nushell \
+        NU_VERSION=${NU_VERSION}
     )
 
     echo "${DOCKERFILE}" > ./${E}/Dockerfile

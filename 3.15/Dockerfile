@@ -13,32 +13,32 @@ RUN \
 
 WORKDIR /tmp
 RUN \
-    # build a URL to download Nushell
+    # build a URL to download and extract Nushell
     echo "Downloading Nushell." && \
     case "${TARGETPLATFORM}" in \
-        linux/amd64) ARCH="x86_64" ;; \
-        linux/arm/v7) ARCH="armv7" ;; \
-        linux/arm64) ARCH="aarch64" ;; \
+        "linux/amd64") ARCH="x86_64" ;; \
+        "linux/arm/v7") ARCH="armv7" ;; \
+        "linux/arm64") ARCH="aarch64" ;; \
         *) echo "Unsupported target platform: ${TARGETPLATFORM}." && exit 1 ;; \
     esac && \
     printf "%s" "${ARCH}" > ARCH && \
     RELEASES=https://github.com/nushell/nushell/releases/download/0.98.0 && \
-    FILE=nu-0.98.0-${ARCH}-unknown-linux-musl.tar.gz && \
-    URL=${RELEASES}/${FILE} && \
+    FILE=nu-0.98.0-${ARCH}-unknown-linux-musl && \
+    EXT=tar.gz && \
+    URL=${RELEASES}/${FILE}.${EXT} && \
     wget ${URL} && \
-    tar -xf ${FILE} -C /nu-0.98.0
+    tar -xf ${FILE}.${EXT} && mv ${FILE}/ /nu
 
 
 #======================================================================================================================
 # STAGE 1: bring Nushell files together
 #======================================================================================================================
 
-ARG NUSHELL_CONFIG=/root/.config/nushell
 FROM scratch AS nushell
-COPY --from=build /nu-0.98.0/nu /usr/bin/
-COPY --from=build /nu-0.98.0/nu_plugin* ${NUSHELL_CONFIG}/plugins/
-ADD https://raw.githubusercontent.com/bfren/nushell/main/0.98.0/config.nu ${NUSHELL_CONFIG}/config.nu
-ADD https://raw.githubusercontent.com/bfren/nushell/main/0.98.0/env.nu ${NUSHELL_CONFIG}/env.nu
+COPY --from=build /nu/nu /usr/bin/
+COPY --from=build /nu/nu_plugin* /root/.config/nushell/plugins/
+ADD https://raw.githubusercontent.com/bfren/nushell/main/0.98.0/config.nu /root/.config/nushell/config.nu
+ADD https://raw.githubusercontent.com/bfren/nushell/main/0.98.0/env.nu /root/.config/nushell/env.nu
 
 
 
@@ -75,7 +75,7 @@ ENV \
     #   1: yes
     BF_UPGRADE_PACKAGES=0 \
     # Nushell version string to check against installed verion after installation
-    NUSHELL_VERSION=0.98.0
+    NU_VERSION=0.98.0
 
 RUN \
     # add packages required by Nushell
