@@ -2,16 +2,6 @@ use dump.nu
 use fs.nu
 use write.nu
 
-# Force and recursively remove all files and directories paths
-export def force [
-    ...paths: string    # The paths to delete
-]: nothing -> nothing {
-    # use rm on each path
-    $paths | each {|x| echo $x | into glob | rm --force --recursive $in }
-
-    return
-}
-
 # Delete files or directories within root_dir older than $duration
 export def old [
     root_dir: string    # The root directory - files / directories within this will be deleted

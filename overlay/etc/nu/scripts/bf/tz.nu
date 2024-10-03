@@ -50,7 +50,7 @@ export def main [
 def clean []: nothing -> nothing {
     write debug "Removing tzdata packages." tz/clean
     pkg remove [.tz]
-    del force $"($zoneinfo)/*"
+    echo $"($zoneinfo)/*" | into glob | rm --force --recursive $in
 }
 
 # Return the name of the current timezone
