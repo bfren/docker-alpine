@@ -9,6 +9,7 @@ set -euo pipefail
 
 NU=/etc/nu
 CFG=/root/.config/nushell
+mkdir -p ${CFG}
 ln -sf ${NU}/config.nu ${CFG}/config.nu
 ln -sf ${NU}/env.nu ${CFG}/env.nu
 ln -sf ${NU}/scripts ${CFG}/scripts
