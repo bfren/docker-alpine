@@ -16,13 +16,13 @@ RUN \
     # build a URL to download Nushell
     echo "Building Nushell download URL." && \
     case "${TARGETPLATFORM}" in \
-        "linux/amd64") ARCH="x86_64" ;; \
-        "linux/arm/v7") ARCH="armv7" ;; \
-        "linux/arm64") ARCH="aarch64" ;; \
+        "linux/amd64") ARCH="x86_64" && CLIB="musl" ;; \
+        "linux/arm/v7") ARCH="armv7" && CLIB="musleabihf" ;; \
+        "linux/arm64") ARCH="aarch64" && CLIB="musl" ;; \
         *) echo "Unsupported target platform: ${TARGETPLATFORM}." && exit 1 ;; \
     esac && \
     RELEASES=https://github.com/nushell/nushell/releases/download/0.98.0 && \
-    FILE=nu-0.98.0-${ARCH}-unknown-linux-musl && \
+    FILE=nu-0.98.0-${ARCH}-unknown-linux-${CLIB} && \
     EXT=tar.gz && \
     URL=${RELEASES}/${FILE}.${EXT} && \
     # build a URL to download Nushell
