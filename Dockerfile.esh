@@ -13,21 +13,25 @@ RUN \
 
 WORKDIR /tmp
 RUN \
-    # build a URL to download and extract Nushell
-    echo "Downloading Nushell." && \
+    # build a URL to download Nushell
+    echo "Building Nushell download URL." && \
     case "${TARGETPLATFORM}" in \
         "linux/amd64") ARCH="x86_64" ;; \
         "linux/arm/v7") ARCH="armv7" ;; \
         "linux/arm64") ARCH="aarch64" ;; \
         *) echo "Unsupported target platform: ${TARGETPLATFORM}." && exit 1 ;; \
     esac && \
-    printf "%s" "${ARCH}" > ARCH && \
     RELEASES=https://github.com/nushell/nushell/releases/download/<%= ${NU_VERSION} %> && \
     FILE=nu-<%= ${NU_VERSION} %>-${ARCH}-unknown-linux-musl && \
     EXT=tar.gz && \
     URL=${RELEASES}/${FILE}.${EXT} && \
+    # build a URL to download Nushell
+    echo "Downloading Nushell from ${URL}." && \
     wget ${URL} && \
-    tar -xf ${FILE}.${EXT} && mv ${FILE}/ /nu
+    # extract Nushell and move it to root
+    echo "Extracting Nushell." && \
+    tar -xf ${FILE}.${EXT} && \
+    mv ${FILE}/ /nu
 
 
 #======================================================================================================================
