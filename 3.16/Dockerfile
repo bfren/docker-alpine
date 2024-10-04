@@ -1,5 +1,5 @@
 #======================================================================================================================
-# STAGE 0: get build information and download envdir
+# STAGE 0: store build information and download Nushell
 #======================================================================================================================
 
 FROM --platform=${BUILDPLATFORM} golang:alpine AS build
@@ -9,39 +9,57 @@ RUN \
     # save platform and version information to log
     echo "Platform: ${TARGETPLATFORM}" >> /log && \
     echo "Alpine: 3.16.9" >> /log && \
-    echo "Nushell: 0.97.1" >> /log
+    echo "Nushell: 0.98.0" >> /log
 
 WORKDIR /tmp
 RUN \
-    # build a URL to download and extract justc-envdir binary
-    echo "Downloading justc-envdir." && \
-    FILE="justc-envdir-1.0.1-linux" && \
+    # build a URL to download Nushell
+    echo "Building Nushell download URL." && \
     case "${TARGETPLATFORM}" in \
-        linux/amd64) ARCH="amd64" ;; \
-        linux/arm/v7) ARCH="armhf" ;; \
-        linux/arm64) ARCH="aarch64" ;; \
+        "linux/amd64") ARCH="x86_64" && CLIB="musl" ;; \
+        "linux/arm/v7") ARCH="armv7" && CLIB="musleabihf" ;; \
+        "linux/arm64") ARCH="aarch64" && CLIB="musl" ;; \
         *) echo "Unsupported target platform: ${TARGETPLATFORM}." && exit 1 ;; \
     esac && \
-    printf "%s" "${ARCH}" > ARCH && \
-    wget https://github.com/just-containers/justc-envdir/releases/download/v1.0.1-1/${FILE}-${ARCH}.tar.gz && \
-    tar -xvf ${FILE}-${ARCH}.tar.gz && \
-    mv usr/bin/justc-envdir /usr/bin/envdir
+    RELEASES=https://github.com/nushell/nushell/releases/download/0.98.0 && \
+    FILE=nu-0.98.0-${ARCH}-unknown-linux-${CLIB} && \
+    EXT=tar.gz && \
+    URL=${RELEASES}/${FILE}.${EXT} && \
+    # build a URL to download Nushell
+    echo "Downloading Nushell from ${URL}." && \
+    wget ${URL} && \
+    # extract Nushell and move it to root
+    echo "Extracting Nushell." && \
+    tar -xf ${FILE}.${EXT} && \
+    mv ${FILE}/ /nu
 
 
 #======================================================================================================================
-# STAGE 1: load Nushell
+# STAGE 1: create blank image containing Nushell executable, plugins and config in the correct locations
 #======================================================================================================================
 
-FROM ghcr.io/bfren/nushell:0.97.1-alpine AS nushell
+FROM scratch AS nushell
+COPY --from=build /nu/nu /usr/bin/
+COPY --from=build /nu/nu_plugin* /etc/nu/plugins/
+ADD https://raw.githubusercontent.com/bfren/nushell/main/0.98.0/config.nu /etc/nu/config.nu
+ADD https://raw.githubusercontent.com/bfren/nushell/main/0.98.0/env.nu /etc/nu/env.nu
+
 
 
 #======================================================================================================================
-# STAGE 2: install bfren platform
+# STAGE 2: load busybox
+#======================================================================================================================
+
+FROM ghcr.io/bfren/busybox:1.36.1-alpine3.16.9-240913 AS busybox
+
+
+#======================================================================================================================
+# STAGE 3: install bfren platform
 #======================================================================================================================
 
 FROM alpine:3.16.9 AS install
 COPY --from=build /log /etc/bf/BUILD
-COPY --from=build /usr/bin/envdir /usr/bin/
+COPY --from=busybox / /bin
 COPY --from=nushell / /
 
 ARG BF_IMAGE
@@ -61,11 +79,13 @@ ENV \
     #   1: yes
     BF_UPGRADE_PACKAGES=0 \
     # Nushell version string to check against installed verion after installation
-    NUSHELL_VERSION=0.97.1
+    NU_VERSION=0.98.0
 
 RUN \
     # add packages required by Nushell
     apk add --no-cache libcrypto3 libgcc libssl3 sqlite-libs && \
+    # install busybox
+    busybox --install && \
     # setup Nushell using preinstallation script
     chmod +x /preinstall && /preinstall && \
     # run standard bf installation executable
@@ -73,7 +93,7 @@ RUN \
 
 
 #======================================================================================================================
-# STAGE 3: create final image
+# STAGE 4: create final image
 #======================================================================================================================
 
 FROM scratch AS final
