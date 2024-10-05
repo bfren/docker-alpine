@@ -7,8 +7,11 @@ export def main []: nothing -> nothing {
     write debug "Deleting caches." clean
     rm --force --recursive /tmp/* /var/cache/apk/*
 
-    write debug "Deleting .empty files." clean
-    fs find_name "/" ".empty" | rm --force ...$in
+    let files = fs find_name "/" ".empty"
+    if ($files | is-not-empty) {
+        write debug "Deleting .empty files." clean
+        rm --force ...$files
+    }
 
     if (env check PUBLISHING) {
         write debug "Deleting preinstallation script." clean
