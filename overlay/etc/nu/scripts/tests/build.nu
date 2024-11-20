@@ -29,7 +29,7 @@ export def add__appends_key_and_value [] {
     let v = random chars
     let tmpdir = mktemp --directory
 
-    let result = with-env { BF_ETC: $tmpdir } { add $k $v } | open --raw $"($tmpdir)/($build_file)"
+    let result = with-env { BF_ETC: $tmpdir } { add $k $v } | open --raw $"($tmpdir)/($build_file)" | str trim
     let expect = format $log_format {k: $k, v: $v}
 
     assert equal $expect $result "build log entry not saved correctly"
