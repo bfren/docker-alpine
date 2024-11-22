@@ -1,0 +1,2 @@
+#!/bin/sh
+env -i nu -c "use bf test ; test"
