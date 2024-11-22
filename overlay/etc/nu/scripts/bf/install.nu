@@ -33,6 +33,7 @@ export def main []: nothing -> nothing {
     let root = "root:root"
     ["/etc/nu" $root 0666 0777] | ch apply
     ["/init" $root 0500 ] | ch apply
+    ["/test" $root 0500 ] | ch apply
     ["/tmp" $root 1777 1777] | ch apply
     ["/usr/bin/bf" $root 0555] | ch apply
 
