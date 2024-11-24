@@ -1,3 +1,4 @@
+use dump.nu
 use fs.nu
 use write.nu
 
@@ -72,7 +73,10 @@ def execute []: list<string> -> any {
 
     # output each failure and error message
     $failures | each {|x|
-        $"(char newline)(ansi rb)FAILED(ansi reset) ($x.test)(char newline)($x.stderr)" | print
+        $"(char newline)(ansi rb)FAILED(ansi reset) ($x.test)" | print
+        $"(char newline)#== stderr ==#(char newline)($x.stderr)" | print
+        $"(char newline)#== stdout ==#(char newline)($x.stdout)" | print
+        char newline | print
     }
     error make --unspanned {msg: $"($failures | length) of ($results | length) tests failed."}
 }
