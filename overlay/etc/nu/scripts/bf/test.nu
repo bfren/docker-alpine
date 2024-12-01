@@ -5,7 +5,7 @@ use write.nu
 # Execute tests with debug switch enabled
 # Inspired by https://github.com/nushell/nupm/blob/main/nupm/test.nu to work in this ecosystem
 export def main [] {
-    let path = "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+    let path = "/usr/bin/bf:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
     with-env { BF_DEBUG: 1, PATH: $path } {
         discover | execute
     }
