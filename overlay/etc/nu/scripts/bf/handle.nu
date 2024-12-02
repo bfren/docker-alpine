@@ -17,7 +17,14 @@ use dump.nu
 #   - **this option overrides all others**
 #
 # ```nu
-# > { ^external } | bf handle --ignore-errors
+# > { ^external } | bf handle --ignore-success
+# ```
+#   - `external` will be run using `do { } | complete`, capturing the exit code, stdout and stderr
+#   - if exit code is 0, stdout will be discarded - it is the equivalent of `--on-success {|out| $out | ignore }`
+#   - **this option overrides `--dump-result` and `--on-success`**
+#
+# ```nu
+# > { ^external } | bf handle --ignore-error
 # ```
 #   - `external` will be run using `do { } | complete`, capturing the exit code, stdout and stderr
 #   - whatever the exit code is, stdout will be trimmed and returned
@@ -48,7 +55,8 @@ export def main [
     --code-only (-c)            # If set, only the exit code will be returned - overrides all other options
     --debug (-D)                # If set, the result object will be dumped immediately before any processing
     --dump-result (-d): string  # On error, dump the full $result object with this text
-    --ignore-errors (-i)        # If set, any errors will be ignored and $result.stdout will be returned whatever it is
+    --ignore-error (-i)         # If set, any errors will be ignored and $result.stdout will be returned
+    --ignore-success (-I)       # If set, a successful $result will be discarded
     --on-failure (-f): closure  # On failure, optionally run this closure with $code and $stderr as inputs
     --on-success (-s): closure  # On success, optionally run this closure with $stdout as input
 ]: closure -> any {
@@ -61,13 +69,14 @@ export def main [
     # return exit code
     if $code_only { return $result.exit_code }
 
-    # on success, run closure (if it has been set) and return
+    # if ignoring success, return nothing - otherwise, run closure (if it has been set) and return
     if $result.exit_code == 0 {
+        if $ignore_success { return }
         if ($on_success | is-not-empty) { do $on_success $result.stdout } else { $result.stdout | str trim } | return $in
     }
 
     # if ignoring errors, return the $result.stdout string
-    if $ignore_errors { $result.stdout | str trim | return $in }
+    if $ignore_error { $result.stdout | str trim | return $in }
 
     # if we get here, the operation failed
     # if $dump_result flag is set, dump the $result object (it won't show unless BF_DEBUG is 1)
