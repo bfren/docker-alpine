@@ -4,11 +4,14 @@ use write.nu
 
 # Execute tests with debug switch enabled
 # Inspired by https://github.com/nushell/nupm/blob/main/nupm/test.nu to work in this ecosystem
-export def main [] {
-    let path = "/usr/bin/bf:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-    with-env { BF_DEBUG: 1, PATH: $path } {
-        discover | execute
+export def main [
+    --path: string  # dir(s) to include with default PATH - MUST end with a colon ':'
+] {
+    let e = {
+        BF_DEBUG: "1"
+        PATH: $"($path)/usr/bin/bf:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
     }
+    with-env $e { discover | execute }
 }
 
 # Discover tests to execute
@@ -45,10 +48,10 @@ def discover [] {
     $tests
 }
 
-# Execute each discovered test
+# Execute each discovered test in parallel
+# WARNING: this means tests need to be self-contained as the execution order cannot be guaranteed
 def execute []: list<string> -> any {
-    # execute each test
-    let results = $in | sort | each {|x|
+    let results = $in | sort | par-each {|x|
         # capture result
         let result = do { ^nu -c $"use tests * ; ($x)" } | complete
 
