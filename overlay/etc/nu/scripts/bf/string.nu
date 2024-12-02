@@ -1,6 +1,9 @@
 use dump.nu
 use write.nu
 
+# Add double quotes to the input string and return.
+export def quote []: string -> string { $"\"($in)\"" }
+
 # Format a string by using $values to replace placeholders with values within $input:
 #   - if $values = {a: "one" b: "two"}
 #   - and $input = "this contains {a} and {b}"
