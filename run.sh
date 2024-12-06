@@ -1,7 +1,7 @@
 #!/bin/sh
 
 IMAGE=`cat VERSION`
-ALPINE=${1:-3.20}
+ALPINE=${1:-3.21}
 
 docker buildx build \
     --load \
