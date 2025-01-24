@@ -8,30 +8,30 @@ ARG TARGETPLATFORM
 RUN \
     # save platform and version information to log
     echo "Platform: ${TARGETPLATFORM}" >> /log && \
-    echo "Alpine: 3.21.0" >> /log && \
+    echo "Alpine: 3.21.2" >> /log && \
     echo "Busybox: 1.36.1" >> /log && \
-    echo "Nushell: 0.100.0" >> /log
+    echo "Nushell: 0.101.0" >> /log
 
 
 #======================================================================================================================
 # STAGE 1: load busybox
 #======================================================================================================================
 
-FROM ghcr.io/bfren/busybox:1.36.1-alpine3.21.0-240913 AS busybox
+FROM ghcr.io/bfren/busybox:1.36.1-alpine3.21.2-240913 AS busybox
 
 
 #======================================================================================================================
 # STAGE 2: load Nushell
 #======================================================================================================================
 
-FROM ghcr.io/bfren/nushell:0.100.0-alpine-241018 AS nushell
+FROM ghcr.io/bfren/nushell:0.101.0-alpine-250124 AS nushell
 
 
 #======================================================================================================================
 # STAGE 3: install bfren platform
 #======================================================================================================================
 
-FROM alpine:3.21.0 AS install
+FROM alpine:3.21.2 AS install
 COPY --from=build /log /etc/bf/BUILD
 COPY --from=busybox / /bin
 COPY --from=nushell / /
@@ -53,7 +53,7 @@ ENV \
     #   1: yes
     BF_UPGRADE_PACKAGES=0 \
     # Nushell version string to check against installed verion after installation
-    NU_VERSION=0.100.0
+    NU_VERSION=0.101.0
 
 RUN \
     # add packages required by Nushell
