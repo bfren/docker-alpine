@@ -55,8 +55,8 @@ export def apply []: [string -> nothing, list<string> -> nothing] {
     # get values - path and owner are required, fmode and dmode are optional
     let path = $row | get 0
     let owner = $row | get 1
-    let fmode = $row | get -i 2 | into string
-    let dmode = $row | get -i 3 | into string
+    let fmode = $row | get -i 2 | default "" | into string
+    let dmode = $row | get -i 3 | default "" | into string
 
     # apply ownership changes
     apply_own_recurse $path $owner
