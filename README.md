@@ -10,6 +10,7 @@
 
 You can pin by Alpine version:
 
+- **alpine3.22, alpine3.22.x** (EOL: 2027-05-01)
 - **alpine3.21, alpine3.21.x** (EOL: 2026-11-01)
 - **alpine3.20, alpine3.20.x** (EOL: 2026-04-01)
 - **alpine3.19, alpine3.19.x** (EOL: 2025-12-01)
@@ -20,10 +21,10 @@ You can pin by Alpine version:
 
 Or if you want a specific base image build you can add a version suffix, e.g.:
 
-- alpine3.21-2.8
+- alpine3.22-2.9
 - alpine3.20-2.7.8
 
-These pin to v2.8.x of my Alpine 3.21 image and v2.7.8 of my Alpine 3.20 image respectively.
+These pin to v2.9.x of my Alpine 3.22 image and v2.7.8 of my Alpine 3.20 image respectively.
 
 ## Licence
 
