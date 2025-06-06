@@ -2,7 +2,7 @@
 # STAGE 0: store build information
 #======================================================================================================================
 
-FROM --platform=${BUILDPLATFORM} golang:alpine AS build
+FROM --platform=${BUILDPLATFORM} ghcr.io/bfren/golang:alpine AS build
 ARG TARGETPLATFORM
 
 RUN \
