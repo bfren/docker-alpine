@@ -9,7 +9,7 @@ RUN \
     # save platform and version information to log
     echo "Platform: ${TARGETPLATFORM}" >> /log && \
     echo "Alpine: 3.15.11" >> /log && \
-    echo "Busybox: 1.36.1" >> /log && \
+    echo "Busybox: 1.37.0" >> /log && \
     echo "Nushell: 0.104.1" >> /log
 
 
@@ -17,14 +17,14 @@ RUN \
 # STAGE 1: load busybox
 #======================================================================================================================
 
-FROM ghcr.io/bfren/busybox:1.36.1-alpine3.15.11-240913 AS busybox
+FROM ghcr.io/bfren/busybox:1.37.0-alpine3.15.11-250606 AS busybox
 
 
 #======================================================================================================================
 # STAGE 2: load Nushell
 #======================================================================================================================
 
-FROM ghcr.io/bfren/nushell:0.104.1-alpine-250205 AS nushell
+FROM ghcr.io/bfren/nushell:0.104.1-alpine-250606 AS nushell
 
 
 #======================================================================================================================

@@ -8,7 +8,7 @@ ARG TARGETPLATFORM
 RUN \
     # save platform and version information to log
     echo "Platform: ${TARGETPLATFORM}" >> /log && \
-    echo "Alpine: 3.19.7" >> /log && \
+    echo "Alpine: 3.22.0" >> /log && \
     echo "Busybox: 1.37.0" >> /log && \
     echo "Nushell: 0.104.1" >> /log
 
@@ -17,7 +17,7 @@ RUN \
 # STAGE 1: load busybox
 #======================================================================================================================
 
-FROM ghcr.io/bfren/busybox:1.37.0-alpine3.19.7-250606 AS busybox
+FROM ghcr.io/bfren/busybox:1.37.0-alpine3.22.0-250606 AS busybox
 
 
 #======================================================================================================================
@@ -31,7 +31,7 @@ FROM ghcr.io/bfren/nushell:0.104.1-alpine-250606 AS nushell
 # STAGE 3: install bfren platform
 #======================================================================================================================
 
-FROM alpine:3.19.7 AS install
+FROM alpine:3.22.0 AS install
 COPY --from=build /log /etc/bf/BUILD
 COPY --from=busybox / /bin
 COPY --from=nushell / /
@@ -41,7 +41,7 @@ ARG BF_PUBLISHING
 ARG BF_VERSION
 
 COPY ./overlay /
-COPY ./3.19/overlay /
+COPY ./3.22/overlay /
 
 ENV \
     # path to bf configuration - installation script requires this
