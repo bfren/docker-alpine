@@ -3,6 +3,68 @@ use ../bf env *
 
 
 #======================================================================================================================
+# main
+#======================================================================================================================
+
+export def main__case_matches__returns_value [] {
+    let key = random chars
+    let value = random chars
+
+    let result = with-env { $key: $value } { env --no-prefix $key }
+
+    assert equal $value $result "does not return correct value with case-sensitive key"
+}
+
+export def main__case_does_not_match__returns_default_value [] {
+    let key = random chars | str downcase
+    let key_upper = $key | str upcase
+    let value = random chars
+    let default_value = random chars
+
+    let result = with-env { $key: $value } { env --no-prefix $key_upper $default_value }
+
+    assert equal $default_value $result "does not return default value with case-sensitive key"
+}
+
+export def main__returns_value_for_prefixed_key [] {
+    let key = random chars
+    let prefixed_key = $prefix + $key
+    let value = random chars
+
+    let result = with-env { $prefixed_key: $value } { env $key }
+
+    assert equal $value $result "does not return value for prefixed key"
+}
+
+export def main__with_no_prefix__returns_value_for_unprefixed_key [] {
+    let key = random chars
+    let value = random chars
+
+    let result = with-env { $key: $value } { env --no-prefix $key }
+
+    assert equal $value $result "does not return value for unprefixed key"
+}
+
+export def main__no_value__with_default__returns_default_value [] {
+    let key = random chars
+    let default_value = random chars
+
+    let result = env $key $default_value
+
+    assert equal $default_value $result "does not return default value when key is not set"
+}
+
+export def main__no_value__with_safe__returns_safe_string [] {
+    let key = random chars
+
+    let result = env --safe $key
+    let expect = ""
+
+    assert equal $expect $result "does not return empty string with key is not set"
+}
+
+
+#======================================================================================================================
 # check
 #======================================================================================================================
 
