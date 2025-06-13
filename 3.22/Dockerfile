@@ -57,7 +57,7 @@ ENV \
 
 RUN \
     # add packages required by Nushell
-    apk add --no-cache libcrypto3 libgcc sqlite-libs && \
+    apk add --no-cache libgcc sqlite-libs && \
     # install busybox
     busybox --install && \
     # setup Nushell using preinstallation script
