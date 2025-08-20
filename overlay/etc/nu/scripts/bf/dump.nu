@@ -8,7 +8,7 @@ export def main [
     let input = $in
 
     # check BF_DEBUG directly so dump can be used everywhere (including env.nu module)
-    if $always or ($env | get --ignore-errors BF_DEBUG | into string) == "1" {
+    if $always or ($env | get --optional BF_DEBUG | into string) == "1" {
         # output optional text heading
         if ($text | is-not-empty) { $"(char newline)#== ($text) ==#" | print --stderr=($stderr) }
 

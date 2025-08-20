@@ -20,7 +20,7 @@ export def debug [
     text: string    # The text to write
     script?: string # The name of the calling script or executable
 ]: nothing -> nothing {
-    if ($env | get --ignore-errors BF_DEBUG | into string) == "1" {
+    if ($env | get --optional BF_DEBUG | into string) == "1" {
         fmt $text $colour_debug $script | $"(ansi $colour_debug)($in)(ansi reset)" | print
     }
 }
@@ -66,7 +66,7 @@ def fmt [
     script?: string # The name of the calling script or executable
 ]: nothing -> string {
     # get the name of the base executable
-    let bf_x = $env | get --ignore-errors BF_X | $"($in)" | str trim
+    let bf_x = $env | get --optional BF_X | $"($in)" | str trim
 
     # use BF_X or the calling script as the prefix
     let prefix = if ($script | is-not-empty) {

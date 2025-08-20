@@ -12,7 +12,7 @@ def main [] {
     # install additional packages
     try {
         bf write "Installing additional packages."
-        bf pkg install [figlet]
+        bf pkg install [figlet nano]
     } catch {
         bf write error "Unable to install additional packages."
     }

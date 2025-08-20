@@ -20,7 +20,7 @@ export def main [
     let prefixed = if $no_prefix { $key } else { add_prefix $key }
 
     # return the value if it exists
-    let value = $env | get --ignore-errors $prefixed
+    let value = $env | get --optional $prefixed
     if ($value | is-not-empty) { return $value }
 
     # return the default value if it is set
