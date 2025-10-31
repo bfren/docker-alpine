@@ -88,6 +88,6 @@ def fmt [
     let suffix = if ($script | is-not-empty) and ($bf_x | is-not-empty ) { $" \(($script)\)" }
 
     # format date and write text
-    let date = date now | format date "%Y-%m-%d %H:%M:%S"
+    let date = date now | format date "%y%m%d %H:%M:%S"
     $"[bf] ($date) | ($prefix)(ansi $colour)($text)($suffix)(ansi reset)"
 }
