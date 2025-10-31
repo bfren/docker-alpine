@@ -20,7 +20,7 @@ export def debug [
     text: string    # The text to write
     script?: string # The name of the calling script or executable
 ]: nothing -> nothing {
-    if ($env | get --optional BF_DEBUG | into string) == "1" {
+    if ($env | get --optional BF_DEBUG) == "1" {
         fmt $text $colour_debug $script | $"(ansi $colour_debug)($in)(ansi reset)" | print
     }
 }
@@ -29,10 +29,15 @@ export def debug [
 export def error [
     error: string           # The error text to write
     script?: string         # The name of the calling script or executable
-    --code (-c): int = 1    # The error code to emit after the message
-]: nothing -> nothing {
-    fmt $error $colour_notok $script | print --stderr
-    exit $code
+]: nothing -> error {
+    fmt $error $colour_notok $script | print
+    error make --unspanned {
+        msg: $error
+        label: {
+            text: "error called here"
+            span: (metadata $error).span
+        }
+    }
 }
 
 # Write text in red with the current date / time
@@ -71,12 +76,12 @@ def fmt [
     # use BF_X or the calling script as the prefix
     let prefix = if ($script | is-not-empty) {
         if $bf_x != "" {
-            $"($bf_x): "
+            $"($bf_x) | "
         } else {
-            $"($script): "
+            $"($script) | "
         }
     } else if $bf_x != "" {
-        $"($bf_x): "
+        $"($bf_x) | "
     }
 
     # if script and BF_X are both set, BF_X is the prefix, so use script as the suffix
@@ -84,5 +89,5 @@ def fmt [
 
     # format date and write text
     let date = date now | format date "%Y-%m-%d %H:%M:%S"
-    $"[bf] ($date) | (ansi $colour)($prefix)($text)($suffix)(ansi reset)"
+    $"[bf] ($date) | ($prefix)(ansi $colour)($text)($suffix)(ansi reset)"
 }

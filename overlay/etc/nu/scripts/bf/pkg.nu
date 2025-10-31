@@ -15,7 +15,7 @@ def action [
     # use shell to run apk
     let joined = $args | str join " "
     write debug $"($description): ($joined)." $script
-    let on_failure = {|code, err| write error --code $code $"Error ($description | str downcase) packages: ($joined)." $script }
+    let on_failure = {|code, err| write error $"Error ($code) ($description | str downcase) packages: ($joined).\n($err)" $script }
     { ^apk $cmd --no-cache ...$args } | handle -d $"($description) packages" -f $on_failure $script
 
     return
