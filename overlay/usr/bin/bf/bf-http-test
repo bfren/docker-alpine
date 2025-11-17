@@ -7,5 +7,5 @@ bf env x_set
 def main [
     url: string # URL to load
 ]: nothing -> bool {
-    $url | bf http test_url
+    $url | bf http test
 }
