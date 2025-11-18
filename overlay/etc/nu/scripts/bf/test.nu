@@ -59,7 +59,7 @@ def discover [
 def execute []: list<string> -> any {
     write $"Executing ($in | length) tests." test/execute
 
-    let results = $in | sort | par-each {|x|
+    let results = $in | par-each {|x|
         # capture result
         let result = do { ^nu -c $"use tests * ; ($x)" } | complete
 
