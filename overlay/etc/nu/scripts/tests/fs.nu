@@ -96,3 +96,17 @@ export def is_not_symlink__input_is_symlink_returns_false [] {
 
     assert equal false $result
 }
+
+
+#======================================================================================================================
+# read
+#======================================================================================================================
+
+export def read__file_does_not_exist_throws_error [] {
+    let file = $"/tmp/(random chars)"
+    let msg = $"File does not exist: ($file)."
+
+    let result = {|| read $file }
+
+    assert error $result $msg
+}

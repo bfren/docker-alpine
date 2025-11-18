@@ -94,7 +94,7 @@ export def read [
         # share error between debug and error output
         let error = $"File does not exist: ($use_path)."
 
-        # if quiet is enabled, write to debug output and return
+        # if quiet is enabled, write to debug output and return blank string
         if $quiet {
             write debug $error fs/read
             return ""
