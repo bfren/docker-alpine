@@ -8,7 +8,7 @@ def check_type [
 ]: nothing -> any {
     match $type {
         "d" | "f" | "l" => $type
-        _ => { write error $"($type) is not supported." fs/find_type }
+        _ => { write error $"($type) is not supported." fs/check_type }
     }
 }
 
