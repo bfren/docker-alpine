@@ -4,10 +4,10 @@ use write.nu
 
 # Perform a package action, capturing result and outputting any errors
 def action [
-    name: string
-    description: string
-    cmd: string
-    args: list<string>
+    name: string        # Name of the action
+    description: string # Description of the action for logs
+    cmd: string         # The actual command to run
+    args: list<string>  # Command arguments
 ]: nothing -> nothing {
     # add pkg to the script name
     let script = $"pkg/($name)"
