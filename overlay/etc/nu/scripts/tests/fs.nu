@@ -95,6 +95,37 @@ export def find_type__returns_list_of_files [] {
 
 
 #======================================================================================================================
+# find_type_acc
+#======================================================================================================================
+
+export def find_type_acc__returns_list_of_directories [] {
+    let tmp0 = make_temp_dir
+    let tmp1 = make_temp_dir
+    let dir = mktemp --directory
+    cp -r $dir $tmp0
+    cp -r $dir $tmp1
+    let expect = 4
+
+    let result = find_type_acc [ $tmp0 $tmp1 ] "d" | length
+
+    assert equal $expect $result
+}
+
+export def find_type_acc__returns_list_of_files [] {
+    let tmp0 = make_temp_dir
+    let tmp1 = make_temp_dir
+    let file = mktemp
+    cp $file $tmp0
+    cp $file $tmp1
+    let expect = 2
+
+    let result = find_type_acc [ $tmp0 $tmp1 ] "f" | length
+
+    assert equal $expect $result
+}
+
+
+#======================================================================================================================
 # is_not_dir
 #======================================================================================================================
 
