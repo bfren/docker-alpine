@@ -2,7 +2,7 @@
 # STAGE 0: store build information
 #======================================================================================================================
 
-FROM --platform=${BUILDPLATFORM} ghcr.io/bfren/golang:alpine AS build
+FROM --platform=${BUILDPLATFORM} quay.io/bfren/golang:alpine AS build
 ARG TARGETPLATFORM
 
 RUN \
@@ -17,14 +17,14 @@ RUN \
 # STAGE 1: load busybox
 #======================================================================================================================
 
-FROM ghcr.io/bfren/busybox:1.36.1-alpine3.19.9-250606 AS busybox
+FROM quay.io/bfren/busybox:1.36.1-alpine3.19.9-250606 AS busybox
 
 
 #======================================================================================================================
 # STAGE 2: load Nushell
 #======================================================================================================================
 
-FROM ghcr.io/bfren/nushell:0.108.0-alpine-250606 AS nushell
+FROM quay.io/bfren/nushell:0.108.0-alpine-250606 AS nushell
 
 
 #======================================================================================================================
