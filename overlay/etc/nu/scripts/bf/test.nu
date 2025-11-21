@@ -31,11 +31,11 @@ def discover [
         'use tests
 
         scope commands
-        | where ($it.name | str starts-with tests)
-        | get name
-        | str replace "tests" ""
-        | str trim
-        | to nuon
+            | where ($it.name | str starts-with tests)
+            | get name
+            | str replace "tests" ""
+            | str trim
+            | to nuon
         '
     ] | from nuon
 

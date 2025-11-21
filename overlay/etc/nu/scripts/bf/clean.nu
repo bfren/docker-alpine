@@ -9,7 +9,11 @@ export def main [
 ]: nothing -> nothing {
     # create a merged list of places to clean -
     # appending /* to each so we don't delete the actual directories
-    let ensure_glob = $caches | append $tmpdirs | str trim --right --char "*" | str trim --right --char "/" | each {|x| $"($x)/*" }
+    let ensure_glob = $caches
+        | append $tmpdirs
+        | str trim --right --char "*"
+        | str trim --right --char "/"
+        | each {|x| $"($x)/*" }
     write debug $"Deleting ($ensure_glob | str join ', ')." clean
     rm --force --recursive ...$ensure_glob
 

@@ -101,7 +101,13 @@ export def --env set [
 }
 
 # Show all bfren platform environment variables
-export def show []: nothing -> nothing { $env | transpose key value | where {|x| $x.key | str starts-with $prefix } | | transpose -i -r -d | print }
+export def show []: nothing -> nothing {
+    $env
+        | transpose key value
+        | where {|x| $x.key | str starts-with $prefix }
+        | transpose -i -r -d
+        | print
+}
 
 # Store incoming environment variables
 export def store []: nothing -> string {
@@ -113,7 +119,11 @@ export def store []: nothing -> string {
     ]
 
     # load incoming environment, parse and save to environment directory
-    ^env | lines | parse "{key}={val}" | each {|x| if $x.key not-in $ignore { $x.val | save --force $"($env_dir)/($x.key)" } } | ignore
+    ^env
+        | lines
+        | parse "{key}={val}"
+        | each {|x| if $x.key not-in $ignore { $x.val | save --force $"($env_dir)/($x.key)" } }
+        | ignore
 
     # apply permissions to files
     apply_perms

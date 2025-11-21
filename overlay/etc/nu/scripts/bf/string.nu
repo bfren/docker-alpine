@@ -16,10 +16,14 @@ export def format [
 ]: nothing -> string {
     # replace values
     write debug $"Using ($values) to replace placeholders in ($input)." str/format
-    let result = $values | transpose k v | reduce -f $input {|x, acc| $acc | str replace --all $"{($x.k)}" $x.v }
+    let result = $values
+        | transpose k v
+        | reduce -f $input {|x, acc| $acc | str replace --all $"{($x.k)}" $x.v }
 
     # return an error if the result still contains unmatched palceholders
-    let unmatched = $result | split row " " | find --regex "{.*}"
+    let unmatched = $result
+        | split row " "
+        | find --regex "{.*}"
     if ($unmatched | length) > 0 { write error $"($input) contains unmatched placeholders: ($unmatched | str join ', ')." }
 
     # return formatted string

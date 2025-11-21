@@ -28,9 +28,13 @@ export def main [
     #   and: return value if $output is not set
     #   or:  save to file if $output is set and return filename
     if ($output | is-empty) {
-        { ^esh $input } | handle -f $on_failure esh | return $in
+        { ^esh $input }
+            | handle -f $on_failure esh
+            | return $in
     } else {
-        { ^esh -o $output $input } | handle -f $on_failure -s $on_success esh | return $output
+        { ^esh -o $output $input }
+            | handle -f $on_failure -s $on_success esh
+            | return $output
     }
 }
 
