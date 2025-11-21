@@ -2,11 +2,16 @@
 
 use bf
 
-# Exits 0 if $key exists in the environment and is not empty
+# Returns true if $key exists in the environment and is not empty
 def main [
     key: string         # Environment variable key - the BF_ prefix will be added automatically
     --no-prefix (-P)    # Do not add the standard prefix
+    --reload (-r)       # Reload the environment before executing the check
 ]: nothing -> bool {
+    # reload if required
+    if $reload { bf env load }
+
+    # execute check
     let empty = bf env empty --no-prefix=($no_prefix) $key
-    if not $empty { exit 0 } else { exit 1 }
+    not $empty
 }

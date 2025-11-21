@@ -8,7 +8,7 @@ def check_type [
 ]: nothing -> any {
     match $type {
         "d" | "f" | "l" => $type
-        _ => { write error $"($type) is not supported." fs/find_type }
+        _ => { write error $"($type) is not supported." fs/check_type }
     }
 }
 
@@ -27,7 +27,7 @@ export def find_name [
     # use posix find to search for items of a type, and split by lines into a list
     let on_failure = {|code, err| [] }
     let on_success = {|out| $out | lines }
-    { ^busybox find $base_path -name $name -type $type } | handle -d $"Find ($name) in ($base_path)." -f $on_failure -s $on_success fs/find_name
+    { ^busybox find $base_path -xdev -name $name -type $type } | handle -d $"Find ($name) in ($base_path)." -f $on_failure -s $on_success fs/find_name
 }
 
 # Find all paths that are $type in $base_path
@@ -44,7 +44,7 @@ export def find_type [
     # use posix find to search for items of a type, and split by lines into a list
     let on_failure = {|code, err| [] }
     let on_success = {|out| $out | lines }
-    { ^busybox find $base_path -type $type } | handle -d $"Find type ($type) in ($base_path)." -f $on_failure -s $on_success fs/find_type
+    { ^busybox find $base_path -xdev -type $type } | handle -d $"Find type ($type) in ($base_path)." -f $on_failure -s $on_success fs/find_type
 }
 
 # Find all paths that are $type in $base_paths
@@ -94,7 +94,7 @@ export def read [
         # share error between debug and error output
         let error = $"File does not exist: ($use_path)."
 
-        # if quiet is enabled, write to debug output and return
+        # if quiet is enabled, write to debug output and return blank string
         if $quiet {
             write debug $error fs/read
             return ""

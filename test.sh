@@ -13,4 +13,4 @@ docker buildx build \
     -t ${TAG} \
     . \
     && \
-    docker run --entrypoint /test ${TAG}
+    docker run --entrypoint /test-without-http ${TAG}

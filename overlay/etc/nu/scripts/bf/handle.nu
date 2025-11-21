@@ -1,13 +1,14 @@
 use dump.nu
+use write.nu
 
-# Handle an operation using `complete`, returning the operation stdout or printing stderr and exiting the program
+# Handle an operation using `complete`, returning the operation stdout or printing stderr
 #
 # ```nu
 # > { ^external } | bf handle
 # ```
 #   - `external` will be run using `do { } | complete`, capturing the exit code, stdout and stderr
 #   - if the exit code is 0, stdout will be trimmed and returned
-#   - if the exit code is not 0, stderr will be printed and the exit code used to exit the program
+#   - if the exit code is not 0, a nu error containing stderr will be returned
 #
 # ```nu
 # > { ^external } | bf handle --code-only
@@ -35,7 +36,7 @@ use dump.nu
 # ```
 #   - `external` will be run using `do { } | complete`, capturing the exit code, stdout and stderr
 #   - if the exit code is not 0, and BF_DEBUG is 1, the entire $result object will be dumped with 'Some Operation' used as a heading
-#   - stderr will be printed and the exit code used to exit the program
+#   - a nu error containing stderr will be returned
 #
 # ```nu
 # > { ^external } | bf handle --on-failure {|code, err| $"($err): ($code)" | print }
@@ -49,7 +50,7 @@ use dump.nu
 # ```
 #   - `external` will be run using `do { } | complete`, capturing the exit code, stdout and stderr
 #   - if the exit code is 0, $on_success will be run - in this case stdout will be printed
-#   - if the exit code is not 0, stderr will be printed and the exit code used to exit the program
+#   - if the exit code is not 0, a nu error containing stderr will be returned
 export def main [
     script?: string             # The name of the calling script or executable
     --code-only (-c)            # If set, only the exit code will be returned - overrides all other options
@@ -85,8 +86,6 @@ export def main [
     # run $on_failure closure (if it has been set) and return
     if ($on_failure | is-not-empty) { do $on_failure $result.exit_code $result.stderr | return $in }
 
-    # use stderr and exit code to write the error
-    # we use the executable so handle can be used everywhere without causing cyclical import errors
-    ^bf-write-notok ($result.stderr | str trim) $"($script)"
-    exit $result.exit_code
+    # write exit code and stderr
+    write error $"($result.exit_code): ($result.stderr | str trim)" $"($script)"
 }

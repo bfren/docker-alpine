@@ -2,7 +2,7 @@
 # STAGE 0: store build information
 #======================================================================================================================
 
-FROM --platform=${BUILDPLATFORM} ghcr.io/bfren/golang:alpine AS build
+FROM --platform=${BUILDPLATFORM} alpine AS build
 ARG TARGETPLATFORM
 
 RUN \
@@ -17,14 +17,14 @@ RUN \
 # STAGE 1: load busybox
 #======================================================================================================================
 
-FROM ghcr.io/bfren/busybox:<%= ${BUSYBOX_IMAGE} %> AS busybox
+FROM quay.io/bfren/busybox:<%= ${BUSYBOX_IMAGE} %> AS busybox
 
 
 #======================================================================================================================
 # STAGE 2: load Nushell
 #======================================================================================================================
 
-FROM ghcr.io/bfren/nushell:<%= ${NU_IMAGE} %> AS nushell
+FROM quay.io/bfren/nushell:<%= ${NU_IMAGE} %> AS nushell
 
 
 #======================================================================================================================

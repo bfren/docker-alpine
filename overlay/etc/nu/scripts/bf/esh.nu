@@ -18,7 +18,7 @@ export def main [
     # dump esh output and write error message
     let on_failure = {|c,e|
         $e | print --no-newline --stderr
-        write error --code $c $"Error parsing template ($input)." esh
+        write error $"Error ($c) parsing template ($input)." esh
     }
     let on_success = {
         write debug $" .. output saved to ($output)." esh
