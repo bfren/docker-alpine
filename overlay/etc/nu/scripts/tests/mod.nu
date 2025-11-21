@@ -1,5 +1,6 @@
 export module build.nu
 export module clean.nu
+export module del.nu
 export module env.nu
 export module fs.nu
 export module http.nu

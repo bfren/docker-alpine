@@ -8,9 +8,9 @@ export def old [
     duration: duration  # If a file or directory is older than this duration it will be deleted
     --live              # If not set, the paths to be deleted will be printed but not actually deleted
     --type (-t): string # The type of path to delete, either 'd' (directory) or 'f' (file)
-] {
-    # duration must be set
-    if ($duration | is-empty) { write error "Duration must be set." del/old }
+]: nothing -> nothing {
+    # throw an error if root directory does not exist
+    if ($root_dir | fs is_not_dir) { write error $"Directory ($root_dir) does not exist." del/old }
 
     # ensure only valid types are used
     let use_type = match $type {
@@ -25,8 +25,14 @@ export def old [
 
     # perform deletion
     write debug $"Removing ($use_type)s older than ($expiry)." del/old
-    let print_and_delete = {|x| write debug $" .. ($x.name)" del/old ; if $live { rm --force --recursive $x.name } }
-    ls $use_root_dir | where type == $use_type and modified < $expiry | each {|x| do $print_and_delete $x }
+    let files_to_delete = ls $use_root_dir | where type == $use_type and modified < $expiry
+    if $live {
+        $files_to_delete | each {|x|
+             write debug $" .. ($x.name)" del/old
+             rm --force --recursive $x.name
+        }
+        return
+    }
 
-    return
+    return $files_to_delete
 }
