@@ -2,7 +2,7 @@
 # STAGE 0: store build information
 #======================================================================================================================
 
-FROM --platform=${BUILDPLATFORM} quay.io/bfren/golang:alpine AS build
+FROM --platform=${BUILDPLATFORM} alpine AS build
 ARG TARGETPLATFORM
 
 RUN \
