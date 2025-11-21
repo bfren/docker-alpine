@@ -35,9 +35,9 @@ export def old__live_not_set_returns_files_older_than_duration [] {
     let newer_file = mktemp --tmpdir-path=($root_dir)
     touch --timestamp=((date now) - $duration - 1day) $older_file
     touch --timestamp=(date now) $newer_file
-    let expect = [$older_file $newer_file]
+    let expect = [$older_file $newer_file] | sort --natural
 
-    let result = old --type="f" $root_dir $duration | ls $root_dir | get name
+    let result = old --type="f" $root_dir $duration | ls $root_dir | get name | sort --natural
 
     assert equal $expect $result
 }
