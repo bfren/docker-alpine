@@ -4,16 +4,14 @@ use write.nu
 
 # clean temporary directories, caches and installation files
 export def main [
-    --caches: list<string> = [ "/var/cache/apk" ]   # list of cache directories to clean
-    --tmpdirs: list<string> = [ "/tmp" ]            # list of temporary directories to clean
+    --caches: list<string> = [ "/var/cache/apk/*" ]   # list of cache directories to clean
+    --tmpdirs: list<string> = [ "/tmp/*" ]            # list of temporary directories to clean
 ]: nothing -> nothing {
     # create a merged list of places to clean -
     # appending /* to each so we don't delete the actual directories
     let ensure_glob = $caches
         | append $tmpdirs
-        | str trim --right --char "*"
-        | str trim --right --char "/"
-        | each {|x| $"($x)/*" | into glob }
+        | into glob
     write debug $"Deleting ($ensure_glob | str join ', ')." clean
     rm --force --recursive ...$ensure_glob
 
