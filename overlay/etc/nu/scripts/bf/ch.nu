@@ -83,7 +83,9 @@ export def apply_file [
 
     # split by row and apply changes row by row
     write $"Applying ($path)." ch/apply_file
-    open $path | from ssv --minimum-spaces 1 --noheaders | each {|x| $x | values | apply }
+    open $path
+        | from ssv --minimum-spaces 1 --noheaders
+        | each {|x| $x | values | apply }
 
     return
 }

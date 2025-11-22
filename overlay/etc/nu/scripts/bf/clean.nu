@@ -9,7 +9,11 @@ export def main [
 ]: nothing -> nothing {
     # create a merged list of places to clean -
     # appending /* to each so we don't delete the actual directories
-    let ensure_glob = $caches | append $tmpdirs | str trim --right --char="*" | str trim --right --char="/" | each {|x| $"($x)/*" }
+    let ensure_glob = $caches
+        | append $tmpdirs
+        | str trim --right --char "*"
+        | str trim --right --char "/"
+        | each {|x| $"($x)/*" | into glob }
     write debug $"Deleting ($ensure_glob | str join ', ')." clean
     rm --force --recursive ...$ensure_glob
 
@@ -21,7 +25,7 @@ export def main [
     }
 
     # remove installation files from published images
-    if (env check PUBLISHING) {
+    if (env check PUBLISHING) and not (env check TESTING) {
         write debug "Deleting preinstallation script." clean
         rm --force /preinstall
 

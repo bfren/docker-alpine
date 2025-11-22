@@ -1,0 +1,13 @@
+#!/usr/bin/nu
+
+use bf
+bf env x_set
+
+# Download a file from the specified URL
+def main [
+    url: string             # URL to download
+    --output (-O): string   # Optional destination
+    --insecure (-i)         # Whether or not to allow insecure connections
+]: nothing -> nothing {
+    bf http download --insecure=($insecure) $url $output
+}

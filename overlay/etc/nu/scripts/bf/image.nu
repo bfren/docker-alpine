@@ -17,13 +17,23 @@ export def main []: nothing -> nothing {
     let version = fs read VERSION
 
     # output a border above and below the image information
-    let border = {|| let s = "="; 0..116 | reduce -f "" {|x, acc| $acc + $s } | $"(char newline)#($in)#(char newline)" | print }
+    let border = {||
+        let s = "="
+        0..116
+            | reduce -f "" {|x, acc| $acc + $s }
+            | $"(char newline)#($in)#(char newline)"
+            | print
+    }
 
     # output image info
     do $border
     $"bfren | ($image)" | ^figlet -w 120
     char newline | print
-    $"bfren/($image):($version) [($distro.name | str downcase):($distro.version)] [($last.name | str downcase):($last.version)]" | print
+    [
+        $"bfren/($image):($version)"
+        $"[($distro.name | str downcase):($distro.version)]"
+        $"[($last.name | str downcase):($last.version)]"
+    ] | str join " " | print
     $"Built on (ls IMAGE | first | get modified)" | print
     char newline | print
     $"https://github.com/bfren/docker-($image)" | print

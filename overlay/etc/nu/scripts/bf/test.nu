@@ -5,12 +5,10 @@ use write.nu
 # Execute tests with debug switch enabled
 # Inspired by https://github.com/nushell/nupm/blob/main/nupm/test.nu to work in this ecosystem
 export def main [
-    --path: string      # dir(s) to include with default PATH - MUST end with a colon ':'
     --ignore-http (-H)  # if set will ignore HTTP tests (for speed)
+    --path: string      # dir(s) to include with default PATH - MUST end with a colon ':'
 ] {
-    $ignore_http | dump -t "ignore main"
     let e = {
-        BF_DEBUG: "1"
         PATH: $"($path)/usr/bin/bf:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
     }
     with-env $e { discover --ignore-http=($ignore_http) | execute }
@@ -26,17 +24,18 @@ def discover [
     }
 
     # get list of tests
-    let tests = ^nu ...[
+    let tests = ^$nu.current-exe ...[
+        --no-config-file
         --commands
-        'use tests
+        "use tests
 
         scope commands
-        | where ($it.name | str starts-with tests)
-        | get name
-        | str replace "tests" ""
-        | str trim
-        | to nuon
-        '
+            | where ($it.name | str starts-with tests)
+            | get name
+            | str replace "tests" ""
+            | str trim
+            | to nuon
+        "
     ] | from nuon
 
     # if no tests are found, exit
@@ -59,9 +58,16 @@ def discover [
 def execute []: list<string> -> any {
     write $"Executing ($in | length) tests." test/execute
 
+    # define environment variables
+    let e = {
+        BF_DEBUG: "1"
+        BF_TESTING: "1"
+    }
+
+    # run tests in parallel
     let results = $in | par-each {|x|
         # capture result
-        let result = do { ^nu -c $"use tests * ; ($x)" } | complete
+        let result = with-env $e { ^$nu.current-exe --no-config-file --commands ...["use tests * ; " $x] | complete }
 
         # output result on success
         if $result.exit_code == 0 { $"(ansi gb)OK(ansi reset) ($x)" | print }
