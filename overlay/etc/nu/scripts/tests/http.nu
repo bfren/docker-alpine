@@ -3,6 +3,32 @@ use ../bf http *
 
 
 #======================================================================================================================
+# download
+#======================================================================================================================
+
+export def download__uses_filename_when_destination_is_not_specified [] {
+    let url = "https://github.com/bfren/docker-alpine.git"
+    let dir = mktemp --directory --tmpdir
+    cd $dir
+
+    let result = download $url | ls $dir | length
+
+    assert equal 1 $result
+}
+
+export def download__saves_to_destination [] {
+    let url = "https://github.com/bfren/docker-alpine.git"
+    let dir = mktemp --directory --tmpdir
+    let destination = $"($dir)/(random chars)"
+    cd $dir
+
+    let result = download $url $destination | $destination | path exists
+
+    assert equal true $result
+}
+
+
+#======================================================================================================================
 # get_status
 #======================================================================================================================
 
