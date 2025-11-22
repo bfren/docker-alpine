@@ -13,7 +13,7 @@ export def main [
         | append $tmpdirs
         | str trim --right --char "*"
         | str trim --right --char "/"
-        | each {|x| $"($x)/*" }
+        | each {|x| $"($x)/*" | into glob }
     write debug $"Deleting ($ensure_glob | str join ', ')." clean
     rm --force --recursive ...$ensure_glob
 
