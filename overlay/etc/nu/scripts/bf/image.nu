@@ -28,16 +28,20 @@ export def main []: nothing -> nothing {
     # output image info
     do $border
     $"bfren | ($image)" | ^figlet -w 120
-    char newline | print
     [
+        (char newline)
         $"bfren/($image):($version)"
         $"[($distro.name | str downcase):($distro.version)]"
         $"[($last.name | str downcase):($last.version)]"
+        (char newline)
+        $"Built on (ls IMAGE | first | get modified)"
+        (char newline)
+        (char newline)
+        $"https://github.com/bfren/docker-($image)"
+        (char newline)
     ] | str join " " | print
-    $"Built on (ls IMAGE | first | get modified)" | print
-    char newline | print
-    $"https://github.com/bfren/docker-($image)" | print
     do $border
 
+    # return nothing
     return
 }
