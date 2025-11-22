@@ -25,7 +25,7 @@ export def main [
     }
 
     # remove installation files from published images
-    if (env check PUBLISHING) {
+    if (env check PUBLISHING) and not (env check TESTING) {
         write debug "Deleting preinstallation script." clean
         rm --force /preinstall
 

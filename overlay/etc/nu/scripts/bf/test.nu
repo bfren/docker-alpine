@@ -11,6 +11,7 @@ export def main [
     $ignore_http | dump -t "ignore main"
     let e = {
         BF_DEBUG: "1"
+        BF_TESTING: "1"
         PATH: $"($path)/usr/bin/bf:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
     }
     with-env $e { discover --ignore-http=($ignore_http) | execute }
