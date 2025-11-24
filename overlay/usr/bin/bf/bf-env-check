@@ -7,11 +7,11 @@ def main [
     key: string         # Environment variable key - the BF_ prefix will be added automatically
     --no-prefix (-P)    # Do not add the standard prefix
     --reload (-r)       # Reload the environment before executing the check
-]: nothing -> bool {
+]: nothing -> nothing {
     # reload if required
     if $reload { bf env load }
 
     # execute check
     let check = bf env check --no-prefix=($no_prefix) $key
-    $check
+    if $check { exit 0 } else { exit 1 }
 }

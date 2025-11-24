@@ -26,13 +26,13 @@ export def main__deletes_tmp [] {
     assert not equal $tmpfiles $result
 }
 
-export def main__deletes_apk_cache [] {
-    let apk_cache = "/var/cache/apk"
-    let file0 = mktemp --tmpdir-path=($apk_cache)
-    let file1 = mktemp --tmpdir-path=($apk_cache)
-    let tmpfiles = ls $apk_cache | length
+export def main__deletes_cache [] {
+    let cache = make_temp_dir
+    let file0 = mktemp --tmpdir-path=($cache)
+    let file1 = mktemp --tmpdir-path=($cache)
+    let tmpfiles = ls $cache | length
 
-    let result = clean_e --cache ($apk_cache) | echo $apk_cache | ls | length
+    let result = clean_e --cache ($cache) | echo $cache | ls | length
 
     assert not equal $tmpfiles $result
 }
