@@ -1,19 +1,27 @@
 use dump.nu
 use write.nu
 
+# Download a URL and either return or save contents
 export def download [
     url: string             # URL to download
-    destination?: string    # Optional destination
+    destination?: string    # Optional destination (including filename) - if not set the file will be saved to the current working directory
     --insecure (-i)         # Whether or not to allow insecure connections
-]: nothing -> nothing {
-    # use destination if set, otherwise get the name of the file being downloaded and save to cwd
-    let file = match $destination {
-        null => ($url | url parse | get path | path basename)
-        _ => $destination
-    }
-
+    --return (-r)           # If set, the contents will be returned instead of saved
+]: nothing -> string {
     # get raw contents and force save
-    http get --insecure=($insecure) --raw $url | save --force $file
+    let contents = http get --insecure=($insecure) --raw $url
+    if $return {
+        $contents
+    } else {
+        # use destination if set, otherwise get the name of the file being downloaded and save to cwd
+        let file = match $destination {
+            null => ($url | url parse | get path | path basename)
+            _ => $destination
+        }
+
+        $contents | save --force $file
+        $file
+    }
 }
 
 # Return the status code for a given URL
