@@ -1,7 +1,7 @@
 #!/bin/sh
 
 IMAGE=`cat VERSION`
-ALPINE=${1:-3.22}
+ALPINE=${1:-3.23}
 
 docker pull bfren/alpine:dev
 docker run -it \
