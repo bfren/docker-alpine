@@ -10,6 +10,7 @@
 
 You can pin by Alpine version:
 
+- **alpine3.23, alpine3.23.x** (EOL: 2027-11-01)
 - **alpine3.22, alpine3.22.x** (EOL: 2027-05-01)
 - **alpine3.21, alpine3.21.x** (EOL: 2026-11-01)
 - **alpine3.20, alpine3.20.x** (EOL: 2026-04-01)

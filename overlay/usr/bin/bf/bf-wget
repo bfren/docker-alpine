@@ -3,11 +3,11 @@
 use bf
 bf env x_set
 
-# Download a file from the specified URL
+# Download a URL and either return or save contents
 def main [
-    url: string             # URL to download
-    --output (-O): string   # Optional destination
-    --insecure (-i)         # Whether or not to allow insecure connections
-]: nothing -> nothing {
-    bf http download --insecure=($insecure) $url $output
+    url: string                 # URL to download
+    --destination (-O): string  # Optional destination (including filename) - if not set the file will be saved to the current working directory
+    --return (-r)               # If set, the contents will be returned instead of saved
+]: nothing -> string {
+    bf http download --return=($return) $url $destination
 }

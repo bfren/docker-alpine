@@ -10,21 +10,21 @@ RUN \
     echo "Platform: ${TARGETPLATFORM}" >> /log && \
     echo "Alpine: 3.18.12" >> /log && \
     echo "Busybox: 1.36.1" >> /log && \
-    echo "Nushell: 0.108.0" >> /log
+    echo "Nushell: 0.109.1" >> /log
 
 
 #======================================================================================================================
 # STAGE 1: load busybox
 #======================================================================================================================
 
-FROM quay.io/bfren/busybox:1.36.1-alpine3.18.12-251121 AS busybox
+FROM quay.io/bfren/busybox:1.36.1-alpine3.18.12-251204 AS busybox
 
 
 #======================================================================================================================
 # STAGE 2: load Nushell
 #======================================================================================================================
 
-FROM quay.io/bfren/nushell:0.108.0-alpine-251121 AS nushell
+FROM quay.io/bfren/nushell:0.109.1-alpine-251121 AS nushell
 
 
 #======================================================================================================================
@@ -53,7 +53,7 @@ ENV \
     #   1: yes
     BF_UPGRADE_PACKAGES=0 \
     # Nushell version string to check against installed verion after installation
-    NU_VERSION=0.108.0
+    NU_VERSION=0.109.1
 
 RUN \
     # add packages required by Nushell
