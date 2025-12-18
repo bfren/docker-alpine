@@ -1,0 +1,17 @@
+should-be-yes: <% bf-env YES blank %>
+should-be-no: <% bf-env NO blank %>
+should-be-blank: <% bf-env EMPTY blank %>
+
+<% if bf-env-check TRUE ; then -%>
+should be here
+<% else -%>
+should not be here
+<% fi -%>
+
+<% if bf-env-check FALSE ; then -%>
+should not be here
+<% else -%>
+should be here
+<% fi %>
+
+<%+ ./inc.esh -%>
