@@ -11,7 +11,7 @@ export def download__uses_filename_when_destination_is_not_specified [] {
     let dir = mktemp --directory --tmpdir
     cd $dir
 
-    let result = download $url | ls $dir | length
+    let result = download $url | ignore | ls $dir | length
 
     assert equal 1 $result
 }
