@@ -21,7 +21,7 @@ export def main__deletes_tmp [] {
     let file1 = mktemp --tmpdir-path=($tmpdir)
     let tmpfiles = ls $tmpdir | length
 
-    let result = clean_e --tmpdir ($tmpdir) | echo $tmpdir | ls | length
+    let result = clean_e --tmpdir ($tmpdir) | ls $tmpdir | length
 
     assert not equal $tmpfiles $result
 }
@@ -32,7 +32,7 @@ export def main__deletes_cache [] {
     let file1 = mktemp --tmpdir-path=($cache)
     let tmpfiles = ls $cache | length
 
-    let result = clean_e --cache ($cache) | echo $cache | ls | length
+    let result = clean_e --cache ($cache) | ls $cache | length
 
     assert not equal $tmpfiles $result
 }
