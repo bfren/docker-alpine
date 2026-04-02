@@ -1,3 +1,5 @@
+# syntax=docker/dockerfile:1
+
 #======================================================================================================================
 # STAGE 0: store build information
 #======================================================================================================================
@@ -40,8 +42,11 @@ ARG BF_IMAGE
 ARG BF_PUBLISHING
 ARG BF_VERSION
 
-COPY ./overlay /
-COPY ./3.23/overlay /
+RUN \
+    # install busybox
+    busybox --install && \
+    # add packages required by Nushell
+    apk add --no-cache libgcc sqlite-libs
 
 ENV \
     # path to bf configuration - installation script requires this
@@ -55,15 +60,16 @@ ENV \
     # Nushell version string to check against installed verion after installation
     NU_VERSION=0.111.0
 
+COPY --exclude=etc/nu/scripts/tests ./overlay /
+COPY ./3.23/overlay /
+
 RUN \
-    # add packages required by Nushell
-    apk add --no-cache libgcc sqlite-libs && \
-    # install busybox
-    busybox --install && \
     # setup Nushell using preinstallation script
     chmod +x /preinstall && /preinstall && \
     # run standard bf installation executable
-    /usr/bin/bf/bf-install
+    chmod +x /usr/bin/bf/bf-install && /usr/bin/bf/bf-install
+
+COPY ./overlay/etc/nu/scripts/tests /etc/nu/scripts/tests
 
 
 #======================================================================================================================
