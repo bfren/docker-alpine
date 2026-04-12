@@ -57,8 +57,7 @@ export def empty [
     key: string         # Environment variable key - the BF_ prefix will be added automatically
     --no-prefix (-P)    # Do not add the BF_ prefix
 ]: nothing -> bool {
-    let value = ""
-    test --no-prefix=($no_prefix) $key $value
+    test --no-prefix=($no_prefix) $key ""
 }
 
 # Load shared environment into the current $env
@@ -67,7 +66,11 @@ export def --env load [
     --set-executable (-x)   # Whether or not to set BF_X to the current script
 ]: nothing -> nothing {
     # load environment variables from shared directory
-    let loaded = { ^bf-withenv env } | handle env/load | lines | parse "{key}={val}" | transpose -i -r -d
+    let loaded = { ^bf-withenv env }
+        | handle env/load
+        | lines
+        | parse "{key}={val}"
+        | transpose -i -r -d
     try { load-env $loaded }
 
     # set current script
@@ -157,17 +160,13 @@ export def --env unset [
     rm --force $"($env_dir)/($prefixed)"
 
     # output for debugging purposes
-    # don't bother for BF_X - there are lots of these otherwise!
-    if $key != "X" { write debug $"($prefixed) removed." env/unset }
+    write debug $"($prefixed) removed." env/unset
 }
-
-# Clears the BF_X environment variable
-export def --env x_clear []: nothing -> nothing { hide X }
 
 # Sets the BF_X environment variable to the name of the currently executing script
 export def --env x_set [
     x_prefix?: string       # If set, will be added before the name of the current script
-    --override (-o): string # If set, will be used instead of CURRENT_FILE
+    --override (-o): string # If set, will be used instead of CURRENT_FILE basename
 ]: nothing -> nothing {
     # get name of current file
     let current_file = if ($override | is-not-empty) { $override } else { try { $env.CURRENT_FILE | path basename } }

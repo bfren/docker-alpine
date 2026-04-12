@@ -1,3 +1,5 @@
+# syntax=docker/dockerfile:1
+
 #======================================================================================================================
 # STAGE 0: store build information
 #======================================================================================================================
@@ -10,7 +12,7 @@ RUN \
     echo "Platform: ${TARGETPLATFORM}" >> /log && \
     echo "Alpine: 3.15.11" >> /log && \
     echo "Busybox: 1.36.1" >> /log && \
-    echo "Nushell: 0.111.0" >> /log
+    echo "Nushell: 0.112.1" >> /log
 
 
 #======================================================================================================================
@@ -24,7 +26,7 @@ FROM quay.io/bfren/busybox:1.36.1-alpine3.15.11-260128 AS busybox
 # STAGE 2: load Nushell
 #======================================================================================================================
 
-FROM quay.io/bfren/nushell:0.111.0-alpine-251121 AS nushell
+FROM quay.io/bfren/nushell:0.112.1-alpine-251121 AS nushell
 
 
 #======================================================================================================================
@@ -40,8 +42,11 @@ ARG BF_IMAGE
 ARG BF_PUBLISHING
 ARG BF_VERSION
 
-COPY ./overlay /
-COPY ./3.15/overlay /
+RUN \
+    # install busybox
+    busybox --install && \
+    # add packages required by Nushell
+    apk add --no-cache libgcc sqlite-libs
 
 ENV \
     # path to bf configuration - installation script requires this
@@ -53,17 +58,18 @@ ENV \
     #   1: yes
     BF_UPGRADE_PACKAGES=0 \
     # Nushell version string to check against installed verion after installation
-    NU_VERSION=0.111.0
+    NU_VERSION=0.112.1
+
+COPY --exclude=etc/nu/scripts/tests ./overlay /
+COPY ./3.15/overlay /
 
 RUN \
-    # add packages required by Nushell
-    apk add --no-cache libgcc sqlite-libs && \
-    # install busybox
-    busybox --install && \
     # setup Nushell using preinstallation script
     chmod +x /preinstall && /preinstall && \
     # run standard bf installation executable
-    /usr/bin/bf/bf-install
+    chmod +x /usr/bin/bf/bf-install && /usr/bin/bf/bf-install
+
+COPY ./overlay/etc/nu/scripts/tests /etc/nu/scripts/tests
 
 
 #======================================================================================================================

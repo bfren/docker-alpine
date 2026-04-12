@@ -1,3 +1,4 @@
+use build.nu
 use dump.nu
 use fs.nu
 use write.nu
@@ -6,7 +7,7 @@ use write.nu
 # Inspired by https://github.com/nushell/nupm/blob/main/nupm/test.nu to work in this ecosystem
 export def main [
     --ignore-http (-H)  # if set will ignore HTTP tests (for speed)
-    --path: string      # dir(s) to include with default PATH - MUST end with a colon ':'
+    --path: string      # dir(s) to include with default PATH - *must* end with :
 ] {
     let e = {
         PATH: $"($path)/usr/bin/bf:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
@@ -56,6 +57,7 @@ def discover [
 # Execute each discovered test in parallel
 # WARNING: this means tests need to be self-contained as the execution order cannot be guaranteed
 def execute []: list<string> -> any {
+    with-env {BF_ETC: "/etc/bf"} { build show }
     write $"Executing ($in | length) tests." test/execute
 
     # define environment variables

@@ -6,7 +6,7 @@ docker pull bfren/alpine
 
 BUSYBOX_VERSION="1.36.1"
 BUSYBOX_BUILD="260128"
-NU_VERSION="0.111.0"
+NU_VERSION="0.112.1"
 NU_BUILD="251121"
 ALPINE_EDITIONS="3.15 3.16 3.17 3.18 3.19 3.20 3.21 3.22 3.23"
 
@@ -46,5 +46,5 @@ for E in ${ALPINE_EDITIONS} ; do
 
 done
 
-docker system prune -f
+#docker system prune -f
 echo "Done."
