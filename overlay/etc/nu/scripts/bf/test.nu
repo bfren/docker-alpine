@@ -7,10 +7,10 @@ use write.nu
 # Inspired by https://github.com/nushell/nupm/blob/main/nupm/test.nu to work in this ecosystem
 export def main [
     --ignore-http (-H)  # if set will ignore HTTP tests (for speed)
-    --path: string      # dir(s) to include with default PATH
+    --path: string      # dir(s) to include with default PATH - *must* end with :
 ] {
     let e = {
-        PATH: $"($path | str trim -r -c ':'):/usr/bin/bf:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+        PATH: $"($path)/usr/bin/bf:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
     }
     with-env $e { discover --ignore-http=($ignore_http) | execute }
 }
