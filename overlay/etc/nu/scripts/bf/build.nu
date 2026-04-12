@@ -21,7 +21,7 @@ export def add [
 ]: nothing -> nothing {
     # format the entry and add a newline so the next entry is added to the next line
     string format $log_format {k: $key, v: $value}
-        | $in + "\n"
+        | $in + (char newline)
         | save --append $"(env ETC)/($build_file)"
 }
 
