@@ -10,7 +10,7 @@ ARG TARGETPLATFORM
 RUN \
     # save platform and version information to log
     echo "Platform: ${TARGETPLATFORM}" >> /log && \
-    echo "Alpine: 3.23.3" >> /log && \
+    echo "Alpine: 3.23.4" >> /log && \
     echo "Busybox: 1.36.1" >> /log && \
     echo "Nushell: 0.112.1" >> /log
 
@@ -19,21 +19,21 @@ RUN \
 # STAGE 1: load busybox
 #======================================================================================================================
 
-FROM quay.io/bfren/busybox:1.36.1-alpine3.23.3-260128 AS busybox
+FROM quay.io/bfren/busybox:1.36.1-alpine3.23.4-260128 AS busybox
 
 
 #======================================================================================================================
 # STAGE 2: load Nushell
 #======================================================================================================================
 
-FROM quay.io/bfren/nushell:0.112.1-alpine-251121 AS nushell
+FROM quay.io/bfren/nushell:0.112.1-alpine-260421 AS nushell
 
 
 #======================================================================================================================
 # STAGE 3: install bfren platform
 #======================================================================================================================
 
-FROM alpine:3.23.3 AS install
+FROM alpine:3.23.4 AS install
 COPY --from=build /log /etc/bf/BUILD
 COPY --from=busybox / /bin
 COPY --from=nushell / /

@@ -10,7 +10,6 @@ set -euo pipefail
 NU=/etc/nu
 CFG=/root/.config/nushell
 mv ${CFG}/config.nu ${NU}
-mv ${CFG}/env.nu ${NU}
 
 
 #======================================================================================================================
@@ -18,7 +17,6 @@ mv ${CFG}/env.nu ${NU}
 #======================================================================================================================
 
 ln -sf ${NU}/config.nu ${CFG}/config.nu
-ln -sf ${NU}/env.nu ${CFG}/env.nu
 ln -sf ${NU}/scripts ${CFG}/scripts
 
 
