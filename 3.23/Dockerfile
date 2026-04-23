@@ -12,7 +12,7 @@ RUN \
     echo "Platform: ${TARGETPLATFORM}" >> /log && \
     echo "Alpine: 3.23.4" >> /log && \
     echo "Busybox: 1.36.1" >> /log && \
-    echo "Nushell: 0.112.1" >> /log
+    echo "Nushell: 0.112.2" >> /log
 
 
 #======================================================================================================================
@@ -26,7 +26,7 @@ FROM quay.io/bfren/busybox:1.36.1-alpine3.23.4-260128 AS busybox
 # STAGE 2: load Nushell
 #======================================================================================================================
 
-FROM quay.io/bfren/nushell:0.112.1-alpine-260421 AS nushell
+FROM quay.io/bfren/nushell:0.112.2-alpine-260421 AS nushell
 
 
 #======================================================================================================================
@@ -58,7 +58,7 @@ ENV \
     #   1: yes
     BF_UPGRADE_PACKAGES=0 \
     # Nushell version string to check against installed verion after installation
-    NU_VERSION=0.112.1
+    NU_VERSION=0.112.2
 
 COPY --exclude=etc/nu/scripts/tests ./overlay /
 COPY ./3.23/overlay /
