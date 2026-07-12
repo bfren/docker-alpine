@@ -1,6 +1,6 @@
-use dump.nu
-use handle.nu
-use write.nu
+use ../dump
+use ../handle
+use ../write
 
 # Perform a package action, capturing result and outputting any errors
 def action [

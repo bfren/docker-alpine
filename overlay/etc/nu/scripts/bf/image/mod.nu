@@ -1,7 +1,7 @@
-use build.nu
-use dump.nu
-use env.nu
-use fs.nu
+use ../build
+use ../dump
+use ../env
+use ../fs
 
 # Output information about the current image including name and version
 export def main []: nothing -> nothing {

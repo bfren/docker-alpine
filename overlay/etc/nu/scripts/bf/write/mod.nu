@@ -1,4 +1,4 @@
-use dump.nu
+use ../dump
 
 # ansi colours for display
 const colour = "reset"
