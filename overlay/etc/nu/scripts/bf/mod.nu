@@ -1,4 +1,4 @@
-export use build.nu *
+export use build.nu
 export use ch.nu
 export use clean.nu
 export use config.nu
