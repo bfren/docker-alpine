@@ -1,6 +1,6 @@
-use ../dump
-use ../handle
-use ../write
+use bf/dump
+use bf/handle
+use bf/write
 
 # Perform a package action, capturing result and outputting any errors
 def action [

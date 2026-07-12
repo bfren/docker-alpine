@@ -1,14 +1,14 @@
-use ../build
-use ../ch
-use ../clean
-use ../del
-use ../dump
-use ../env
-use ../fs
-use ../image
-use ../test
-use ../write
-use ../x
+use bf/build
+use bf/ch
+use bf/clean
+use bf/del
+use bf/dump
+use bf/env
+use bf/fs
+use bf/image
+use bf/test
+use bf/write
+use bf/x
 
 # Run standard installation for the container:
 #   - show build information

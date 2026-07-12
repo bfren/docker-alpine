@@ -1,6 +1,6 @@
-use ../dump
-use ../handle
-use ../write
+use bf/dump
+use bf/handle
+use bf/write
 
 # Path to the environment variable store
 const env_dir = "/etc/bf/env.d"

@@ -1,7 +1,7 @@
-use ../build
-use ../dump
-use ../env
-use ../fs
+use bf/build
+use bf/dump
+use bf/env
+use bf/fs
 
 # Output information about the current image including name and version
 export def main []: nothing -> nothing {

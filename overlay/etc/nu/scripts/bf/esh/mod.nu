@@ -1,8 +1,8 @@
-use ../dump
-use ../env
-use ../fs
-use ../handle
-use ../write
+use bf/dump
+use bf/env
+use bf/fs
+use bf/handle
+use bf/write
 
 # Generate output using input as an esh template
 export def main [

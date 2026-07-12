@@ -1,7 +1,7 @@
-use ../build
-use ../dump
-use ../fs
-use ../write
+use bf/build
+use bf/dump
+use bf/fs
+use bf/write
 
 # Execute tests with debug switch enabled
 # Inspired by https://github.com/nushell/nupm/blob/main/nupm/test to work in this ecosystem

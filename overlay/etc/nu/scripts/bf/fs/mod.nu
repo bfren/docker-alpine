@@ -1,6 +1,6 @@
-use ../dump
-use ../handle
-use ../write
+use bf/dump
+use bf/handle
+use bf/write
 
 # Check $type is valid (i.e. supported by posix find)
 def check_type [
