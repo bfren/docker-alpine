@@ -10,6 +10,7 @@ export def main [
     --path: string      # dir(s) to include with default PATH - *must* end with :
 ] {
     let e = {
+        BF_DEBUG: 1
         PATH: $"($path)/usr/bin/bf:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
     }
     with-env $e { discover --ignore-http=($ignore_http) | execute }
