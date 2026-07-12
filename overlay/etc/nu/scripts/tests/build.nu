@@ -1,6 +1,6 @@
 use std/assert
-use bf/build.nu *
-use bf/string.nu [format]
+use bf/build *
+use bf/string [format]
 
 
 #======================================================================================================================
