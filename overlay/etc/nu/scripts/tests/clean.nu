@@ -1,4 +1,4 @@
-use std assert
+use std/assert
 use ../bf clean *
 use ../bf fs [make_temp_dir]
 

@@ -1,4 +1,4 @@
-use std assert
+use std/assert
 use ../bf build *
 use ../bf string [format]
 
