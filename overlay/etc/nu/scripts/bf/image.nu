@@ -31,8 +31,8 @@ export def main []: nothing -> nothing {
     [
         (char newline)
         $"bfren/($image):($version)"
-        $"[($distro.name | str downcase):($distro.version)]"
-        $"[($last.name | str downcase):($last.version)]"
+        $"[($distro.name | str lowercase):($distro.version)]"
+        $"[($last.name | str lowercase):($last.version)]"
         (char newline)
         $"Built on (ls IMAGE | first | get modified)"
         (char newline)
