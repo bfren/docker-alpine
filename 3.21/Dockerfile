@@ -12,7 +12,7 @@ RUN \
     echo "Platform: ${TARGETPLATFORM}" >> /log && \
     echo "Alpine: 3.21.7" >> /log && \
     echo "Busybox: 1.38.0" >> /log && \
-    echo "Nushell: 0.114.1" >> /log
+    echo "txiki.js: 26.6.0" >> /log
 
 
 #======================================================================================================================
@@ -23,10 +23,10 @@ FROM quay.io/bfren/busybox:1.38.0-alpine3.21.7-260128 AS busybox
 
 
 #======================================================================================================================
-# STAGE 2: load Nushell
+# STAGE 2: load txiki.js
 #======================================================================================================================
 
-FROM quay.io/bfren/nushell:0.114.1-alpine-260421 AS nushell
+FROM quay.io/bfren/txikijs:26.6.0-alpine3.24.1-260712 AS tjs
 
 
 #======================================================================================================================
@@ -36,7 +36,7 @@ FROM quay.io/bfren/nushell:0.114.1-alpine-260421 AS nushell
 FROM alpine:3.21.7 AS install
 COPY --from=build /log /etc/bf/BUILD
 COPY --from=busybox / /bin
-COPY --from=nushell / /
+COPY --from=tjs / /bin
 
 ARG BF_IMAGE
 ARG BF_PUBLISHING
@@ -45,8 +45,8 @@ ARG BF_VERSION
 RUN \
     # install busybox
     busybox --install && \
-    # add packages required by Nushell
-    apk add --no-cache libgcc sqlite-libs
+    # add coreutils env package to enable tjs shebangs
+    apk add --no-cache coreutils-env
 
 ENV \
     # path to bf configuration - installation script requires this
@@ -57,19 +57,19 @@ ENV \
     #   0: no
     #   1: yes
     BF_UPGRADE_PACKAGES=0 \
-    # Nushell version string to check against installed verion after installation
-    NU_VERSION=0.114.1
+    # txiki.js version string to check against installed version after installation
+    TJS_VERSION=26.6.0
 
-COPY --exclude=etc/nu/scripts/tests ./overlay /
+COPY --exclude=etc/tjs/scripts/tests ./overlay /
 COPY ./3.21/overlay /
 
 RUN \
-    # setup Nushell using preinstallation script
+    # setup txiki.js using preinstallation script
     chmod +x /preinstall && /preinstall && \
     # run standard bf installation executable
     chmod +x /usr/bin/bf/bf-install && /usr/bin/bf/bf-install
 
-COPY ./overlay/etc/nu/scripts/tests /etc/nu/scripts/tests
+COPY ./overlay/etc/tjs/scripts/tests /etc/tjs/scripts/tests
 
 
 #======================================================================================================================
@@ -79,7 +79,7 @@ COPY ./overlay/etc/nu/scripts/tests /etc/nu/scripts/tests
 FROM scratch AS final
 COPY --from=install / /
 
-LABEL org.opencontainers.image.description="Alpine Linux with Nushell."
+LABEL org.opencontainers.image.description="Alpine Linux with txiki.js."
 LABEL org.opencontainers.image.source="https://github.com/bfren/docker-alpine"
 
 ENV \

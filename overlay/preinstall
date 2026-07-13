@@ -4,39 +4,14 @@ set -euo pipefail
 
 
 #======================================================================================================================
-# Move Nushell config
+# Test txiki.js version
 #======================================================================================================================
 
-NU=/etc/nu
-CFG=/root/.config/nushell
-mv ${CFG}/config.nu ${NU}
-
-
-#======================================================================================================================
-# Create user links to Nushell config
-#======================================================================================================================
-
-ln -sf ${NU}/config.nu ${CFG}/config.nu
-ln -sf ${NU}/scripts ${CFG}/scripts
-
-
-#======================================================================================================================
-# Delete Nushell plugins
-#======================================================================================================================
-
-rm -rf ${CFG}/plugins
-rm -rf /usr/bin/nu_plugin_*
-
-
-#======================================================================================================================
-# Test Nushell version
-#======================================================================================================================
-
-echo "Testing Nushell version."
-INSTALLED_VERSION=$(nu -v)
-if [ "${INSTALLED_VERSION}" == "${NU_VERSION}" ] ; then
-    echo "Nushell ${INSTALLED_VERSION} detected."
+echo "Testing txiki.js version."
+INSTALLED_VERSION=$(tjs -v)
+if [ "${INSTALLED_VERSION}" == "v${TJS_VERSION}" ] ; then
+    echo "txiki.js ${INSTALLED_VERSION} detected."
 else
-    echo "Detected Nushell version '${INSTALLED_VERSION}' - expecting '${NU_VERSION}'."
+    echo "Detected txiki.js version '${INSTALLED_VERSION}' - expecting '${TJS_VERSION}'."
     exit 1
 fi
