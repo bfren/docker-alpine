@@ -1,6 +1,6 @@
-use ../env
-use ../fs
-use ../write
+use bf/env
+use bf/fs
+use bf/write
 
 # clean temporary directories, caches and installation files
 export def main [

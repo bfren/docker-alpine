@@ -16,7 +16,7 @@ export def main__case_matches__returns_value [] {
 }
 
 export def main__case_does_not_match__returns_default_value [] {
-    let key = random chars | str lowercase
+    let key = random chars | str uppercase
     let key_upper = $key | str uppercase
     let value = random chars
     let default_value = random chars

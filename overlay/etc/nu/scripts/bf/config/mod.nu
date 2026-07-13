@@ -1,5 +1,5 @@
-use ../fs
-use ../write
+use bf/fs
+use bf/write
 
 # Save an entry to a nu config file
 export def main [

@@ -4,10 +4,10 @@ set -euo pipefail
 
 docker pull bfren/alpine
 
-BUSYBOX_VERSION="1.36.1"
+BUSYBOX_VERSION="1.38.0"
 BUSYBOX_BUILD="260128"
-NU_VERSION="0.114.1"
-NU_BUILD="260421"
+TJS_VERSION="26.6.0"
+TJS_BUILD="260713"
 ALPINE_EDITIONS="3.15 3.16 3.17 3.18 3.19 3.20 3.21 3.22 3.23 3.24"
 
 for E in ${ALPINE_EDITIONS} ; do
@@ -15,7 +15,7 @@ for E in ${ALPINE_EDITIONS} ; do
     echo "Alpine ${E}"
     ALPINE_VERSION=`cat ./${E}/ALPINE_REVISION`
     BUSYBOX_IMAGE="${BUSYBOX_VERSION}-alpine${ALPINE_VERSION}-${BUSYBOX_BUILD}"
-    NU_IMAGE="${NU_VERSION}-alpine-${NU_BUILD}"
+    TJS_IMAGE="${TJS_VERSION}-${TJS_BUILD}"
 
     DOCKERFILE=$(docker run \
         -v ${PWD}:/ws \
@@ -28,8 +28,8 @@ for E in ${ALPINE_EDITIONS} ; do
         BUSYBOX_VERSION=${BUSYBOX_VERSION} \
         BF_BIN=/usr/bin/bf \
         BF_ETC=/etc/bf \
-        NU_IMAGE=${NU_IMAGE} \
-        NU_VERSION=${NU_VERSION}
+        TJS_IMAGE=${TJS_IMAGE} \
+        TJS_VERSION=${TJS_VERSION}
     )
 
     echo "${DOCKERFILE}" > ./${E}/Dockerfile

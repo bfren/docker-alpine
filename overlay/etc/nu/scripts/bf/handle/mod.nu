@@ -1,5 +1,5 @@
-use ../dump
-use ../write
+use bf/dump
+use bf/write
 
 # Handle an operation using `complete`, returning the operation stdout or printing stderr
 #

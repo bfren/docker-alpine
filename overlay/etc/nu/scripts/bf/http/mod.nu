@@ -1,5 +1,5 @@
-use ../dump
-use ../write
+use bf/dump
+use bf/write
 
 # Download a URL and either return or save contents
 export def download [

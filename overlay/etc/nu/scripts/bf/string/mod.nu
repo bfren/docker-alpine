@@ -1,5 +1,5 @@
-use ../dump
-use ../write
+use bf/dump
+use bf/write
 
 # Add double quotes to the input string and return.
 export def quote []: string -> string { $"\"($in)\"" }

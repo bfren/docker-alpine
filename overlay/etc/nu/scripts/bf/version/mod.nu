@@ -1,4 +1,4 @@
-use ../dump
+use bf/dump
 
 # Returns true if version is at least equal to minimum
 export def is_at_least [

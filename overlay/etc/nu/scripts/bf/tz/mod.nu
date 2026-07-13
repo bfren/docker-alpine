@@ -1,8 +1,8 @@
-use ../fs
-use ../del
-use ../dump
-use ../pkg
-use ../write
+use bf/fs
+use bf/del
+use bf/dump
+use bf/pkg
+use bf/write
 
 # path to current timezone info
 const localtime = "/etc/localtime"

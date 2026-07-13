@@ -1,6 +1,6 @@
-use ../dump
-use ../handle
-use ../write
+use bf/dump
+use bf/handle
+use bf/write
 
 # Add a non-login user and group of the specified name, optionally specifying UID and GID
 export def add [
