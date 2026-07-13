@@ -7,7 +7,7 @@ docker pull bfren/alpine
 BUSYBOX_VERSION="1.38.0"
 BUSYBOX_BUILD="260128"
 TJS_VERSION="26.6.0"
-TJS_BUILD="260712"
+TJS_BUILD="260713"
 ALPINE_EDITIONS="3.15 3.16 3.17 3.18 3.19 3.20 3.21 3.22 3.23 3.24"
 
 for E in ${ALPINE_EDITIONS} ; do
@@ -15,7 +15,7 @@ for E in ${ALPINE_EDITIONS} ; do
     echo "Alpine ${E}"
     ALPINE_VERSION=`cat ./${E}/ALPINE_REVISION`
     BUSYBOX_IMAGE="${BUSYBOX_VERSION}-alpine${ALPINE_VERSION}-${BUSYBOX_BUILD}"
-    TJS_IMAGE="${TJS_VERSION}-alpine3.24.1-${TJS_BUILD}"
+    TJS_IMAGE="${TJS_VERSION}-${TJS_BUILD}"
 
     DOCKERFILE=$(docker run \
         -v ${PWD}:/ws \
