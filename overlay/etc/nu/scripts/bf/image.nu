@@ -1,7 +1,7 @@
-use ../build
-use ../dump
-use ../env
-use ../fs
+use build.nu
+use dump.nu
+use env.nu
+use fs.nu
 
 # Output information about the current image including name and version
 export def main []: nothing -> nothing {
@@ -31,8 +31,8 @@ export def main []: nothing -> nothing {
     [
         (char newline)
         $"bfren/($image):($version)"
-        $"[($distro.name | str lowercase):($distro.version)]"
-        $"[($last.name | str lowercase):($last.version)]"
+        $"[($distro.name | str downcase):($distro.version)]"
+        $"[($last.name | str downcase):($last.version)]"
         (char newline)
         $"Built on (ls IMAGE | first | get modified)"
         (char newline)
