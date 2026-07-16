@@ -1,5 +1,5 @@
-use dump.nu
-use write.nu
+use ../dump
+use ../write
 
 # Handle an operation using `complete`, returning the operation stdout or printing stderr
 #

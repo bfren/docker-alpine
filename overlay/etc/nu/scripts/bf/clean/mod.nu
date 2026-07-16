@@ -1,6 +1,6 @@
-use env.nu
-use fs.nu
-use write.nu
+use ../env
+use ../fs
+use ../write
 
 # clean temporary directories, caches and installation files
 export def main [

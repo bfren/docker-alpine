@@ -1,6 +1,6 @@
-use dump.nu
-use handle.nu
-use write.nu
+use ../dump
+use ../handle
+use ../write
 
 # Check $type is valid (i.e. supported by posix find)
 def check_type [
@@ -56,19 +56,19 @@ export def find_type_acc [
 }
 
 # Returns true unless input path exists and is a directory
-export def is_not_dir []: string -> bool { not ($in | path type | $in == "dir") }
+export def is_not_dir []: string -> bool { not (($in | path type) == "dir") }
 
 # Returns true unless input path exists and is a file
-export def is_not_file []: string -> bool { not ($in | path type | $in == "file") }
+export def is_not_file []: string -> bool { not (($in | path type) == "file") }
 
 # Returns true unless input path exists and is a symlink
-export def is_not_symlink []: string -> bool { not ($in | path type | $in == "symlink") }
+export def is_not_symlink []: string -> bool { not (($in | path type) == "symlink") }
 
 # Make a temporary directory in /tmp
 export def make_temp_dir [
     --local (-l)    # If set the temporary directory will be created in the current working directory
 ]: nothing -> string {
-    # move to requested root dir - can't use bf env module env.ch needs ch.nu, and ch.nu needs fs.nu
+    # move to requested root dir - can't use bf env module env.ch needs ch, and ch needs fs
     let root = if $local { $env.PWD } else { "/tmp" }
 
     # make temporary directory

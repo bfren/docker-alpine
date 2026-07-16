@@ -1,6 +1,6 @@
-use dump.nu
-use handle.nu
-use write.nu
+use ../dump
+use ../handle
+use ../write
 
 # Add a non-login user and group of the specified name, optionally specifying UID and GID
 export def add [
@@ -55,8 +55,8 @@ export def create_nushell_links [
     { ^chown $"($name):($name)" $user_nu } | handle user/create_nushell_links
 
     # link the shared Nushell files and directories to the user's config directory
-    { ^ln -sf $"($shared_nu)/config.nu" $"($user_nu)/config.nu" }  | handle user/create_nushell_links
-    { ^ln -sf $"($shared_nu)/env.nu" $"($user_nu)/env.nu" } | handle user/create_nushell_links
+    { ^ln -sf $"($shared_nu)/config" $"($user_nu)/config" }  | handle user/create_nushell_links
+    { ^ln -sf $"($shared_nu)/env" $"($user_nu)/env" } | handle user/create_nushell_links
     { ^ln -sf $"($shared_nu)/scripts" $"($user_nu)/scripts" } | handle user/create_nushell_links
 
     return

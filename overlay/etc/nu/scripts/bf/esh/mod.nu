@@ -1,8 +1,8 @@
-use dump.nu
-use env.nu
-use fs.nu
-use handle.nu
-use write.nu
+use ../dump
+use ../env
+use ../fs
+use ../handle
+use ../write
 
 # Generate output using input as an esh template
 export def main [

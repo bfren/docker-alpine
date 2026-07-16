@@ -1,5 +1,5 @@
-use std assert
-use ../bf env *
+use std/assert
+use bf/env *
 
 
 #======================================================================================================================
@@ -16,8 +16,8 @@ export def main__case_matches__returns_value [] {
 }
 
 export def main__case_does_not_match__returns_default_value [] {
-    let key = random chars | str downcase
-    let key_upper = $key | str upcase
+    let key = random chars | str lowercase
+    let key_upper = $key | str uppercase
     let value = random chars
     let default_value = random chars
 
