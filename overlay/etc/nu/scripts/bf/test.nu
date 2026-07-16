@@ -1,10 +1,10 @@
-use ../build
-use ../dump
-use ../fs
-use ../write
+use build.nu
+use dump.nu
+use fs.nu
+use write.nu
 
 # Execute tests with debug switch enabled
-# Inspired by https://github.com/nushell/nupm/blob/main/nupm/test to work in this ecosystem
+# Inspired by https://github.com/nushell/nupm/blob/main/nupm/test.nu to work in this ecosystem
 export def main [
     --ignore-http (-H)  # if set will ignore HTTP tests (for speed)
     --path: string      # dir(s) to include with default PATH - *must* end with :
@@ -19,9 +19,9 @@ export def main [
 def discover [
     --ignore-http (-H)  # if set will ignore HTTP tests (for speed)
 ] {
-    # ensure tests directory contains a mod file
+    # ensure tests directory contains a mod.nu file
     if ("/etc/nu/scripts/tests/mod.nu" | fs is_not_file) {
-        write error "The tests directory does not exist, or does not contain a mod file." test/discover
+        write error "The tests directory does not exist, or does not contain a mod.nu file." test/discover
     }
 
     # get list of tests

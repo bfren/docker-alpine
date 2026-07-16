@@ -1,2 +1,2 @@
 #!/bin/sh
-env -i nu -c "use bf/test ; test"
+env -i nu -c "use bf test ; test"

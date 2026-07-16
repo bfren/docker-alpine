@@ -1,5 +1,5 @@
-use ../dump
-use ../write
+use dump.nu
+use write.nu
 
 # Download a URL and either return or save contents
 export def download [
