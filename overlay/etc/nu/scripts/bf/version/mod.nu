@@ -1,4 +1,4 @@
-use dump.nu
+use ../dump
 
 # Returns true if version is at least equal to minimum
 export def is_at_least [

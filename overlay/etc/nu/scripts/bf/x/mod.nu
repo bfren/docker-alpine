@@ -1,4 +1,4 @@
-use write.nu
+use ../write
 
 # Set BF_X to the name of the script and then execute it
 export def main [

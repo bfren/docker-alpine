@@ -1,6 +1,6 @@
-use std assert
-use ../bf build *
-use ../bf string [format]
+use std/assert
+use bf/build *
+use bf/string [format]
 
 
 #======================================================================================================================
