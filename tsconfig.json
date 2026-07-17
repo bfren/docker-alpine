@@ -1,0 +1,8 @@
+{
+    "compilerOptions": {
+        "types": [
+            "@txikijs/types"
+        ],
+        "checkJs": true
+    }
+}
