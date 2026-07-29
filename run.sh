@@ -3,6 +3,7 @@
 IMAGE=`cat VERSION`
 ALPINE=${1:-3.24}
 
+tsc
 docker buildx build \
     --load \
     --build-arg BF_IMAGE=alpine \
