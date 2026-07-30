@@ -1,2 +1,2 @@
 #!/bin/sh
-env -i nu -c "use bf/test ; test"
+env -i tjs test /etc/tjs/scripts/tests
