@@ -46,7 +46,7 @@ RUN \
     # install busybox
     busybox --install && \
     # add coreutils env package to enable tjs shebangs
-    apk add --no-cache coreutils-env
+    apk add --no-cache coreutils-env || apk add coreutils
 
 ENV \
     # path to bf configuration - installation script requires this
