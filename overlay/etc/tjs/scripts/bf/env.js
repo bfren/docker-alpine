@@ -130,13 +130,19 @@ export async function set(key, val, options = {}) {
     tjs.env[$prefixed] = $val;
     write.debug("env.set", "%s = %s", $prefixed, $val);
 }
+/**
+ * Persist system environment to the filesystem.
+ */
 export async function store() {
     // do not store these environment variables - it messes with stuff...
     const $ignore = [
         "CURRENT_FILE",
         "FILE_PWD",
+        "HOME",
         "HOSTNAME",
         "PWD",
+        "SHLVL",
+        "TERM",
     ];
     // loop through system environment and persist
     for (const [$key, $val] of Object.entries(tjs.env)) {
