@@ -1,10 +1,10 @@
-#!/usr/bin/env -S tjs run --import-map /etc/tjs/map.json
+#!/usr/bin/tjsh
 
 import * as bf from "bf";
 
 await bf.env.store();
 
-console.log("Debug is %s (should be 1)", bf.env.get("DEBUG"));
+console.log("Debug is %s (should be 1)", bf.env.get("DEBUG", { safe: true }));
 
 tjs.env.BF_DEBUG = 0;
 console.log("Debug is %s (should be 0)", bf.env.get("DEBUG"));

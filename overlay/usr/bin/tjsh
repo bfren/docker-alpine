@@ -1,0 +1,6 @@
+#!/bin/sh
+
+env --ignore-environment \
+    envdir /etc/bf/env.d \
+    tjs run --import-map /etc/tjs/map.json \
+    $@
