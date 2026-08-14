@@ -26,7 +26,7 @@ for E in ${ALPINE_EDITIONS} ; do
         ALPINE_VERSION=${ALPINE_VERSION} \
         BUSYBOX_IMAGE=${BUSYBOX_IMAGE} \
         BUSYBOX_VERSION=${BUSYBOX_VERSION} \
-        BF_BIN=/usr/bin/bf \
+        BF_BIN=/usr/local/bin/bf \
         BF_ETC=/etc/bf \
         TJS_IMAGE=${TJS_IMAGE} \
         TJS_VERSION=${TJS_VERSION}
