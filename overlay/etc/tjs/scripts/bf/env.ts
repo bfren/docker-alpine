@@ -1,8 +1,6 @@
-import * as exec from "./exec.js"
-import * as write from "./write.js"
-
-// bf environment constant
-const ENV = {};
+import * as exec from "./exec.ts";
+import * as _ from "./util.ts";
+import * as write from "./write.ts";
 
 // path to the environment variable store
 const ENV_DIR = "/etc/bf/env.d";
@@ -111,7 +109,7 @@ export async function load(): Promise<void> {
     }
 
     // split output based on newline, and parse each as KEY=VAL
-    $result.stdout.split(/\r?\n/).forEach((line: string) => {
+    _.splitLines($result.stdout).forEach((line: string) => {
         // skip blank lines
         if (!line) return;
 
@@ -169,6 +167,20 @@ export async function set(key: string, val: any, options: SetOptions = {}): Prom
     // set tjs.env value
     tjs.env[$prefixed] = $val;
     write.debug("env.set", "%s = %s", $prefixed, $val);
+}
+
+/**
+ * Print all BF_ environment variables.
+ */
+export function show(): void {
+    // loop through system environment and print
+    for (const [$key, $val] of Object.entries(tjs.env)) {
+        // ignore non-BF variables
+        if (!$key.startsWith(PREFIX)) continue;
+
+        // write to console
+        write.info("env.show", "%s = '%s'", $key, $val);
+    }
 }
 
 /**

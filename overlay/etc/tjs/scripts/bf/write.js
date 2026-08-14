@@ -24,11 +24,11 @@ function fmt(script, txt, colour) {
     const $date = date.fmt();
     // determine the prefix
     const $bf_x = tjs.env.BF_X;
-    const $prefix = _.not_empty(script)
-        ? (_.not_empty($bf_x) ? `${$bf_x} | ` : `${script} | `)
-        : (_.not_empty($bf_x) ? `${$bf_x} | ` : "");
+    const $prefix = _.notEmpty(script)
+        ? (_.notEmpty($bf_x) ? `${$bf_x} | ` : `${script} | `)
+        : (_.notEmpty($bf_x) ? `${$bf_x} | ` : "");
     // determine the suffix
-    const $suffix = (_.not_empty(script) && _.not_empty($bf_x))
+    const $suffix = (_.notEmpty(script) && _.notEmpty($bf_x))
         ? ` (${script})`
         : "";
     // add it all together, complete with colours

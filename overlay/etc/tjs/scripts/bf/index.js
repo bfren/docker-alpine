@@ -1,9 +1,14 @@
-export * from "./util.js";
+import * as build_1 from "./build.js";
+export { build_1 as build };
 import * as date_1 from "./date.js";
 export { date_1 as date };
 import * as env_1 from "./env.js";
 export { env_1 as env };
 import * as exec_1 from "./exec.js";
 export { exec_1 as exec };
+import * as fs_1 from "./fs.js";
+export { fs_1 as fs };
+export * from "./install.js";
+export * from "./util.js";
 import * as write_1 from "./write.js";
 export { write_1 as write };

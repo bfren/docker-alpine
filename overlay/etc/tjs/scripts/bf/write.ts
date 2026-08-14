@@ -1,5 +1,5 @@
-import * as date from "./date.js";
-import * as _ from "./util.js";
+import * as date from "./date.ts";
+import * as _ from "./util.ts";
 
 /**
  * Ansi colour codes for displaying text in difference colours on the terminal.
@@ -26,12 +26,12 @@ function fmt(script: string, txt: string, colour: Colour): string {
 
     // determine the prefix
     const $bf_x = tjs.env.BF_X;
-    const $prefix = _.not_empty(script)
-        ? (_.not_empty($bf_x) ? `${$bf_x} | ` : `${script} | `)
-        : (_.not_empty($bf_x) ? `${$bf_x} | ` : "");
+    const $prefix = _.notEmpty(script)
+        ? (_.notEmpty($bf_x) ? `${$bf_x} | ` : `${script} | `)
+        : (_.notEmpty($bf_x) ? `${$bf_x} | ` : "");
 
     // determine the suffix
-    const $suffix = (_.not_empty(script) && _.not_empty($bf_x))
+    const $suffix = (_.notEmpty(script) && _.notEmpty($bf_x))
         ? ` (${script})`
         : "";
 

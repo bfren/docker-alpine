@@ -4,8 +4,8 @@
  * @param val Value to test.
  * @returns Whether or not val is an 'empty' value.
  */
-export function empty(val?: any): boolean {
-    return val == null || val == undefined || val == "" || val == 0 || !val;
+export function empty<T>(val: T | null | undefined): val is (null | undefined) {
+    return val === null || val === undefined || val === "" || val === 0 || val === false;
 }
 
 /**
@@ -14,6 +14,6 @@ export function empty(val?: any): boolean {
  * @param val Value to test.
  * @returns Whether or not val is not an 'empty' value.
  */
-export function not_empty(val?: any): boolean {
+export function notEmpty<T>(val: T | null | undefined): val is T {
     return !empty(val);
 }

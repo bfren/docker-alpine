@@ -1,0 +1,24 @@
+#!/bin/tjsh
+
+import * as bf from "bf";
+
+await bf.env.store();
+
+console.log("Debug is %s (should be 1)", bf.env.get("DEBUG", { safe: true }));
+
+tjs.env.BF_DEBUG = "0";
+console.log("Debug is %s (should be 0)", bf.env.get("DEBUG"));
+
+tjs.writeFile("/etc/bf/env.d/BF_DEBUG", "1");
+await bf.env.set("FOO", "bar");
+
+await bf.env.load();
+
+bf.write.info("test", "Debug is %s (should be 1)", bf.env.get("DEBUG"));
+bf.write.info("test", "FOO is %s (should be bar)", bf.env.get("FOO"));
+
+await bf.env.set("X", "fred");
+
+bf.write.debug("test", "Hello, %s - you are %d", "Ben", 42);
+bf.write.warn("test", "This is a warning!");
+throw bf.write.error("test", "This is going really wrong");

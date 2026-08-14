@@ -5,7 +5,7 @@
  * @returns Whether or not val is an 'empty' value.
  */
 export function empty(val) {
-    return val == null || val == undefined || val == "" || val == 0 || !val;
+    return val === null || val === undefined || val === "" || val === 0 || val === false;
 }
 /**
  * Returns true if val is not null / undefined / "" / 0 / false.
@@ -13,6 +13,6 @@ export function empty(val) {
  * @param val Value to test.
  * @returns Whether or not val is not an 'empty' value.
  */
-export function not_empty(val) {
+export function notEmpty(val) {
     return !empty(val);
 }

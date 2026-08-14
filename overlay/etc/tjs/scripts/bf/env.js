@@ -1,7 +1,6 @@
 import * as exec from "./exec.js";
+import * as _ from "./util.js";
 import * as write from "./write.js";
-// bf environment constant
-const ENV = {};
 // path to the environment variable store
 const ENV_DIR = "/etc/bf/env.d";
 // bfren platform prefix for namespacing environment variables
@@ -86,7 +85,7 @@ export async function load() {
         throw write.error("Unable to load environment variables from '%s': %s.", ENV_DIR, $result.stderr);
     }
     // split output based on newline, and parse each as KEY=VAL
-    $result.stdout.split(/\r?\n/).forEach((line) => {
+    _.splitLines($result.stdout).forEach((line) => {
         // skip blank lines
         if (!line)
             return;
@@ -129,6 +128,19 @@ export async function set(key, val, options = {}) {
     // set tjs.env value
     tjs.env[$prefixed] = $val;
     write.debug("env.set", "%s = %s", $prefixed, $val);
+}
+/**
+ * Print all BF_ environment variables.
+ */
+export function show() {
+    // loop through system environment and print
+    for (const [$key, $val] of Object.entries(tjs.env)) {
+        // ignore non-BF variables
+        if (!$key.startsWith(PREFIX))
+            continue;
+        // write to console
+        write.info("env.show", "%s = '%s'", $key, $val);
+    }
 }
 /**
  * Persist system environment to the filesystem.
