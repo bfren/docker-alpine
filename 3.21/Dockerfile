@@ -9,10 +9,10 @@ ARG TARGETPLATFORM
 
 RUN \
     # save platform and version information to log
-    echo "Platform: ${TARGETPLATFORM}" >> /log && \
-    echo "Alpine: 3.21.7" >> /log && \
-    echo "Busybox: 1.38.0" >> /log && \
-    echo "txiki.js: 26.6.0" >> /log
+    echo "Platform=${TARGETPLATFORM}" >> /log && \
+    echo "Alpine=3.21.7" >> /log && \
+    echo "Busybox=1.38.0" >> /log && \
+    echo "txiki.js=26.6.0" >> /log
 
 
 #======================================================================================================================
@@ -65,9 +65,12 @@ COPY ./3.21/overlay /
 
 RUN \
     # setup txiki.js using preinstallation script
-    chmod +x /preinstall && /preinstall && \
+    chmod +x /preinstall && /preinstall
+
+WORKDIR /usr/local/bin/bf
+RUN \
     # run standard bf installation executable
-    chmod +x /usr/bin/bf/bf-install && /usr/bin/bf/bf-install
+    mv bf-install.js bf-install && chmod +x bf-install && bf-install
 
 COPY ./overlay/etc/tjs/scripts/tests /etc/tjs/scripts/tests
 
@@ -90,6 +93,6 @@ ENV \
     # path to bfren configuration directory
     BF_ETC=/etc/bf \
     # add bfren executables to PATH
-    PATH=/usr/bin/bf:${PATH}
+    PATH=/usr/local/bin/bf:${PATH}
 
 ENTRYPOINT [ "/init" ]

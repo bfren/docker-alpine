@@ -9,10 +9,10 @@ ARG TARGETPLATFORM
 
 RUN \
     # save platform and version information to log
-    echo "Platform: ${TARGETPLATFORM}" >> /log && \
-    echo "Alpine: <%= ${ALPINE_VERSION} %>" >> /log && \
-    echo "Busybox: <%= ${BUSYBOX_VERSION} %>" >> /log && \
-    echo "txiki.js: <%= ${TJS_VERSION} %>" >> /log
+    echo "Platform=${TARGETPLATFORM}" >> /log && \
+    echo "Alpine=<%= ${ALPINE_VERSION} %>" >> /log && \
+    echo "Busybox=<%= ${BUSYBOX_VERSION} %>" >> /log && \
+    echo "txiki.js=<%= ${TJS_VERSION} %>" >> /log
 
 
 #======================================================================================================================
@@ -65,9 +65,12 @@ COPY ./<%= ${ALPINE_EDITION} %>/overlay /
 
 RUN \
     # setup txiki.js using preinstallation script
-    chmod +x /preinstall && /preinstall && \
+    chmod +x /preinstall && /preinstall
+
+WORKDIR <%= ${BF_BIN} %>
+RUN \
     # run standard bf installation executable
-    chmod +x <%= ${BF_BIN} %>/bf-install && <%= ${BF_BIN} %>/bf-install
+    mv bf-install.js bf-install && chmod +x bf-install && bf-install
 
 COPY ./overlay/etc/tjs/scripts/tests /etc/tjs/scripts/tests
 
