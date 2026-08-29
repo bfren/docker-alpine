@@ -69,8 +69,12 @@ RUN \
 
 WORKDIR <%= ${BF_BIN} %>
 RUN \
+    # remove all typescript files
+    rm -f *.ts && \
+    # rename all javascript files and make them executable
+    for F in bf-*.js; do mv "$F" "${F%.js}" && chmod +x "${F%.js}"; done && \
     # run standard bf installation executable
-    mv bf-install.js bf-install && chmod +x bf-install && bf-install
+    ./bf-install
 
 COPY ./overlay/etc/tjs/scripts/tests /etc/tjs/scripts/tests
 

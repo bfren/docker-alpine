@@ -6,6 +6,7 @@ ALPINE=${1:-3.24}
 tsc
 docker buildx build \
     --load \
+    --progress plain \
     --build-arg BF_IMAGE=alpine \
     --build-arg BF_VERSION=${IMAGE} \
     -f ${ALPINE}/Dockerfile \

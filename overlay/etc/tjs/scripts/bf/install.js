@@ -16,7 +16,7 @@ import * as write from "./write.js";
 export async function install() {
     // output build info
     write.info("install", "Build information.");
-    build.show();
+    await build.show();
     // output BF config
     write.info("install", "bfren environment variables.");
     env.show();
@@ -30,9 +30,11 @@ export async function install() {
     }
     // set permissions
     const $root = "root:root";
-    ch.apply("/etc/nu", $root, { fmode: "0666", dmode: "0777" });
-    ch.apply("/init", $root, { fmode: "0500" });
-    ch.apply("/test", $root, { fmode: "0500" });
-    ch.apply("/tmp", $root, { fmode: "1777", dmode: "1777" });
-    ch.apply($bin, $root, { fmode: "0555" });
+    await Promise.all([
+        ch.apply("/etc/nu", $root, { fmode: "0666", dmode: "0777" }),
+        ch.apply("/init", $root, { fmode: "0500" }),
+        ch.apply("/test", $root, { fmode: "0500" }),
+        ch.apply("/tmp", $root, { fmode: "1777", dmode: "1777" }),
+        ch.apply($bin, $root, { fmode: "0555" })
+    ]);
 }
