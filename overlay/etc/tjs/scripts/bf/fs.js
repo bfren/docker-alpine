@@ -60,7 +60,7 @@ export async function read(path, options = {}) {
     // read file to string if it exists and is a file
     if ($info.exists && $info.isFile) {
         const $stream = await tjs.readFile($info.path);
-        return $stream.toString();
+        return new TextDecoder().decode($stream);
     }
     // return empty string if quiet is set
     else if ($opt.quiet) {
