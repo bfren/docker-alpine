@@ -7,7 +7,7 @@ import { splitLines } from "./split.js";
  */
 export function parseKVP(input) {
     // create dictionary object to hold
-    const $dictionary = new Array();
+    const $dictionary = {};
     // split output based on newline, and parse each as KEY=VAL
     splitLines(input).forEach((line) => {
         // skip blank lines
@@ -20,7 +20,7 @@ export function parseKVP(input) {
         // get variable key and value, and add to dictionary
         const $key = line.slice(0, $idx).trim();
         const $val = line.slice($idx + 1).trim();
-        $dictionary.push({ key: $key, val: $val });
+        $dictionary[$key] = $val;
     });
     return $dictionary;
 }

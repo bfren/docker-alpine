@@ -11,10 +11,7 @@ export const BUILD_FILE = "BUILD";
 export async function show() {
     // read and parse build info file
     const $build = await fs.read(`${env.get("ETC")}/${BUILD_FILE}`);
-    console.log($build);
     const $info = _.parseKVP($build);
-    console.log($info);
-    // convert to JSON and display
-    const $json = JSON.stringify($info, null, 2);
-    console.log($json);
+    // display as Markdown table
+    console.log(_.toTable($info));
 }

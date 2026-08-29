@@ -6,9 +6,9 @@ import { splitLines } from "./split.ts";
  * @param input Input string - each line should contain KEY=VAL.
  * @returns Parsed dictionary object.
  */
-export function parseKVP(input: string): Array<{ key: string, val: string }> {
+export function parseKVP(input: string): Record<string, string> {
     // create dictionary object to hold
-    const $dictionary = new Array<{ key: string, val: string }>();
+    const $dictionary: Record<string, string> = {};
 
     // split output based on newline, and parse each as KEY=VAL
     splitLines(input).forEach((line: string) => {
@@ -22,7 +22,7 @@ export function parseKVP(input: string): Array<{ key: string, val: string }> {
         // get variable key and value, and add to dictionary
         const $key = line.slice(0, $idx).trim();
         const $val = line.slice($idx + 1).trim();
-        $dictionary.push({ key: $key, val: $val });
+        $dictionary[$key] = $val;
     });
 
     return $dictionary;
