@@ -15,7 +15,7 @@ export def find_name__returns_list_of_matching_files [] {
     cp $file $dir0
     cp $file $dir1
     cp $file $dir2
-    let expect = 3
+    let expect = 4 # the original file in /tmp plus three copies
 
     let result = find_name "/tmp" ($file | path basename) | length
 
@@ -261,6 +261,7 @@ export def read__expands_virtual_filename [] {
     let contents = random chars
     $contents | save --force $file
 
+    cd ($file | path dirname)
     let result = read ($file | path basename)
 
     assert equal $contents $result
