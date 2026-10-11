@@ -1,6 +1,6 @@
-use std assert
-use ../bf clean *
-use ../bf fs [make_temp_dir]
+use std/assert
+use ../bf/clean.nu *
+use ../bf/fs.nu [make_temp_dir]
 
 
 #======================================================================================================================
