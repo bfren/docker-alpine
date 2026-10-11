@@ -1,4 +1,5 @@
 export use build.nu
+export use ch.nu
 export use clean.nu
 export use config.nu
 export use del.nu
@@ -6,6 +7,7 @@ export use dump.nu
 export use env.nu
 export use esh.nu
 export use fs.nu
+export use handle.nu
 export use http.nu
 export use string.nu
 export use version.nu

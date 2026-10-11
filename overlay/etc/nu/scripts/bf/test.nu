@@ -39,9 +39,9 @@ def discover [
         "
     ] | from nuon
 
-    # if no tests are found, exit
+    # if no tests are found, warn loudly (but still exit 0) so an empty suite is not mistaken for a pass
     if ($tests | length) == 0 {
-        write "No tests found." test/discover
+        write warn "No tests found - nothing has been tested." test/discover
         exit
     }
 
