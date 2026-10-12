@@ -11,7 +11,7 @@ RUN \
     # save platform and version information to log
     echo "Platform: ${TARGETPLATFORM}" >> /log && \
     echo "Alpine: 3.15.11" >> /log && \
-    echo "Busybox: 1.38.0" >> /log && \
+    echo "Busybox: 1.37.0" >> /log && \
     echo "Nushell: 0.116.1" >> /log
 
 
@@ -19,7 +19,7 @@ RUN \
 # STAGE 1: load busybox
 #======================================================================================================================
 
-FROM quay.io/bfren/busybox:1.38.0-alpine3.15.11-260920 AS busybox
+FROM quay.io/bfren/busybox:1.37.0-alpine3.15.11-260920 AS busybox
 
 
 #======================================================================================================================
