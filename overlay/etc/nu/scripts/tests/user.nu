@@ -12,7 +12,7 @@ export def exists__user_exists__returns_true [] {
 }
 
 export def exists__user_does_not_exist__returns_false [] {
-    assert equal false (exists (random chars --length 12 | str downcase))
+    assert equal false (exists (random chars --length 12 | str lowercase))
 }
 
 
@@ -55,7 +55,7 @@ export def add__user_already_exists__returns_error [] {
 }
 
 export def add__creates_user_with_uid_and_group [] {
-    let name = $"t(random chars --length 8 | str downcase)"
+    let name = $"t(random chars --length 8 | str lowercase)"
     let uid = random int 20000..29999
 
     add $name --uid $uid
@@ -71,7 +71,7 @@ export def add__creates_user_with_uid_and_group [] {
 }
 
 export def add__with_gid__uses_gid [] {
-    let name = $"t(random chars --length 8 | str downcase)"
+    let name = $"t(random chars --length 8 | str lowercase)"
     let uid = random int 20000..24999
     let gid = random int 25000..29999
 

@@ -7,7 +7,7 @@ use ../bf/pkg.nu *
 #======================================================================================================================
 
 export def install__package_does_not_exist__returns_error [] {
-    let name = $"does-not-exist-(random chars --length 12 | str downcase)"
+    let name = $"does-not-exist-(random chars --length 12 | str lowercase)"
 
     assert error {|| install [$name] }
 }
@@ -18,7 +18,7 @@ export def install__package_does_not_exist__returns_error [] {
 #======================================================================================================================
 
 export def remove__package_is_not_installed__returns_error [] {
-    let name = $"does-not-exist-(random chars --length 12 | str downcase)"
+    let name = $"does-not-exist-(random chars --length 12 | str lowercase)"
 
     assert error {|| remove [$name] }
 }
