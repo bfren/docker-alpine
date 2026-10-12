@@ -19,7 +19,7 @@ RUN \
 # STAGE 1: load busybox
 #======================================================================================================================
 
-FROM quay.io/bfren/busybox:1.37.0-alpine3.18.12-260920 AS busybox
+FROM quay.io/bfren/busybox:1.37.0-alpine3.18.12-261012 AS busybox
 
 
 #======================================================================================================================
@@ -56,7 +56,7 @@ ENV \
     # whether or not to upgrade packages during installation
     #   0: no
     #   1: yes
-    BF_UPGRADE_PACKAGES=0 \
+    BF_UPGRADE_PACKAGES=1 \
     # Nushell version string to check against installed verion after installation
     NU_VERSION=0.116.1
 
