@@ -81,20 +81,3 @@ export def main__type_f_sets_ownership_on_files_only [] {
     assert equal "1234:1234" ($x.file | ids)
     assert equal $sub_ids ($x.sub | ids)
 }
-
-
-#======================================================================================================================
-# apply_file
-#======================================================================================================================
-
-export def apply_file__applies_owner_and_file_and_directory_modes [] {
-    let x = setup
-    let ch_d = mktemp
-    $"($x.dir) 1234:1234 640 750" | save --force $ch_d
-
-    apply_file $ch_d
-
-    assert equal "1234:1234" ($x.file | ids)
-    assert equal "640" ($x.file | mode)
-    assert equal "750" ($x.sub | mode)
-}

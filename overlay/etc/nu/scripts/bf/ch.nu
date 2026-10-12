@@ -1,5 +1,4 @@
 use dump.nu
-use env.nu
 use fs.nu
 use write.nu
 
@@ -64,28 +63,6 @@ export def apply []: [string -> nothing, list<string> -> nothing] {
     # apply mode changes
     if ($fmode | is-not-empty) { apply_mod_type $path f $fmode }
     if ($dmode | is-not-empty) { apply_mod_type $path d $dmode }
-
-    return
-}
-
-# Apply permissions using a ch.d file
-export def apply_file [
-    file: string    # Path to ch.d file - if the file does not exist, will look in ch.d directory instead
-]: nothing -> nothing {
-    # if file is not a path that exists, prepend CH_D directory
-    let path = if ($file | path exists) { $file } else { $"(env ETC_CH_D)/($file)" }
-
-    # check file exists
-    if ($path | fs is_not_file) {
-        write notok $"($path) does not exist or is not a file." ch/apply_file
-        return
-    }
-
-    # split by row and apply changes row by row
-    write $"Applying ($path)." ch/apply_file
-    open $path
-        | from ssv --minimum-spaces 1 --noheaders
-        | each {|x| $x | values | apply }
 
     return
 }
