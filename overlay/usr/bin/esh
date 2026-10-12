@@ -106,7 +106,7 @@ function flush(len,  _str) {
 	_str = read(len)
 
 	if (state == "TEXT") {
-		gsub("'", "'\\''", _str)
+		gsub("'", "'\"'\"'", _str)
 	}
 	if (state != "COMMENT") {
 		fputs(_str)
@@ -373,7 +373,7 @@ done
 # Format variables into shell variable assignments.
 vars=''; for item in "$@"; do
 	vars="$vars\n${item%%=*}='$(
-		printf %s "${item#*=}" | $ESH_AWK "{ gsub(/'/, \"'\\\\\\\''\"); print }"
+		printf %s "${item#*=}" | $ESH_AWK "{ gsub(/'/, \"'\\\"'\\\"'\"); print }"
 	)'"
 done
 
