@@ -152,3 +152,33 @@ export def empty__value_is_not_empty__returns_false [] {
 
     assert equal $expect $result "empty does not return false when value is not empty"
 }
+
+
+#======================================================================================================================
+# store
+#======================================================================================================================
+
+# directory used by store (not exported by env.nu)
+const store_dir = "/etc/bf/env.d"
+
+export def store__saves_environment_variable [] {
+    let key = random chars
+    let value = random chars
+
+    with-env {$key: $value} { store }
+    let result = open --raw $"($store_dir)/($key)"
+    rm --force $"($store_dir)/($key)"
+
+    assert equal $value $result "store does not save environment variable"
+}
+
+export def store__does_not_save_nushell_process_variables [] {
+    let ignored = [ "CURRENT_FILE" "FILE_PWD" "LAST_EXIT_CODE" "NU_VERSION" "PROCESS_PATH" "PWD" ]
+    $ignored | each {|x| rm --force $"($store_dir)/($x)" }
+
+    ^true
+    store
+    let result = $ignored | where {|x| $"($store_dir)/($x)" | path exists }
+
+    assert equal [] $result "store saves variables set by nu for the current process"
+}
