@@ -3,7 +3,7 @@
 use bf
 
 # Unset, hide and remove an environment variable
-def main [
+def --env main [
     key: string         # Environment variable key - the BF_ prefix will be added automatically
     --no-prefix (-P)    # Do not add the BF_ prefix
 ]: nothing -> nothing {
