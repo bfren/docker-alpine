@@ -11,3 +11,4 @@ export use handle.nu
 export use http.nu
 export use string.nu
 export use version.nu
+export use write.nu
