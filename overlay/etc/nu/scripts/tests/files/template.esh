@@ -15,3 +15,5 @@ should be here
 <% fi %>
 
 <%+ ./inc.esh -%>
+
+# Similar to 'access-control:' but for interfaces.
