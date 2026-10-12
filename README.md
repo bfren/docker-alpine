@@ -152,21 +152,33 @@ Shell scripts can run commands with a *clean* environment loaded from `/etc/bf/e
 
 ### The `bf` module
 
-| Submodule   | Use                                                                 |
-| ----------- | ------------------------------------------------------------------- |
-| `bf env`    | Get, set, check and load environment variables                      |
-| `bf write`  | Write timestamped, coloured output (`ok`, `warn`, `error`, `debug`) |
-| `bf handle` | Run an external command and turn failures into Nushell errors       |
-| `bf pkg`    | Install, remove and upgrade Alpine packages                         |
-| `bf fs`     | Read files and find paths                                           |
-| `bf ch`     | Set ownership and permissions                                       |
-| `bf esh`    | Generate files from esh templates                                   |
-| `bf http`   | Download files and check URLs                                       |
-| `bf user`   | Add users and groups                                                |
-| `bf tz`     | Set the timezone                                                    |
-| `bf test`   | Run the tests in `/etc/nu/scripts/tests`                            |
+| Submodule    | Use                                                                          |
+| ------------ | ---------------------------------------------------------------------------- |
+| `bf build`   | Read the image build log, and add entries to it                              |
+| `bf ch`      | Set ownership and permissions on files and directories                       |
+| `bf clean`   | Remove temporary files, package caches and `.empty` placeholders             |
+| `bf config`  | Add lines and modules to the shared Nushell config                           |
+| `bf del`     | Delete files or directories older than a given age                           |
+| `bf dump`    | Print a value when debug output is enabled, then pass it on                  |
+| `bf env`     | Get, set, check, load and store environment variables                        |
+| `bf esh`     | Generate output from an esh template                                         |
+| `bf fs`      | Read files, find paths and make temporary directories                        |
+| `bf handle`  | Run an external command and turn failures into Nushell errors                |
+| `bf http`    | Download files and check URLs                                                |
+| `bf image`   | Show a banner with the image name, version and Alpine version                |
+| `bf install` | Run the standard image installation (used by `bf-install`)                   |
+| `bf pkg`     | Install, remove and upgrade Alpine packages                                  |
+| `bf string`  | Quote strings and fill `{placeholder}` templates                             |
+| `bf test`    | Discover and run the tests in `/etc/nu/scripts/tests`                        |
+| `bf tz`      | Get and set the timezone                                                     |
+| `bf user`    | Add users and groups                                                         |
+| `bf version` | Compare and bump version numbers                                             |
+| `bf write`   | Write timestamped, coloured output (`ok`, `notok`, `warn`, `error`, `debug`) |
+| `bf x`       | Run a script with `BF_X` set to its name, so its output is labelled          |
 
 Run `help bf <submodule>` in a `nu` shell for details.
+
+Many of these have executable helpers on the `PATH` for shell scripts. For example, `bf-image` runs `bf image`, which is handy with `docker exec`. Check out `overlay/usr/bin/bf` for the complete list.
 
 ## Testing
 
