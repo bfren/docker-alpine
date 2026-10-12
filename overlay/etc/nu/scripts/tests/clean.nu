@@ -1,6 +1,6 @@
-use std assert
-use ../bf clean *
-use ../bf fs [make_temp_dir]
+use std/assert
+use ../bf/clean.nu *
+use ../bf/fs.nu [make_temp_dir]
 
 
 #======================================================================================================================
@@ -12,7 +12,8 @@ def clean_e [
     --tmpdir: string
 ] {
     let tmp = $tmpdir | default (make_temp_dir)
-    clean --caches [$cache | default (mktemp --directory --tmpdir-path=($tmp))] --tmpdirs [$tmp]
+    let cache = $cache | default (make_temp_dir)
+    clean --caches [$"($cache)/*"] --tmpdirs [$"($tmp)/*"]
 }
 
 export def main__deletes_tmp [] {
