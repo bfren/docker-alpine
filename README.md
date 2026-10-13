@@ -106,9 +106,9 @@ Images for unsupported Alpine versions are still built, but no longer receive Al
 
 ### Environment Variables
 
-| Variable   | Values   | Description                                       | Default |
-| ---------- | -------- | ------------------------------------------------- | ------- |
-| `BF_DEBUG` | `0`, `1` | Show detailed output from `bf` scripts.           | `0`     |
+| Variable   | Values   | Description                             | Default |
+| ---------- | -------- | --------------------------------------- | ------- |
+| `BF_DEBUG` | `0`, `1` | Show detailed output from `bf` scripts. | `0`     |
 
 ### Build Arguments
 
