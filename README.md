@@ -11,7 +11,8 @@ This is the foundation of the [bfren ecosystem](https://github.com/bfren/docker)
 It is [Alpine Linux](https://alpinelinux.org) with:
 
 * [Nushell](https://www.nushell.sh) and the `bf` module, for writing installation and start-up scripts with structured data and real error handling
-* a standard build step (`bf-install`) so every image is installed, permissioned and cleaned up the same way
+* a custom build of [BusyBox](https://busybox.net) with its default config plus relevant patches from Alpine Linux
+* a standard build step (`bf-install`) so every image is installed and cleaned up the same way
 * a shared environment store, so every script sees the same variables
 * helper executables for shell scripts, and [esh](https://github.com/jirutka/esh) for templates
 
