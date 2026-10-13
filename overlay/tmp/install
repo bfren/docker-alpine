@@ -19,7 +19,7 @@ def main [] {
 
     # link bf-withenv for easier use in shell scripts
     bf write "Creating withenv link."
-    ln $"/usr/bin/bf/bf-withenv" /bin/withenv
+    ^ln $"/usr/bin/bf/bf-withenv" /bin/withenv
 
     # make esh script executable
     bf ch --mode 0555 /usr/bin/esh
