@@ -44,9 +44,7 @@ ARG BF_VERSION
 
 RUN \
     # install busybox
-    busybox --install && \
-    # add packages required by Nushell
-    apk add --no-cache libgcc sqlite-libs
+    busybox --install
 
 ENV \
     # path to bf configuration - installation script requires this
