@@ -84,17 +84,52 @@ export def main__type_f_sets_ownership_on_files_only [] {
 
 
 #======================================================================================================================
-# apply_file
+# apply
 #======================================================================================================================
 
-export def apply_file__applies_owner_and_file_and_directory_modes [] {
+export def apply__fewer_than_two_values__does_nothing [] {
     let x = setup
-    let ch_d = mktemp
-    $"($x.dir) 1234:1234 640 750" | save --force $ch_d
 
-    apply_file $ch_d
+    [$x.file] | apply
 
-    assert equal "1234:1234" ($x.file | ids)
-    assert equal "640" ($x.file | mode)
-    assert equal "750" ($x.sub | mode)
+    assert equal "600" ($x.file | mode)
+}
+
+export def apply__owner_is_applied_recursively [] {
+    let x = setup
+
+    [$x.dir "1234:1234"] | apply
+
+    assert equal ["1234:1234" "1234:1234" "1234:1234"] [($x.dir | ids) ($x.sub | ids) ($x.file | ids)]
+}
+
+export def apply__file_mode_is_applied_to_files_only [] {
+    let x = setup
+
+    [$x.dir "0:0" "644"] | apply
+
+    assert equal "644" ($x.file | mode)
+    assert equal "700" ($x.sub | mode)
+}
+
+export def apply__directory_mode_is_applied_to_directories_only [] {
+    let x = setup
+
+    [$x.dir "0:0" "" "755"] | apply
+
+    assert equal "600" ($x.file | mode)
+    assert equal "755" ($x.sub | mode)
+    assert equal "755" ($x.dir | mode)
+}
+
+export def apply__file_and_directory_modes_are_both_applied [] {
+    let x = setup
+
+    [$x.dir "0:0" "644" "755"] | apply
+
+    assert equal ["755" "755" "644"] [($x.dir | mode) ($x.sub | mode) ($x.file | mode)]
+}
+
+export def apply__path_does_not_exist__does_not_error [] {
+    [$"/tmp/(random chars)" "0:0" "644" "755"] | apply
 }

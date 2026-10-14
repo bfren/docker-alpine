@@ -33,3 +33,26 @@ export def is_at_least__returns_false_when_input_is_less_than_minimum [] {
 
     assert equal false $result
 }
+
+
+#======================================================================================================================
+# bump
+#======================================================================================================================
+
+export def bump__increments_patch_number [] {
+    let result = "1.2.3" | bump
+
+    assert equal "1.2.4" $result
+}
+
+export def bump__increments_double_digit_patch_number [] {
+    let result = "1.2.9" | bump
+
+    assert equal "1.2.10" $result
+}
+
+export def bump__does_not_change_major_or_minor [] {
+    let result = "10.20.0" | bump
+
+    assert equal "10.20.1" $result
+}
