@@ -54,9 +54,12 @@ export def add__user_already_exists__returns_error [] {
     assert error {|| add root } "User root already exists."
 }
 
-export def add__creates_user_with_uid_and_group [] {
+# Both cases run in one test: tests run in parallel, and busybox adduser / addgroup rewrite /etc/passwd and /etc/group
+# without locking, so two tests adding users at the same time can overwrite each other's changes
+export def add__creates_user_with_uid_and_group__and_uses_gid_when_set [] {
+    # without --gid: the group uses the UID
     let name = $"t(random chars --length 8 | str lowercase)"
-    let uid = random int 20000..29999
+    let uid = random int 20000..24999
 
     add $name --uid $uid
     let result = ^getent passwd $name | str trim
@@ -68,12 +71,11 @@ export def add__creates_user_with_uid_and_group [] {
     assert ($result | str contains $":($uid):($uid):") "add does not create user with the specified UID and matching GID"
     assert ($group | str starts-with $"($name):") "add does not create group"
     assert equal "symlink" $links "add does not create Nushell links"
-}
 
-export def add__with_gid__uses_gid [] {
+    # with --gid: the group uses the GID
     let name = $"t(random chars --length 8 | str lowercase)"
-    let uid = random int 20000..24999
-    let gid = random int 25000..29999
+    let uid = random int 25000..27499
+    let gid = random int 27500..29999
 
     add $name --uid $uid --gid $gid
     let result = ^getent passwd $name | str trim
