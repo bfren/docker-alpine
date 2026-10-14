@@ -48,7 +48,9 @@ export def main [
 }
 
 # Remove tzdata packages and info
-def clean []: nothing -> nothing {
+export def clean [
+    --dir (-d): string = $zoneinfo  # Path to the timezone definitions (can be overridden for testing)
+]: nothing -> nothing {
     write debug "Removing tzdata packages." tz/clean
     pkg remove [.tz]
 
@@ -59,7 +61,7 @@ def clean []: nothing -> nothing {
         return
     }
 
-    echo $"($zoneinfo)/*" | into glob | rm --force --recursive $in
+    echo $"($dir)/*" | into glob | rm --force --recursive $in
 }
 
 # Return the name of the current timezone
