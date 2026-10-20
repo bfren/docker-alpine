@@ -55,6 +55,9 @@ export def find_type_acc [
     $base_paths | each {|x| find_type $x $type } | reduce -f [] {|y, acc| $acc | append $y }
 }
 
+# Returns true if input path exists and is a directory
+export def is_dir []: string -> bool { ($in | path type) == "dir" }
+
 # Returns true unless input path exists and is a directory
 export def is_not_dir []: string -> bool { ($in | path type) != "dir" }
 

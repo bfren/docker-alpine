@@ -126,6 +126,47 @@ export def find_type_acc__returns_list_of_files [] {
 
 
 #======================================================================================================================
+# is_dir
+#======================================================================================================================
+
+export def is_dir__input_is_dir_returns_true [] {
+    let dir = mktemp --directory
+
+    let result = $dir | is_dir
+
+    assert equal true $result
+}
+
+export def is_dir__input_is_file_returns_false [] {
+    let file = mktemp
+
+    let result = $file | is_dir
+
+    assert equal false $result
+}
+
+export def is_dir__input_is_symlink_to_dir_returns_false [] {
+    let dir = mktemp --directory
+    let link = mktemp
+    rm --force $link
+    ln -s $dir $link
+
+    let result = $link | is_dir
+
+    assert equal false $result
+}
+
+export def is_dir__input_does_not_exist_returns_false [] {
+    let path = mktemp
+    rm --force $path
+
+    let result = $path | is_dir
+
+    assert equal false $result
+}
+
+
+#======================================================================================================================
 # is_not_dir
 #======================================================================================================================
 
