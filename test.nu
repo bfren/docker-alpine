@@ -1,3 +1,5 @@
+#!/usr/bin/env -S nu -n
+
 use ../index/test.nu
 
 const alpine_branches = [
@@ -16,7 +18,7 @@ const alpine_branches = [
 # Run test suite for image
 def main [
     alpine: string = "3.24" # define which Alpine version to use
-    --all (-a)              # test all registered versions of Alpine (overrides $version)
+    --all (-a)              # test all registered versions of Alpine (overrides $alpine)
 ] {
     let branches = if $all { $alpine_branches } else { [$alpine] }
     test "alpine" $branches
