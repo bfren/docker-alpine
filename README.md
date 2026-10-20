@@ -31,7 +31,7 @@ my-image/
 `Dockerfile`:
 
 ```dockerfile
-FROM quay.io/bfren/alpine:alpine3.24
+FROM quay.io/bfren/alpine:alpine3.24-3.5
 
 ARG BF_IMAGE=my-image
 ARG BF_VERSION=1.0.0
@@ -75,7 +75,7 @@ Inside the container, `bf image` shows the image name and version.
 
 ## Tags
 
-Images are published to Docker Hub (`bfren/alpine`) and Quay.io (`quay.io/bfren/alpine`).
+Images are published to Docker Hub (`bfren/alpine`) and Quay.io (`quay.io/bfren/alpine`) for `linux/amd64`, `linux/arm/v7` and `linux/arm64`.
 
 | Tag                           | Example              | Use when                                              |
 | ----------------------------- | -------------------- | ----------------------------------------------------- |
