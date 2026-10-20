@@ -9,5 +9,10 @@ export use esh.nu
 export use fs.nu
 export use handle.nu
 export use http.nu
+export use install.nu
+export use pkg.nu
 export use string.nu
+export use tz.nu
+export use user.nu
 export use version.nu
+export use write.nu

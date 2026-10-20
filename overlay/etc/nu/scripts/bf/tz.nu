@@ -1,6 +1,7 @@
 use fs.nu
 use del.nu
 use dump.nu
+use handle.nu
 use pkg.nu
 use write.nu
 
@@ -47,10 +48,20 @@ export def main [
 }
 
 # Remove tzdata packages and info
-def clean []: nothing -> nothing {
+export def clean [
+    --dir (-d): string = $zoneinfo  # Path to the timezone definitions (can be overridden for testing)
+]: nothing -> nothing {
     write debug "Removing tzdata packages." tz/clean
     pkg remove [.tz]
-    echo $"($zoneinfo)/*" | into glob | rm --force --recursive $in
+
+    # if an image has installed tzdata itself (e.g. for .NET or PHP), removing the .tz virtual package leaves tzdata
+    # installed - so keep its timezone definitions, otherwise applications that convert between timezones will fail
+    if (({ ^apk info -e tzdata } | handle -c tz/clean) == 0) {
+        write debug "tzdata is installed, so timezone definitions have been kept." tz/clean
+        return
+    }
+
+    echo $"($dir)/*" | into glob | rm --force --recursive $in
 }
 
 # Return the name of the current timezone

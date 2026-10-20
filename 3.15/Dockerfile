@@ -11,7 +11,7 @@ RUN \
     # save platform and version information to log
     echo "Platform: ${TARGETPLATFORM}" >> /log && \
     echo "Alpine: 3.15.11" >> /log && \
-    echo "Busybox: 1.36.1" >> /log && \
+    echo "Busybox: 1.37.0" >> /log && \
     echo "Nushell: 0.116.1" >> /log
 
 
@@ -19,14 +19,14 @@ RUN \
 # STAGE 1: load busybox
 #======================================================================================================================
 
-FROM quay.io/bfren/busybox:1.36.1-alpine3.15.11-260920 AS busybox
+FROM quay.io/bfren/busybox:1.37.0-alpine3.15.11-261012 AS busybox
 
 
 #======================================================================================================================
 # STAGE 2: load Nushell
 #======================================================================================================================
 
-FROM quay.io/bfren/nushell:0.116.1-alpine-260421 AS nushell
+FROM quay.io/bfren/nushell:0.116.1-alpine-261014 AS nushell
 
 
 #======================================================================================================================
@@ -44,9 +44,7 @@ ARG BF_VERSION
 
 RUN \
     # install busybox
-    busybox --install && \
-    # add packages required by Nushell
-    apk add --no-cache libgcc sqlite-libs
+    busybox --install
 
 ENV \
     # path to bf configuration - installation script requires this
@@ -56,7 +54,7 @@ ENV \
     # whether or not to upgrade packages during installation
     #   0: no
     #   1: yes
-    BF_UPGRADE_PACKAGES=0 \
+    BF_UPGRADE_PACKAGES=1 \
     # Nushell version string to check against installed verion after installation
     NU_VERSION=0.116.1
 

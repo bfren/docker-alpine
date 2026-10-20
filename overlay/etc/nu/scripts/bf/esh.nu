@@ -1,5 +1,4 @@
 use dump.nu
-use env.nu
 use fs.nu
 use handle.nu
 use write.nu
@@ -36,24 +35,4 @@ export def main [
             | handle -f $on_failure -s $on_success esh
             | return $output
     }
-}
-
-# It is common to generate a file using an esh template in the bf templates directory, so this makes that easier
-# - it assumes a file with the same basename as $output plus '.esh' exists in the templates directory
-# - and that the $output directory exists
-export def template [
-    output: string  # Absolute path to the output file
-]: nothing -> string {
-    # get filenames and paths
-    let filename = $output | path basename
-    let output_dir = $output | path dirname
-    let input = $"(env ETC_TEMPLATES)/($filename).esh"
-
-    # ensure input file and output directory exist
-    if ($input | fs is_not_file) { write error $"Template file ($input) does not exist." esh/template }
-    if ($output_dir | fs is_not_dir) { write error $"Output directory ($output_dir) does not exist." esh/template }
-
-    # output debug message and generate file
-    write debug $" .. ($filename).esh"
-    main $input $output
 }

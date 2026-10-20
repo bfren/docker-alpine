@@ -152,3 +152,177 @@ export def empty__value_is_not_empty__returns_false [] {
 
     assert equal $expect $result "empty does not return false when value is not empty"
 }
+
+
+#======================================================================================================================
+# store
+#======================================================================================================================
+
+# directory used by store (not exported by env.nu)
+const store_dir = "/etc/bf/env.d"
+
+# path to the env.nu submodule
+const env_nu = path self ../bf/env.nu
+
+export def store__saves_environment_variable [] {
+    let key = random chars
+    let value = random chars
+
+    with-env {$key: $value} { store }
+    let result = open --raw $"($store_dir)/($key)"
+    rm --force $"($store_dir)/($key)"
+
+    assert equal $value $result "store does not save environment variable"
+}
+
+export def store__does_not_save_nushell_process_variables [] {
+    let ignored = [ "CURRENT_FILE" "FILE_PWD" "LAST_EXIT_CODE" "NU_VERSION" "PROCESS_PATH" "PWD" ]
+    $ignored | each {|x| rm --force $"($store_dir)/($x)" }
+
+    ^true
+    store
+    let result = $ignored | where {|x| $"($store_dir)/($x)" | path exists }
+
+    assert equal [] $result "store saves variables set by nu for the current process"
+}
+
+
+#======================================================================================================================
+# set
+#======================================================================================================================
+
+export def set__saves_to_environment_and_store [] {
+    let key = random chars
+    let value = random chars
+    let prefixed = $prefix + $key
+
+    set $key $value
+    let result_env = $env | get --optional $prefixed
+    let result_file = open --raw $"($store_dir)/($prefixed)"
+    rm --force $"($store_dir)/($prefixed)"
+
+    assert equal $value $result_env "set does not add value to environment"
+    assert equal $value $result_file "set does not persist value to store"
+}
+
+export def set__with_no_prefix__does_not_add_prefix [] {
+    let key = random chars
+    let value = random chars
+
+    set --no-prefix $key $value
+    let result_env = $env | get --optional $key
+    let result_file = open --raw $"($store_dir)/($key)"
+    rm --force $"($store_dir)/($key)"
+
+    assert equal $value $result_env "set does not add unprefixed value to environment"
+    assert equal $value $result_file "set does not persist unprefixed value to store"
+}
+
+export def set__empty_value__unsets_variable [] {
+    let key = random chars
+    let prefixed = $prefix + $key
+
+    set $key "value"
+    set $key ""
+    let result_env = $env | get --optional $prefixed
+    let result_exists = $"($store_dir)/($prefixed)" | path exists
+
+    assert equal null $result_env "set with empty value does not remove value from environment"
+    assert equal false $result_exists "set with empty value does not remove value from store"
+}
+
+
+#======================================================================================================================
+# unset
+#======================================================================================================================
+
+export def unset__removes_from_environment_and_store [] {
+    let key = random chars
+    let prefixed = $prefix + $key
+
+    set $key "value"
+    unset $key
+    let result_env = $env | get --optional $prefixed
+    let result_exists = $"($store_dir)/($prefixed)" | path exists
+
+    assert equal null $result_env "unset does not remove value from environment"
+    assert equal false $result_exists "unset does not remove value from store"
+}
+
+export def unset__with_no_prefix__does_not_add_prefix [] {
+    let key = random chars
+
+    set --no-prefix $key "value"
+    unset --no-prefix $key
+    let result_env = $env | get --optional $key
+    let result_exists = $"($store_dir)/($key)" | path exists
+
+    assert equal null $result_env "unset does not remove unprefixed value from environment"
+    assert equal false $result_exists "unset does not remove unprefixed value from store"
+}
+
+export def unset__variable_does_not_exist__does_not_error [] {
+    let key = random chars
+
+    unset $key
+
+    assert equal null ($env | get --optional ($prefix + $key))
+}
+
+
+#======================================================================================================================
+# load
+#======================================================================================================================
+
+export def load__loads_stored_variables_into_environment [] {
+    let key = random chars
+    let value = random chars
+    let prefixed = $prefix + $key
+
+    $value | save --force $"($store_dir)/($prefixed)"
+    load
+    let result = $env | get --optional $prefixed
+    rm --force $"($store_dir)/($prefixed)"
+
+    assert equal $value $result "load does not load stored variable into environment"
+}
+
+
+#======================================================================================================================
+# x_set
+#======================================================================================================================
+
+export def x_set__with_override__sets_bf_x [] {
+    let name = random chars
+
+    x_set --override $name
+
+    assert equal $name $env.BF_X "x_set does not use override"
+}
+
+export def x_set__with_prefix__adds_prefix [] {
+    let name = random chars
+    let x_prefix = random chars
+
+    x_set $x_prefix --override $name
+
+    assert equal $"($x_prefix)/($name)" $env.BF_X "x_set does not add prefix"
+}
+
+export def x_set__without_override__uses_current_file_basename [] {
+    # CURRENT_FILE is set by nu and cannot be set manually, so run a script in a child process
+    let dir = mktemp --directory
+    let name = $"(random chars).nu"
+    $"use ($env_nu) *\nx_set\nprint $env.BF_X" | save $"($dir)/($name)"
+
+    let result = ^nu --no-config-file $"($dir)/($name)" | str trim
+    rm --recursive --force $dir
+
+    assert equal $name $result "x_set does not use CURRENT_FILE basename"
+}
+
+export def x_set__is_not_persisted_to_store [] {
+    x_set --override (random chars)
+
+    assert equal false ($"($store_dir)/BF_X" | path exists) "x_set persists BF_X to store"
+}

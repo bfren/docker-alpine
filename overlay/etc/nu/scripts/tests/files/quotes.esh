@@ -1,0 +1,5 @@
+literal: 'quoted' word
+literal-start: 'quoted at start' and end'
+literal-double: it''s two
+literal-backslash: C:\path\to it's
+variable: <%= "${QUOTE-}" %>
