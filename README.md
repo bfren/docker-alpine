@@ -186,7 +186,8 @@ Many of these have executable helpers on the `PATH` for shell scripts. For examp
 `/test` runs the Nushell tests in `/etc/nu/scripts/tests` (`/test-without-http` skips tests that need the internet). Before running, it checks that tests really execute and fails if they don't. Tests are removed from published images, so run them on your own builds.
 
 ```sh
-./test.sh        # builds the image and runs /test
+./test.nu        # builds the image and runs /test
+./test.nu --all  # every version, in parallel
 ```
 
 ## Troubleshooting
