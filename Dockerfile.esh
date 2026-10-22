@@ -64,6 +64,8 @@ COPY ./<%= ${ALPINE_EDITION} %>/overlay /
 RUN \
     # setup Nushell using preinstallation script
     chmod +x /preinstall && /preinstall && \
+    # ca-certificates is required but we don't want Debian to install it
+    apk add --no-cache ca-certificates && \
     # run standard bf installation executable
     chmod +x <%= ${BF_BIN} %>/bf-install && <%= ${BF_BIN} %>/bf-install
 

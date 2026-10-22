@@ -64,6 +64,8 @@ COPY ./3.20/overlay /
 RUN \
     # setup Nushell using preinstallation script
     chmod +x /preinstall && /preinstall && \
+    # ca-certificates is required but we don't want Debian to install it
+    apk add --no-cache ca-certificates && \
     # run standard bf installation executable
     chmod +x /usr/bin/bf/bf-install && /usr/bin/bf/bf-install
 
