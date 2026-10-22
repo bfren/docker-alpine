@@ -9,14 +9,6 @@ def main [] {
         bf pkg upgrade
     }
 
-    # install additional packages
-    try {
-        bf write "Installing additional packages."
-        bf pkg install [figlet]
-    } catch {
-        bf write error "Unable to install additional packages."
-    }
-
     # link bf-withenv for easier use in shell scripts
     bf write "Creating withenv link."
     ^ln $"/usr/bin/bf/bf-withenv" /bin/withenv

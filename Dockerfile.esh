@@ -12,31 +12,40 @@ RUN \
     echo "Platform: ${TARGETPLATFORM}" >> /log && \
     echo "Alpine: <%= ${ALPINE_VERSION} %>" >> /log && \
     echo "Busybox: <%= ${BUSYBOX_VERSION} %>" >> /log && \
-    echo "Nushell: <%= ${NU_VERSION} %>" >> /log
+    echo "Nushell: <%= ${NU_VERSION} %>" >> /log && \
+    echo "Figlet: <%= ${FIGLET_VERSION} %>" >> /log
 
 
 #======================================================================================================================
 # STAGE 1: load busybox
 #======================================================================================================================
 
-FROM quay.io/bfren/busybox:<%= ${BUSYBOX_IMAGE} %> AS busybox
+FROM quay.io/bfren-bin/busybox:<%= ${BUSYBOX_IMAGE} %> AS busybox
 
 
 #======================================================================================================================
-# STAGE 2: load Nushell
+# STAGE 2: load nushell
 #======================================================================================================================
 
-FROM quay.io/bfren/nushell:<%= ${NU_IMAGE} %> AS nushell
+FROM quay.io/bfren-bin/nushell:<%= ${NU_IMAGE} %> AS nushell
 
 
 #======================================================================================================================
-# STAGE 3: install bfren platform
+# STAGE 3: load figlet
+#======================================================================================================================
+
+FROM quay.io/bfren-bin/figlet:<%= ${FIGLET_IMAGE} %> AS figlet
+
+
+#======================================================================================================================
+# STAGE 4: install bfren platform
 #======================================================================================================================
 
 FROM alpine:<%= ${ALPINE_VERSION} %> AS install
 COPY --from=build /log /etc/bf/BUILD
 COPY --from=busybox / /bin
 COPY --from=nushell / /
+COPY --from=figlet / /
 
 ARG BF_IMAGE
 ARG BF_PUBLISHING
@@ -73,7 +82,7 @@ COPY ./overlay/etc/nu/scripts/tests /etc/nu/scripts/tests
 
 
 #======================================================================================================================
-# STAGE 4: create final image
+# STAGE 5: create final image
 #======================================================================================================================
 
 FROM scratch AS final
