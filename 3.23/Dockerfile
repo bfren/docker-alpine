@@ -12,8 +12,7 @@ RUN \
     echo "Platform: ${TARGETPLATFORM}" >> /log && \
     echo "Alpine: 3.23.6" >> /log && \
     echo "Busybox: 1.37.0" >> /log && \
-    echo "Nushell: 0.116.1" >> /log && \
-    echo "Figlet: 2.2.5" >> /log
+    echo "Nushell: 0.116.1" >> /log
 
 
 #======================================================================================================================
