@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    uses: bfren/docker/.github/workflows/build.yml@main
+    uses: bfren/docker/.github/workflows/build.yml@shared-build
     with:
       image: alpine
       folders: |
