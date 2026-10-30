@@ -1,46 +1,20 @@
-import * as exec from "./exec.js";
+import { handle } from "./handle.js";
+import * as sys from "./sys.js";
 import * as _ from "./util.js";
 import * as write from "./write.js";
-// path to the environment variable store
-const ENV_DIR = "/etc/bf/env.d";
-// bfren platform prefix for namespacing environment variables
-const PREFIX = "BF_";
+/** Path to the environment variable store. */
+export const ENV_DIR = "/etc/bf/env.d";
+/** bfren platform prefix for namespacing environment variables. */
+export const PREFIX = "BF_";
 /**
- * Adds the BF_ prefix to key.
+ * Adds the BF_ prefix to key, if required.
  *
  * @param key Environment variable key.
+ * @param add_prefix Add BF_ prefix to key.
  * @returns Prefixed key.
  */
-function add_prefix(key) {
-    return `${PREFIX}${key}`;
-}
-/**
- * Returns true if key exists in the environment and is equal to 1.
- *
- * @param key Environment variable key.
- * @param add_prefix Add BF_ prefix to key before getting value.
- */
-export function check(key, add_prefix = true) {
-    const $value = "1";
-    return get(key, { add_prefix: add_prefix, safe: true }) == $value;
-}
-/**
- * Returns true if the BF_DEBUG environment variable is set to 1.
- *
- * @returns Whether or not BF_DEBUG environment variable is set to 1.
- */
-export function debug() {
-    return check("DEBUG");
-}
-/**
- * Returns true if key does not exist in the environment, or does with an empty value.
- *
- * @param key Environment variable key.
- * @param add_prefix Add BF_ prefix to key before getting value.
- */
-export function empty(key, add_prefix = true) {
-    const $value = "";
-    return get(key, { add_prefix: add_prefix, safe: true }) == $value;
+function prefixed(key, add_prefix = true) {
+    return add_prefix ? `${PREFIX}${key}` : key;
 }
 /**
  * Default options for get() function.
@@ -51,7 +25,8 @@ const DEFAULT_GET_OPTIONS = {
     safe: false
 };
 /**
- * Get a value from system environment.
+ * Get a value from system environment - if default_value is not set and the variable does not exist (or is empty),
+ * an error will be thrown unless safe is set.
  *
  * @param key Environment variable key.
  * @param options Function options.
@@ -59,91 +34,103 @@ const DEFAULT_GET_OPTIONS = {
  */
 export function get(key, options = {}) {
     // merge default options with whatever has been passed to this function
-    const opt = { ...DEFAULT_GET_OPTIONS, ...options };
-    // add prefix if required
-    const $prefixed = opt.add_prefix ? add_prefix(key) : key;
+    const $opt = { ...DEFAULT_GET_OPTIONS, ...options };
+    const $prefixed = prefixed(key, $opt.add_prefix);
     // return the value if it exists
-    const value = tjs.env[$prefixed];
-    if (value != null)
-        return value;
+    const $value = sys.env[$prefixed];
+    if (_.notEmpty($value))
+        return $value;
     // return default value
-    if (opt.default_value != null)
-        return opt.default_value;
+    if (_.notEmpty($opt.default_value))
+        return $opt.default_value;
     // return empty string
-    if (opt.safe)
+    if ($opt.safe)
         return "";
     // output with error
-    throw `Unable to get environment variable (${$prefixed}).`;
+    write.error("env", "Unable to get environment variable %s.", $prefixed);
 }
 /**
- * Load environment from ENV_DIR.
+ * Apply permissions for the environment variables directory.
  */
-export async function load() {
-    // use envdir to read environment values from ENV_DIR
-    const $result = await exec.run("env", ["-i", "envdir", ENV_DIR, "env"]);
-    if ($result.status != 0) {
-        throw write.error("Unable to load environment variables from '%s': %s.", ENV_DIR, $result.stderr);
+export async function applyPerms() {
+    await handle(["chmod", "-R", "a+rwX", ENV_DIR], { ignoreError: true });
+}
+/**
+ * Returns true if key exists in the environment and is equal to 1.
+ *
+ * @param key Environment variable key.
+ * @param add_prefix Add BF_ prefix to key before getting value.
+ */
+export function check(key, add_prefix = true) {
+    return test(key, "1", add_prefix);
+}
+/**
+ * Returns true if the BF_DEBUG environment variable is set to 1.
+ */
+export function debug() {
+    return check("DEBUG");
+}
+/**
+ * Returns true if key does not exist in the environment, or is empty.
+ *
+ * @param key Environment variable key.
+ * @param add_prefix Add BF_ prefix to key before getting value.
+ */
+export function empty(key, add_prefix = true) {
+    return test(key, "", add_prefix);
+}
+/**
+ * Load shared environment from ENV_DIR into the current environment, the way envdir does: the value is the first line
+ * of each file with trailing spaces / tabs removed, and empty files are skipped.
+ *
+ * @param options Function options.
+ */
+export async function load(options = {}) {
+    for (const $key of await sys.readDir(ENV_DIR)) {
+        if ($key.startsWith("."))
+            continue;
+        // the file may have been removed since the directory was read
+        const $val = await sys.readTextFile(`${ENV_DIR}/${$key}`).catch(() => "");
+        const $first = _.splitLines($val)[0]?.replace(/[ \t]+$/, "") ?? "";
+        if ($first)
+            sys.env[$key] = $first;
     }
-    // split output based on newline, and parse each as KEY=VAL
-    _.splitLines($result.stdout).forEach((line) => {
-        // skip blank lines
-        if (!line)
-            return;
-        // split on first '=' (variables can include '=' as part of their value)
-        const $idx = line.indexOf("=");
-        if ($idx == -1)
-            return;
-        // get variable key and value
-        const $key = line.slice(0, $idx).trim();
-        const $val = line.slice($idx + 1).trim();
-        // set environment value
-        tjs.env[$key] = $val;
-        write.debug("%s = %s", "env.load", $key, $val);
-    });
+    // set current script
+    if (options.set_executable)
+        xSet(options.x_prefix);
 }
 /**
- * Default options for set() function.
- */
-const DEFAULT_SET_OPTIONS = {
-    add_prefix: true,
-};
-/**
- * Persist a value to system environment.
+ * Save an environment variable to the current environment and ENV_DIR - an empty value unsets the variable.
  *
  * @param key Environment variable key.
  * @param val Value to set.
  * @param options Function options.
  */
 export async function set(key, val, options = {}) {
-    // merge default options with whatever has been passed to this function
-    const opt = { ...DEFAULT_SET_OPTIONS, ...options };
-    // trim input
-    const $key = key.trim();
-    const $val = String(val).trim();
-    // add prefix if required
-    const $prefixed = opt.add_prefix ? add_prefix($key) : $key;
-    // persist to filesystem
-    const $path = `${ENV_DIR}/${$prefixed}`;
-    await tjs.writeFile($path, $val);
-    // set tjs.env value
-    tjs.env[$prefixed] = $val;
-    write.debug("env.set", "%s = %s", $prefixed, $val);
+    const $prefixed = prefixed(key.trim(), options.add_prefix ?? true);
+    const $val = String(val ?? "").trim();
+    // if the value is empty, unset the variable
+    if ($val == "")
+        return unset($prefixed, false);
+    // save to current environment
+    sys.env[$prefixed] = $val;
+    // create persistence file and apply permissions
+    await sys.writeTextFile(`${ENV_DIR}/${$prefixed}`, $val);
+    await applyPerms();
+    // output for debugging purposes
+    write.debug("env/set", "%s=%s.", $prefixed, $val);
 }
 /**
- * Print all BF_ environment variables.
+ * Show all bfren platform environment variables.
  */
 export function show() {
-    // loop through system environment and print
-    for (const [$key, $val] of Object.entries(tjs.env)) {
-        // ignore non-BF variables
-        if (!$key.startsWith(PREFIX))
-            continue;
-        // write to console
-        write.info("env.show", "%s = '%s'", $key, $val);
-    }
+    const $vars = Object.entries(sys.env)
+        .filter(([$key]) => $key.startsWith(PREFIX))
+        .sort(([$a], [$b]) => $a.localeCompare($b, undefined, { numeric: true }));
+    console.log(_.toTable(Object.fromEntries($vars)));
 }
 /**
- * Persist system environment to the filesystem.
+ * Store incoming environment variables in ENV_DIR.
  */
 export async function store() {
     // do not store these environment variables - it messes with stuff...
@@ -157,12 +144,50 @@ export async function store() {
         "TERM",
     ];
     // loop through system environment and persist
-    for (const [$key, $val] of Object.entries(tjs.env)) {
-        // do not store ignored variables
+    for (const [$key, $val] of Object.entries(sys.env)) {
         if ($ignore.includes($key))
             continue;
-        // persist to filesystem
-        const $path = `${ENV_DIR}/${$key}`;
-        await tjs.writeFile($path, $val);
+        await sys.writeTextFile(`${ENV_DIR}/${$key}`, $val);
     }
+    // apply permissions to files
+    await applyPerms();
+}
+/**
+ * Returns true if key is equal to value.
+ *
+ * @param key Environment variable key.
+ * @param value The value to compare against.
+ * @param add_prefix Add BF_ prefix to key before getting value.
+ */
+export function test(key, value, add_prefix = true) {
+    return get(prefixed(key, add_prefix), { add_prefix: false, safe: true }) == value;
+}
+/**
+ * Unset an environment variable and remove it from ENV_DIR.
+ *
+ * @param key Environment variable key.
+ * @param add_prefix Add BF_ prefix to key.
+ */
+export async function unset(key, add_prefix = true) {
+    const $prefixed = prefixed(key, add_prefix);
+    // remove from the current environment
+    delete sys.env[$prefixed];
+    // delete persistence file (if it exists)
+    await sys.remove(`${ENV_DIR}/${$prefixed}`).catch(() => { });
+    // output for debugging purposes
+    write.debug("env/unset", "%s removed.", $prefixed);
+}
+/**
+ * Sets the BF_X environment variable to the name of the currently executing script - it is not persisted to ENV_DIR
+ * as it only applies to the current operation.
+ *
+ * @param x_prefix If set, will be added before the name of the current script.
+ * @param options Function options.
+ */
+export function xSet(x_prefix, options = {}) {
+    // get name of current file
+    const $current = options.override || (sys.script ? sys.path.basename(sys.script) : "");
+    if (!$current)
+        write.error("env/x_set", "Unable to determine current file - please use override.");
+    sys.env[prefixed("X")] = x_prefix ? `${x_prefix}/${$current}` : $current;
 }

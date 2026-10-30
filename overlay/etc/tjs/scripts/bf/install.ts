@@ -1,7 +1,7 @@
-import path from "tjs:path";
 import * as build from "./build.ts";
 import * as ch from "./ch.ts";
 import * as env from "./env.ts";
+import * as sys from "./sys.ts";
 import * as write from "./write.ts";
 
 /**
@@ -24,12 +24,11 @@ export async function install(): Promise<void> {
     env.show();
 
     // remove and rename bf executable files
-    const $bin = "/usr/local/bin/bf";
-    await tjs.remove(`${$bin}/bf-*.ts`);
-    const $dir = await tjs.readDir($bin);
-    for await (const $exec of $dir) {
-        const $ext = path.extname($exec.name);
-        await tjs.rename($exec.name, $exec.name.replace($ext, ""));
+    const $bin = "/usr/bin/bf";
+    for (const $name of await sys.readDir($bin)) {
+        const $path = `${$bin}/${$name}`;
+        if ($name.endsWith(".ts")) await sys.remove($path);
+        else if ($name.endsWith(".js")) await sys.rename($path, $path.slice(0, -".js".length));
     }
 
     // set permissions

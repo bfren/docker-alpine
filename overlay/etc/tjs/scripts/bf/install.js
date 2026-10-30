@@ -1,7 +1,7 @@
-import path from "tjs:path";
 import * as build from "./build.js";
 import * as ch from "./ch.js";
 import * as env from "./env.js";
+import * as sys from "./sys.js";
 import * as write from "./write.js";
 /**
  * Run standard installation for the container:
@@ -21,12 +21,13 @@ export async function install() {
     write.info("install", "bfren environment variables.");
     env.show();
     // remove and rename bf executable files
-    const $bin = "/usr/local/bin/bf";
-    await tjs.remove(`${$bin}/bf-*.ts`);
-    const $dir = await tjs.readDir($bin);
-    for await (const $exec of $dir) {
-        const $ext = path.extname($exec.name);
-        await tjs.rename($exec.name, $exec.name.replace($ext, ""));
+    const $bin = "/usr/bin/bf";
+    for (const $name of await sys.readDir($bin)) {
+        const $path = `${$bin}/${$name}`;
+        if ($name.endsWith(".ts"))
+            await sys.remove($path);
+        else if ($name.endsWith(".js"))
+            await sys.rename($path, $path.slice(0, -".js".length));
     }
     // set permissions
     const $root = "root:root";

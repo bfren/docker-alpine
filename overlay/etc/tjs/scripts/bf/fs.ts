@@ -1,3 +1,4 @@
+import * as sys from "./sys.ts";
 import * as write from "./write.ts";
 
 /**
@@ -29,7 +30,7 @@ export interface PathInfo {
     /** True if the path is a symlink. */
     isSymlink: boolean,
     /** Access to the stat result object. */
-    stat?: tjs.StatResult
+    stat?: sys.StatResult
 }
 
 /**
@@ -45,8 +46,8 @@ export async function pathInfo(path: string, options: PathInfoOptions = {}): Pro
 
     // stat / lstat will fail if the file does not exist or is not readable / accessible
     try {
-        const $path = await tjs.realPath(path);
-        const $st = await ($opt.followSymlinks ? tjs.stat($path) : tjs.lstat($path));
+        const $path = await sys.realPath(path);
+        const $st = await ($opt.followSymlinks ? sys.stat($path) : sys.lstat($path));
 
         return {
             path: $path,
@@ -98,8 +99,7 @@ export async function read(path: string | PathInfo, options: ReadOptions = {}): 
 
     // read file to string if it exists and is a file
     if ($info.exists && $info.isFile) {
-        const $stream = await tjs.readFile($info.path);
-        return new TextDecoder().decode($stream);
+        return sys.readTextFile($info.path);
     }
     // return empty string if quiet is set
     else if($opt.quiet) {
@@ -107,5 +107,5 @@ export async function read(path: string | PathInfo, options: ReadOptions = {}): 
     }
 
     // throw error
-    throw write.error("fs.read", "Unable to read file '%s'.", path);
+    write.error("fs.read", "Unable to read file '%s'.", path);
 }

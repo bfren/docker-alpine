@@ -2,20 +2,20 @@
  * Format a date in a consistent and sortable manner.
  *
  * @param date Date to use - defaults to 'now'.
- * @returns Formatted date - 'YearMonthDay HourMinute'.
+ * @returns Formatted date - 'yymmdd HHMM'.
  */
 export function fmt(date?: Date): string {
     // if not set use now
     const $dt = date ?? new Date();
 
     // get date components
-    const $year = $dt.getFullYear();
-    const $month = pad($dt.getMonth());
-    const $day = pad($dt.getDay());
+    const $year = pad($dt.getFullYear() % 100);
+    const $month = pad($dt.getMonth() + 1);
+    const $day = pad($dt.getDate());
     const $hour = pad($dt.getHours());
     const $minute = pad($dt.getMinutes());
 
-    // return 'ymd HM' so it is sortable
+    // return 'yymmdd HHMM' so it is sortable
     return `${$year}${$month}${$day} ${$hour}${$minute}`;
 }
 

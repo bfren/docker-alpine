@@ -1,3 +1,0 @@
-#!/usr/bin/env -S tjs run --import-map /etc/tjs/map.json
-
-console.log("do installation");

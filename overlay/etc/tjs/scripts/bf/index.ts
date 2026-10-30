@@ -1,8 +1,12 @@
 export * as build from "./build.ts";
 export * as date from "./date.ts";
+export * from "./dump.ts";
 export * as env from "./env.ts";
 export * as exec from "./exec.ts";
 export * as fs from "./fs.ts";
+export * from "./handle.ts";
+export * as sys from "./sys.ts";
+export * from "./test.ts";
 export * from "./install.ts";
 export * from "./util.ts";
 export * as write from "./write.ts";

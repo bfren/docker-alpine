@@ -37,7 +37,7 @@ export async function applyFile(file) {
     const $pathInfo = await fs.pathInfo($path);
     // ensure permissions file exists
     if (!$pathInfo.isFile)
-        throw write.error("ch.applyFile", "Unable to find file '%s'.", file);
+        write.error("ch.applyFile", "Unable to find file '%s'.", file);
     // split by row and build array of actions
     write.info("ch.applyFile", "Applying %s.", $pathInfo.path);
     const $actions = [];
@@ -59,10 +59,10 @@ export async function applyFile(file) {
 }
 export async function chmodFindType(base, type, mode) {
     // use system chmod
-    const $result = await exec.run("find", [base, "-type", type.toString(), "-exec", "chmod", mode]);
+    const $result = await exec.run("find", [base, "-type", type.toString(), "-exec", "chmod", mode, "{}", "+"]);
     // log errors
     if ($result.status != 0)
-        write.error("ch.chmodFindType", $result.stderr);
+        write.error("ch.chmodFindType", "%s", $result.stderr.trim());
     // return result
     return $result.status == 0;
 }
@@ -71,16 +71,16 @@ export async function chmodR(path, mode) {
     const $result = await exec.run("chmod", ["-R", mode, path]);
     // log errors
     if ($result.status != 0)
-        write.error("ch.chmodR", $result.stderr);
+        write.error("ch.chmodR", "%s", $result.stderr.trim());
     // return result
     return $result.status == 0;
 }
 export async function chownFindType(base, type, mode) {
     // use system chmod
-    const $result = await exec.run("find", [base, "-type", type.toString(), "-exec", "chown", mode]);
+    const $result = await exec.run("find", [base, "-type", type.toString(), "-exec", "chown", mode, "{}", "+"]);
     // log errors
     if ($result.status != 0)
-        write.error("ch.chmodFindType", $result.stderr);
+        write.error("ch.chmodFindType", "%s", $result.stderr.trim());
     // return result
     return $result.status == 0;
 }
@@ -89,7 +89,7 @@ export async function chownR(path, owner) {
     const $result = await exec.run("chown", ["-R", owner, path]);
     // log errors
     if ($result.status != 0)
-        write.error("ch.chownR", $result.stderr);
+        write.error("ch.chownR", "%s", $result.stderr.trim());
     // return result
     return $result.status == 0;
 }

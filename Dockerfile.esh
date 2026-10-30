@@ -26,7 +26,7 @@ FROM quay.io/bfren-bin/busybox:<%= ${BUSYBOX_IMAGE} %> AS busybox
 # STAGE 2: load txikijs
 #======================================================================================================================
 
-FROM quay.io/bfren-bin/txikijs:<%= ${NU_IMAGE} %> AS txikijs
+FROM quay.io/bfren-bin/txikijs:<%= ${TJS_IMAGE} %> AS txikijs
 
 
 #======================================================================================================================
@@ -66,7 +66,7 @@ ENV \
     # txiki.js version string to check against installed version after installation
     TJS_VERSION=<%= ${TJS_VERSION} %>
 
-COPY --exclude=etc/nu/scripts/tests ./overlay /
+COPY --exclude=etc/tjs/scripts/tests ./overlay /
 COPY ./<%= ${ALPINE_EDITION} %>/overlay /
 
 RUN \
@@ -74,10 +74,10 @@ RUN \
     chmod +x /preinstall && /preinstall && \
     # ca-certificates is required but we don't want Debian to install it
     apk add --no-cache ca-certificates && \
-    # run standard bf installation executable
-    chmod +x <%= ${BF_BIN} %>/bf-install && <%= ${BF_BIN} %>/bf-install
+    # run standard bf installation executable (not via tjsh, which would replace the build environment with env.d)
+    tjs run --import-map /etc/tjs/map.json <%= ${BF_BIN} %>/bf-install.js
 
-COPY ./overlay/etc/nu/scripts/tests /etc/nu/scripts/tests
+COPY ./overlay/etc/tjs/scripts/tests /etc/tjs/scripts/tests
 
 
 #======================================================================================================================

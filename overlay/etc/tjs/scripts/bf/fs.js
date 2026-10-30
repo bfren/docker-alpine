@@ -1,3 +1,4 @@
+import * as sys from "./sys.js";
 import * as write from "./write.js";
 /**
  * Default options for pathInfo() function.
@@ -17,8 +18,8 @@ export async function pathInfo(path, options = {}) {
     const $opt = { ...DEFAULT_PATHINFO_OPTIONS, ...options };
     // stat / lstat will fail if the file does not exist or is not readable / accessible
     try {
-        const $path = await tjs.realPath(path);
-        const $st = await ($opt.followSymlinks ? tjs.stat($path) : tjs.lstat($path));
+        const $path = await sys.realPath(path);
+        const $st = await ($opt.followSymlinks ? sys.stat($path) : sys.lstat($path));
         return {
             path: $path,
             exists: true,
@@ -59,13 +60,12 @@ export async function read(path, options = {}) {
     const $info = typeof path === "string" ? await pathInfo(path) : path;
     // read file to string if it exists and is a file
     if ($info.exists && $info.isFile) {
-        const $stream = await tjs.readFile($info.path);
-        return new TextDecoder().decode($stream);
+        return sys.readTextFile($info.path);
     }
     // return empty string if quiet is set
     else if ($opt.quiet) {
         return "";
     }
     // throw error
-    throw write.error("fs.read", "Unable to read file '%s'.", path);
+    write.error("fs.read", "Unable to read file '%s'.", path);
 }

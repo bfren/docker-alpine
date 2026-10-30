@@ -47,7 +47,7 @@ export async function applyFile(file: string): Promise<boolean> {
     const $pathInfo = await fs.pathInfo($path);
 
     // ensure permissions file exists
-    if (!$pathInfo.isFile) throw write.error("ch.applyFile", "Unable to find file '%s'.", file);
+    if (!$pathInfo.isFile) write.error("ch.applyFile", "Unable to find file '%s'.", file);
 
     // split by row and build array of actions
     write.info("ch.applyFile", "Applying %s.", $pathInfo.path);
@@ -70,10 +70,10 @@ export async function applyFile(file: string): Promise<boolean> {
 
 export async function chmodFindType(base: string, type: FindType, mode: string): Promise<boolean> {
     // use system chmod
-    const $result = await exec.run("find", [base, "-type", type.toString(), "-exec", "chmod", mode]);
+    const $result = await exec.run("find", [base, "-type", type.toString(), "-exec", "chmod", mode, "{}", "+"]);
 
     // log errors
-    if ($result.status != 0) write.error("ch.chmodFindType", $result.stderr);
+    if ($result.status != 0) write.error("ch.chmodFindType", "%s", $result.stderr.trim());
 
     // return result
     return $result.status == 0;
@@ -84,7 +84,7 @@ export async function chmodR(path: string, mode: string): Promise<boolean> {
     const $result = await exec.run("chmod", ["-R", mode, path]);
 
     // log errors
-    if ($result.status != 0) write.error("ch.chmodR", $result.stderr);
+    if ($result.status != 0) write.error("ch.chmodR", "%s", $result.stderr.trim());
 
     // return result
     return $result.status == 0;
@@ -92,10 +92,10 @@ export async function chmodR(path: string, mode: string): Promise<boolean> {
 
 export async function chownFindType(base: string, type: FindType, mode: string): Promise<boolean> {
     // use system chmod
-    const $result = await exec.run("find", [base, "-type", type.toString(), "-exec", "chown", mode]);
+    const $result = await exec.run("find", [base, "-type", type.toString(), "-exec", "chown", mode, "{}", "+"]);
 
     // log errors
-    if ($result.status != 0) write.error("ch.chmodFindType", $result.stderr);
+    if ($result.status != 0) write.error("ch.chmodFindType", "%s", $result.stderr.trim());
 
     // return result
     return $result.status == 0;
@@ -106,7 +106,7 @@ export async function chownR(path: string, owner: string): Promise<boolean> {
     const $result = await exec.run("chown", ["-R", owner, path]);
 
     // log errors
-    if ($result.status != 0) write.error("ch.chownR", $result.stderr);
+    if ($result.status != 0) write.error("ch.chownR", "%s", $result.stderr.trim());
 
     // return result
     return $result.status == 0;

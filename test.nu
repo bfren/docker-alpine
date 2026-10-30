@@ -1,6 +1,6 @@
 #!/usr/bin/env -S nu -n
 
-use ../index/test.nu
+use ../../test.nu
 
 const alpine_branches = [
     "3.20"
