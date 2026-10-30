@@ -24,18 +24,18 @@ jobs:
         linux/arm/v7
         linux/arm64
       tags: |
-        alpine${FOLDER}
-        alpine${FOLDER}-${VERSION_MAJOR}
-        alpine${FOLDER}-${VERSION_MINOR}
-        alpine${FOLDER}-${VERSION}
-        alpine${ALPINE_REVISION}
-        alpine${ALPINE_REVISION}-${VERSION}
+        alpine${FOLDER}-tjs
+        alpine${FOLDER}-tjs-${VERSION_MAJOR}
+        alpine${FOLDER}-tjs-${VERSION_MINOR}
+        alpine${FOLDER}-tjs-${VERSION}
+        alpine${ALPINE_REVISION}-tjs
+        alpine${ALPINE_REVISION}-tjs-${VERSION}
       default-folder: "3.24"
       default-tags: |
-        latest
-        ${VERSION_MAJOR}
-        ${VERSION_MINOR}
-        ${VERSION}
+        tjs
+        tjs-${VERSION_MAJOR}
+        tjs-${VERSION_MINOR}
+        tjs-${VERSION}
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
