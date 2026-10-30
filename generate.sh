@@ -8,8 +8,8 @@ BUSYBOX_VERSION="1.37.0"
 BUSYBOX_BUILD="261022"
 FIGLET_VERSION="2.2.5"
 FIGLET_BUILD="261022"
-NU_VERSION="0.116.1"
-NU_BUILD="261014"
+TJS_VERSION="26.6.0"
+TJS_BUILD="260901"
 ALPINE_EDITIONS="3.20 3.21 3.22 3.23 3.24"
 
 for E in ${ALPINE_EDITIONS} ; do
@@ -18,7 +18,7 @@ for E in ${ALPINE_EDITIONS} ; do
     ALPINE_VERSION=`cat ./${E}/ALPINE_REVISION`
     BUSYBOX_IMAGE="${BUSYBOX_VERSION}-${BUSYBOX_BUILD}"
     FIGLET_IMAGE="${FIGLET_VERSION}-${FIGLET_BUILD}"
-    NU_IMAGE="${NU_VERSION}-alpine-${NU_BUILD}"
+    NU_IMAGE="${TJS_VERSION}-alpine-${TJS_BUILD}"
 
     DOCKERFILE=$(docker run \
         -v ${PWD}:/ws \
@@ -34,7 +34,7 @@ for E in ${ALPINE_EDITIONS} ; do
         BF_BIN=/usr/bin/bf \
         BF_ETC=/etc/bf \
         NU_IMAGE=${NU_IMAGE} \
-        NU_VERSION=${NU_VERSION}
+        TJS_VERSION=${TJS_VERSION}
     )
 
     echo "${DOCKERFILE}" > ./${E}/Dockerfile

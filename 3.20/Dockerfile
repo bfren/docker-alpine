@@ -12,7 +12,7 @@ RUN \
     echo "Platform: ${TARGETPLATFORM}" >> /log && \
     echo "Alpine: 3.20.10" >> /log && \
     echo "Busybox: 1.37.0" >> /log && \
-    echo "Nushell: 0.116.1" >> /log
+    echo "txiki.js=26.6.0" >> /log
 
 
 #======================================================================================================================
@@ -23,10 +23,10 @@ FROM quay.io/bfren-bin/busybox:1.37.0-261022 AS busybox
 
 
 #======================================================================================================================
-# STAGE 2: load nushell
+# STAGE 2: load txikijs
 #======================================================================================================================
 
-FROM quay.io/bfren-bin/nushell:0.116.1-alpine-261014 AS nushell
+FROM quay.io/bfren-bin/txikijs:26.6.0-alpine-260901 AS txikijs
 
 
 #======================================================================================================================
@@ -43,7 +43,7 @@ FROM quay.io/bfren-bin/figlet:2.2.5-261022 AS figlet
 FROM alpine:3.20.10 AS install
 COPY --from=build /log /etc/bf/BUILD
 COPY --from=busybox / /bin
-COPY --from=nushell / /
+COPY --from=txikijs / /bin
 COPY --from=figlet / /
 
 ARG BF_IMAGE
@@ -63,14 +63,14 @@ ENV \
     #   0: no
     #   1: yes
     BF_UPGRADE_PACKAGES=1 \
-    # Nushell version string to check against installed verion after installation
-    NU_VERSION=0.116.1
+    # txiki.js version string to check against installed version after installation
+    TJS_VERSION=26.6.0
 
 COPY --exclude=etc/nu/scripts/tests ./overlay /
 COPY ./3.20/overlay /
 
 RUN \
-    # setup Nushell using preinstallation script
+    # setup txiki.js using preinstallation script
     chmod +x /preinstall && /preinstall && \
     # ca-certificates is required but we don't want Debian to install it
     apk add --no-cache ca-certificates && \
