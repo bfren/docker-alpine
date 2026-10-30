@@ -32,7 +32,7 @@ my-image/
 `Dockerfile`:
 
 ```dockerfile
-FROM quay.io/bfren/alpine:alpine3.24-4.0
+FROM quay.io/bfren/alpine:alpine3.24-5.0
 
 ARG BF_IMAGE=my-image
 ARG BF_VERSION=1.0.0
@@ -76,12 +76,12 @@ Images are published to Docker Hub (`bfren/alpine`) and Quay.io (`quay.io/bfren/
 | Tag                           | Example              | Use when                                              |
 | ----------------------------- | -------------------- | ----------------------------------------------------- |
 | `alpineX.Y`                   | `alpine3.24`         | You want the latest image for an Alpine version       |
-| `alpineX.Y-MAJOR`             | `alpine3.24-4`       | You want updates, but not breaking changes            |
-| `alpineX.Y-MINOR`             | `alpine3.24-4.0`     | You want fixes only - **recommended for building on** |
-| `alpineX.Y-VERSION`           | `alpine3.24-4.0.0`   | You want to pin this image exactly                    |
+| `alpineX.Y-MAJOR`             | `alpine3.24-5`       | You want updates, but not breaking changes            |
+| `alpineX.Y-MINOR`             | `alpine3.24-5.0`     | You want fixes only - **recommended for building on** |
+| `alpineX.Y-VERSION`           | `alpine3.24-5.0.0`   | You want to pin this image exactly                    |
 | `alpineX.Y.Z`                 | `alpine3.24.3`       | You want an exact Alpine release                      |
-| `alpineX.Y.Z-VERSION`         | `alpine3.24.3-4.0.0` | You want to pin both                                  |
-| `latest`, `4`, `4.0`, `4.0.0` |                      | As above, on the newest Alpine version                |
+| `alpineX.Y.Z-VERSION`         | `alpine3.24.3-5.0.0` | You want to pin both                                  |
+| `latest`, `5`, `5.0`, `5.0.0` |                      | As above, on the newest Alpine version                |
 
 | Alpine | Security support ends |
 | ------ | --------------------- |

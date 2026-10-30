@@ -11,7 +11,8 @@ const { assert } = sys;
 async function cleanE(options = {}) {
     const $tmp = options.tmpdir ?? await makeTempDir();
     const $cache = options.cache ?? await makeTempDir();
-    await clean({ caches: [`${$cache}/*`], tmpdirs: [`${$tmp}/*`], root: $tmp });
+    const $sources = options.sources ?? await makeTempDir();
+    await clean({ caches: [`${$cache}/*`], tmpdirs: [`${$tmp}/*`], root: $tmp, sources: [$sources] });
 }
 /** Make a temporary file in dir. */
 function mktemp(dir, directory = false) {
@@ -52,7 +53,17 @@ export async function main__only_deletes_dot_empty_files_under_root() {
     const $outside = `${$other}/.empty`;
     await sys.writeTextFile($inside, "");
     await sys.writeTextFile($outside, "");
-    await clean({ caches: [], tmpdirs: [], root: $root });
+    await clean({ caches: [], tmpdirs: [], root: $root, sources: [] });
     assert.equal(await exists($inside), false);
     assert.equal(await exists($outside), true);
+}
+export async function main__deletes_typescript_sources() {
+    const $sources = await makeTempDir();
+    const $sub = await mktemp($sources, true);
+    for (const $f of ["a.ts", "a.js"])
+        await sys.writeTextFile(`${$sources}/${$f}`, "");
+    await sys.writeTextFile(`${$sub}/b.ts`, "");
+    await cleanE({ sources: $sources });
+    assert.deepEqual([await exists(`${$sources}/a.ts`), await exists(`${$sub}/b.ts`)], [false, false], "clean does not delete .ts files");
+    assert.equal(await exists(`${$sources}/a.js`), true, "clean deletes .js files");
 }

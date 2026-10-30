@@ -66,7 +66,8 @@ ENV \
     # txiki.js version string to check against installed version after installation
     TJS_VERSION=26.6.0
 
-COPY --exclude=etc/tjs/scripts/tests ./overlay /
+# tests are copied with everything else so bf-install removes them from published images (BF_PUBLISHING=1)
+COPY ./overlay /
 COPY ./3.23/overlay /
 
 RUN \
@@ -74,10 +75,8 @@ RUN \
     chmod +x /preinstall && /preinstall && \
     # ca-certificates is required but we don't want Debian to install it
     apk add --no-cache ca-certificates && \
-    # run standard bf installation executable (not via tjsh, which would replace the build environment with env.d)
+    # run standard bf installation executable - tjsh is not available until preinstall has run
     tjs run --import-map /etc/tjs/map.json /usr/bin/bf/bf-install.js
-
-COPY ./overlay/etc/tjs/scripts/tests /etc/tjs/scripts/tests
 
 
 #======================================================================================================================

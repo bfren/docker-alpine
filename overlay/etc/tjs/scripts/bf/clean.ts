@@ -14,6 +14,8 @@ export interface CleanOptions {
     tmpdirs?: string[];
     /** Directory to search for .empty files. */
     root?: string;
+    /** Directories to search for TypeScript sources - only the compiled .js files are needed at runtime. */
+    sources?: string[];
 }
 
 /**
@@ -22,7 +24,7 @@ export interface CleanOptions {
  * @param options Function options.
  */
 export async function clean(options: CleanOptions = {}): Promise<void> {
-    const { caches = ["/var/cache/apk/*"], tmpdirs = ["/tmp/*"], root = "/" } = options;
+    const { caches = ["/var/cache/apk/*"], tmpdirs = ["/tmp/*"], root = "/", sources = ["/etc/tjs", "/usr/bin/bf"] } = options;
 
     // delete caches and temporary files - globs end /* so the directories themselves are kept
     const $globs = [...caches, ...tmpdirs];
@@ -37,6 +39,13 @@ export async function clean(options: CleanOptions = {}): Promise<void> {
     if ($files.length > 0) {
         write.debug("clean", "Deleting .empty files.");
         for (const $file of $files) await sys.remove($file);
+    }
+
+    // delete TypeScript sources
+    const $sources = (await Promise.all(sources.map(($s) => fs.findName($s, "*.ts")))).flat();
+    if ($sources.length > 0) {
+        write.debug("clean", "Deleting TypeScript sources.");
+        for (const $file of $sources) await sys.remove($file);
     }
 
     // remove installation files from published images

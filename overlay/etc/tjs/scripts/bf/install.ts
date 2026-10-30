@@ -47,12 +47,10 @@ export async function install(): Promise<void> {
     write.info("install", "bfren platform environment variables.");
     env.show();
 
-    // remove TypeScript sources and the .js extension from bf executables
+    // remove the .js extension from bf executables (clean removes their TypeScript sources)
     const $bin = "/usr/bin/bf";
-    for (const $name of await sys.readDir($bin)) {
-        const $path = `${$bin}/${$name}`;
-        if ($name.endsWith(".ts")) await sys.remove($path);
-        else if ($name.endsWith(".js")) await sys.rename($path, $path.slice(0, -".js".length));
+    for (const $name of (await sys.readDir($bin)).filter(($n) => $n.endsWith(".js"))) {
+        await sys.rename(`${$bin}/${$name}`, `${$bin}/${$name.slice(0, -".js".length)}`);
     }
 
     // set permissions
