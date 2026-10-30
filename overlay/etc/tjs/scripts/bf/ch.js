@@ -9,7 +9,7 @@ import * as write from "./write.js";
  * @param paths The paths to which to apply ch operations.
  * @param options Function options.
  */
-export async function ch(paths, options = {}) {
+export async function apply(paths, options = {}) {
     for (const $path of paths) {
         // if recurse is set, execute chmod / chown on each path with recursion
         if (options.recurse) {
@@ -43,7 +43,7 @@ export async function ch(paths, options = {}) {
  *
  * @param row Row values - with fewer than two values nothing is done.
  */
-export async function apply(row) {
+export async function applyRow(row) {
     if (row.length < 2)
         return;
     const [$path, $owner, $fmode, $dmode] = row;
@@ -56,7 +56,7 @@ export async function apply(row) {
         await modType($path, "d", $dmode);
 }
 /**
- * Apply each row in a ch.d file (see apply()).
+ * Apply each row in a ch.d file (see applyRow()).
  *
  * @param file Path to the file, or the name of a file in BF_ETC_CH_D.
  */
@@ -67,7 +67,7 @@ export async function applyFile(file) {
         write.error("ch/apply_file", "Unable to find file '%s'.", file);
     write.info("ch/apply_file", "Applying %s.", $path);
     for (const $line of _.splitLines(await fs.read($path))) {
-        await apply($line.split(" ").filter(($x) => $x != ""));
+        await applyRow($line.split(" ").filter(($x) => $x != ""));
     }
 }
 /**

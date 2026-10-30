@@ -7,13 +7,12 @@ const { assert } = sys;
 
 const URL = "https://github.com/bfren/docker-alpine.git";
 
-/** Returns the results of fn for each of from..to (inclusive), running 25 at a time. */
+/** Returns the results of fn for each of from..to (inclusive), with up to 50 running at once - all at once is flaky. */
 async function range<T>(from: number, to: number, fn: (x: number) => Promise<T>): Promise<T[]> {
     const $results: T[] = [];
-    for (let $i = from; $i <= to; $i += 25) {
-        const $batch = Array.from({ length: Math.min(25, to - $i + 1) }, (_, $j) => fn($i + $j));
-        $results.push(...await Promise.all($batch));
-    }
+    let $next = from;
+    const worker = async () => { while ($next <= to) { const $x = $next++; $results[$x - from] = await fn($x); } };
+    await Promise.all(Array.from({ length: 50 }, worker));
     return $results;
 }
 

@@ -10,7 +10,7 @@ This is the foundation of the [bfren ecosystem](https://github.com/bfren/docker)
 
 It is [Alpine Linux](https://alpinelinux.org) with:
 
-* [Nushell](https://www.nushell.sh) and the `bf` module, for writing installation and start-up scripts with structured data and real error handling
+* [txiki.js](https://github.com/saghul/txiki.js), a small JavaScript runtime, and the `bf` module, for writing installation and start-up scripts in plain JavaScript with real error handling
 * a custom build of [BusyBox](https://busybox.net) with its default config plus relevant patches from Alpine Linux
 * a static build of [figlet](https://github.com/bfren/figlet), used for the start-up banner
 * a standard build step (`bf-install`) so every image is installed and cleaned up the same way
@@ -26,7 +26,7 @@ my-image/
 ├── Dockerfile
 └── overlay/
     └── tmp/
-        └── install
+        └── install.js
 ```
 
 `Dockerfile`:
@@ -41,38 +41,33 @@ COPY ./overlay /
 RUN bf-install
 ```
 
-`overlay/tmp/install` - your installation script, run by `bf-install`:
+`overlay/tmp/install.js` - your installation script, run by `bf-install`:
 
-```nu
-#!/usr/bin/nu
+```js
+import * as bf from "bf";
 
-use bf
-
-# Install my-image
-def main [] {
-    bf pkg install [curl jq]
-    bf write ok "my-image installed."
-}
+await bf.pkg.install(["curl", "jq"]);
+bf.write.ok("install", "my-image installed.");
 ```
 
 Build it and open a shell:
 
 ```sh
-docker build -t my-image . && docker run --rm -it my-image nu
+docker build -t my-image . && docker run --rm -it my-image sh
 ```
 
-Inside the container, `bf image` shows the image name and version.
+Inside the container, `bf-image` shows the image name and version.
 
 ## Features
 
 * 🐧 Alpine 3.20 to 3.24 - choose with the image tag
-* 🐚 Nushell, with the `bf` module loaded in every shell
+* 📜 txiki.js, with the `bf` module available to every script
 * 🧱 `bf-install` - one standard build step for every image
 * 🌍 Container environment saved at start-up and available to every script
 * 🛠️ Helper executables (`bf-env`, `bf-write`, `bf-wget`, …) for shell scripts
 * 📝 [esh](https://github.com/jirutka/esh) for generating files from templates
 * 🕐 Timezone set to `Europe/London`
-* 🧪 Built-in test runner that checks its tests really execute
+* 🧪 Built-in test runner that checks failures are really detected
 
 ## Tags
 
@@ -122,7 +117,7 @@ Images for unsupported Alpine versions are still built, but no longer receive Al
 
 1. shows the build log and `BF_` variables
 2. sets standard permissions
-3. runs `/tmp/install` if it exists - put your own installation steps there
+3. runs `/tmp/install.js` if it exists - put your own installation steps there
 4. saves the image name and version
 5. cleans up `/tmp`, the package cache and placeholder `.empty` files
 
@@ -130,56 +125,55 @@ Images for unsupported Alpine versions are still built, but no longer receive Al
 
 `/init` is the entrypoint. It saves the container's environment - including anything you pass with `-e` - to `/etc/bf/env.d`, then runs your command.
 
-### Environment
+### Scripts
 
-Scripts load the saved environment with `bf env load`. For example, after `docker run -e BF_GREETING=hello …`:
+Scripts are JavaScript modules run by txiki.js. Executables start with `#!/bin/tjsh`, which runs the script with the `bf` module available and the saved environment from `/etc/bf/env.d` added to the caller's environment. For example, after `docker run -e BF_GREETING=hello …`:
 
-```nu
-use bf
-bf env load
+```js
+#!/bin/tjsh
 
-def main [] {
-    bf write $"The greeting is (bf env GREETING)."
-}
+import * as bf from "bf";
+
+bf.write.info("greet", "The greeting is %s.", bf.env.get("GREETING"));
 ```
 
-`bf env GREETING` reads `BF_GREETING` - the `BF_` prefix is added for you. `bf env set NAME value` saves `BF_NAME` for every later script.
+`bf.env.get("GREETING")` reads `BF_GREETING` - the `BF_` prefix is added for you. `await bf.env.set("NAME", "value")` saves `BF_NAME` for every later script.
 
-Shell scripts can run commands with a *clean* environment loaded from `/etc/bf/env.d` using `withenv`, e.g. `withenv my-command`. Interactive `nu` shells reload the environment before each prompt.
+Shell scripts can run commands with a *clean* environment loaded from `/etc/bf/env.d` using `withenv`, e.g. `withenv my-command`.
 
 ### The `bf` module
 
-| Submodule    | Use                                                                          |
-| ------------ | ---------------------------------------------------------------------------- |
-| `bf build`   | Read the image build log, and add entries to it                              |
-| `bf ch`      | Set ownership and permissions on files and directories                       |
-| `bf clean`   | Remove temporary files, package caches and `.empty` placeholders             |
-| `bf config`  | Add lines and modules to the shared Nushell config                           |
-| `bf del`     | Delete files or directories older than a given age                           |
-| `bf dump`    | Print a value when debug output is enabled, then pass it on                  |
-| `bf env`     | Get, set, check, load and store environment variables                        |
-| `bf esh`     | Generate output from an esh template                                         |
-| `bf fs`      | Read files, find paths and make temporary directories                        |
-| `bf handle`  | Run an external command and turn failures into Nushell errors                |
-| `bf http`    | Download files and check URLs                                                |
-| `bf image`   | Show a banner with the image name, version and Alpine version                |
-| `bf install` | Run the standard image installation (used by `bf-install`)                   |
-| `bf pkg`     | Install, remove and upgrade Alpine packages                                  |
-| `bf string`  | Quote strings and fill `{placeholder}` templates                             |
-| `bf test`    | Discover and run the tests in `/etc/nu/scripts/tests`                        |
-| `bf tz`      | Get and set the timezone                                                     |
-| `bf user`    | Add users and groups                                                         |
-| `bf version` | Compare and bump version numbers                                             |
-| `bf write`   | Write timestamped, coloured output (`ok`, `notok`, `warn`, `error`, `debug`) |
-| `bf x`       | Run a script with `BF_X` set to its name, so its output is labelled          |
+| Function / namespace | Use                                                                          |
+| -------------------- | ---------------------------------------------------------------------------- |
+| `bf.build`           | Read the image build log, and add entries to it                              |
+| `bf.ch`              | Set ownership and permissions on files and directories                       |
+| `bf.clean()`         | Remove temporary files, package caches and `.empty` placeholders             |
+| `bf.del`             | Delete files or directories older than a given age                           |
+| `bf.dump()`          | Print a value when debug output is enabled, then pass it on                  |
+| `bf.env`             | Get, set, check, load and store environment variables                        |
+| `bf.esh()`           | Generate output from an esh template                                         |
+| `bf.fs`              | Read files, find paths and make temporary directories                        |
+| `bf.handle()`        | Run an external command and turn failures into errors                        |
+| `bf.http`            | Download files and check URLs                                                |
+| `bf.image()`         | Show a banner with the image name, version and Alpine version                |
+| `bf.install()`       | Run the standard image installation (used by `bf-install`)                   |
+| `bf.pkg`             | Install, remove and upgrade Alpine packages                                  |
+| `bf.string`          | Quote strings and fill `{placeholder}` templates                             |
+| `bf.sys`             | The txiki.js runtime - files, processes and environment                      |
+| `bf.test()`          | Discover and run the tests in `/etc/tjs/scripts/tests`                       |
+| `bf.tz`              | Get and set the timezone                                                     |
+| `bf.user`            | Add users and groups                                                         |
+| `bf.version`         | Compare and bump version numbers                                             |
+| `bf.write`           | Write timestamped, coloured output (`ok`, `notok`, `warn`, `error`, `debug`) |
+| `bf.x()`             | Run a script with `BF_X` set to its name, so its output is labelled          |
 
-Run `help bf <submodule>` in a `nu` shell for details.
+Each function is documented in its source file in `/etc/tjs/scripts/bf`. Only `bf.sys` uses the txiki.js runtime directly, so scripts that use `bf` can move to another runtime by replacing that one module.
 
-Many of these have executable helpers on the `PATH` for shell scripts. For example, `bf-image` runs `bf image`, which is handy with `docker exec`. Check out `overlay/usr/bin/bf` for the complete list.
+Many of these have executable helpers on the `PATH` for shell scripts. For example, `bf-image` runs `bf.image()`, which is handy with `docker exec`. Check out `overlay/usr/bin/bf` for the complete list.
 
 ## Testing
 
-`/test` runs the Nushell tests in `/etc/nu/scripts/tests` (`/test-without-http` skips tests that need the internet). Before running, it checks that tests really execute and fails if they don't. Tests are removed from published images, so run them on your own builds.
+`/test` runs the tests in `/etc/tjs/scripts/tests` (`/test-without-http` skips tests that need the internet). Before running, it checks that failing tests are really detected, and fails if they aren't. Tests are removed from published images, so run them on your own builds.
 
 ```sh
 ./test.nu        # builds the image and runs /test
@@ -190,7 +184,7 @@ Many of these have executable helpers on the `PATH` for shell scripts. For examp
 
 ### The container exits straight away
 
-The image has no default command. Give it one, e.g. `docker run --rm -it bfren/alpine nu`.
+The image has no default command. Give it one, e.g. `docker run --rm -it bfren/alpine sh`.
 
 ### The build fails with "Unable to get environment variable BF_IMAGE"
 
@@ -198,9 +192,9 @@ The image has no default command. Give it one, e.g. `docker run --rm -it bfren/a
 
 ### Setting `BF_TZ` does nothing
 
-In this image the timezone is set when the image is built. Call `bf tz Europe/Paris` (for example) in your `/tmp/install`, or use [Alpine + S6](https://github.com/bfren/docker-alpine-s6), which applies `BF_TZ` every time the container starts.
+In this image the timezone is set when the image is built. Call `await bf.tz.set("Europe/Paris")` (for example) in your `/tmp/install.js`, or use [Alpine + S6](https://github.com/bfren/docker-alpine-s6), which applies `BF_TZ` every time the container starts.
 
-### `/test` says the tests directory does not exist
+### `/test` says no tests were found
 
 Published images have their tests removed. Build the image yourself without `BF_PUBLISHING=1`.
 
@@ -214,9 +208,9 @@ Use this one for images that run a single command - a CLI tool, a build step, PH
 
 Anything that doesn't inherit the container's environment - scheduled tasks, other users, scripts run with a clean environment - can still read the same values from `/etc/bf/env.d`.
 
-### Why Nushell?
+### Why txiki.js?
 
-Structured data, real error handling and modules make installation and start-up scripts much easier to read and test than shell scripts - while still being small enough for an Alpine image.
+JavaScript is stable - scripts written today will keep working without changes - and txiki.js is small enough for an Alpine image. Because the `bf` module only touches the runtime through `bf.sys`, the scripts are not tied to txiki.js either.
 
 ## Licence
 

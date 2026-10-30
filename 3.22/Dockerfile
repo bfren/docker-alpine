@@ -87,7 +87,7 @@ COPY ./overlay/etc/tjs/scripts/tests /etc/tjs/scripts/tests
 FROM scratch AS final
 COPY --from=install / /
 
-LABEL org.opencontainers.image.description="Alpine Linux with Nushell."
+LABEL org.opencontainers.image.description="Alpine Linux with txiki.js."
 LABEL org.opencontainers.image.source="https://github.com/bfren/docker-alpine"
 
 ENV \

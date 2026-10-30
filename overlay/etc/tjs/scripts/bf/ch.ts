@@ -5,7 +5,7 @@ import * as _ from "./util.ts";
 import * as write from "./write.ts";
 
 /**
- * Options for ch() function.
+ * Options for apply() function.
  */
 export interface ChOptions {
     /** Use chmod: set permissions to this mode. */
@@ -24,7 +24,7 @@ export interface ChOptions {
  * @param paths The paths to which to apply ch operations.
  * @param options Function options.
  */
-export async function ch(paths: string[], options: ChOptions = {}): Promise<void> {
+export async function apply(paths: string[], options: ChOptions = {}): Promise<void> {
     for (const $path of paths) {
         // if recurse is set, execute chmod / chown on each path with recursion
         if (options.recurse) {
@@ -53,7 +53,7 @@ export async function ch(paths: string[], options: ChOptions = {}): Promise<void
  *
  * @param row Row values - with fewer than two values nothing is done.
  */
-export async function apply(row: string[]): Promise<void> {
+export async function applyRow(row: string[]): Promise<void> {
     if (row.length < 2) return;
     const [$path, $owner, $fmode, $dmode] = row;
 
@@ -66,7 +66,7 @@ export async function apply(row: string[]): Promise<void> {
 }
 
 /**
- * Apply each row in a ch.d file (see apply()).
+ * Apply each row in a ch.d file (see applyRow()).
  *
  * @param file Path to the file, or the name of a file in BF_ETC_CH_D.
  */
@@ -77,7 +77,7 @@ export async function applyFile(file: string): Promise<void> {
 
     write.info("ch/apply_file", "Applying %s.", $path);
     for (const $line of _.splitLines(await fs.read($path))) {
-        await apply($line.split(" ").filter(($x) => $x != ""));
+        await applyRow($line.split(" ").filter(($x) => $x != ""));
     }
 }
 

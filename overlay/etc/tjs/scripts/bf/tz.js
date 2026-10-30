@@ -14,7 +14,7 @@ const ZONEINFO = "/usr/share/zoneinfo";
  *
  * @param name The name of the timezone to use.
  */
-export async function tz(name) {
+export async function set(name) {
     // if current timezone is already name, do nothing
     if ((await fs.read(TIMEZONE, { quiet: true })) == name) {
         write.info("tz", "Timezone is already %s.", name);

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-env --ignore-environment \
-    envdir /etc/bf/env.d \
+# keep the caller's environment (e.g. variables passed to esh templates) and add the stored bfren environment
+envdir /etc/bf/env.d \
     tjs run --import-map /etc/tjs/map.json \
     "$@"

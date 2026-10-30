@@ -9,6 +9,6 @@ if (bf.env.check("UPGRADE_PACKAGES")) {
 bf.write.info("", "Creating withenv link.");
 await bf.handle(["ln", "/usr/bin/bf/bf-withenv", "/bin/withenv"]);
 // make esh script executable
-await bf.ch.ch(["/usr/local/bin/esh"], { mode: "0555" });
+await bf.ch.apply(["/usr/local/bin/esh"], { mode: "0555" });
 // set timezone
-await bf.tz.tz(bf.env.get("TZ"));
+await bf.tz.set(bf.env.get("TZ"));

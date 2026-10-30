@@ -57,11 +57,11 @@ export async function install() {
     await secureSystemDirs();
     await env.applyPerms();
     const $root = "root:root";
-    await ch.apply(["/etc/tjs", $root, "0644", "0755"]);
-    await ch.apply(["/init", $root, "0500"]);
-    await ch.apply(["/test", $root, "0500"]);
-    await ch.apply(["/tmp", $root, "1777", "1777"]);
-    await ch.apply([$bin, $root, "0555"]);
+    await ch.applyRow(["/etc/tjs", $root, "0644", "0755"]);
+    await ch.applyRow(["/init", $root, "0500"]);
+    await ch.applyRow(["/test", $root, "0500"]);
+    await ch.applyRow(["/tmp", $root, "1777", "1777"]);
+    await ch.applyRow([$bin, $root, "0555"]);
     // run install script in /tmp
     const $install = "/tmp/install.js";
     if (await fs.isNotFile($install)) {

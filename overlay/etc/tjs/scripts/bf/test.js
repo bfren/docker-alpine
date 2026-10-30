@@ -63,7 +63,9 @@ export async function test(options = {}) {
  */
 async function discover() {
     const $tests = [];
-    for (const $file of (await sys.readDir(TESTS_DIR)).filter(($f) => $f.endsWith(".js"))) {
+    // published images have the tests directory removed
+    const $files = await sys.readDir(TESTS_DIR).catch(() => []);
+    for (const $file of $files.filter(($f) => $f.endsWith(".js"))) {
         const $module = await import(__rewriteRelativeImportExtension(`${TESTS_DIR}/${$file}`));
         const $name = $file.slice(0, -".js".length);
         for (const [$fn, $val] of Object.entries($module)) {
