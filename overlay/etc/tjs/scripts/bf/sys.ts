@@ -159,6 +159,31 @@ export function writeTextFile(path: string, data: string): Promise<void> {
 }
 
 /**
+ * Append UTF-8 text to a file, creating it if it does not exist.
+ *
+ * @param path File path.
+ * @param data Text to append.
+ */
+export async function appendTextFile(path: string, data: string): Promise<void> {
+    const $f = await tjs.open(path, "a");
+    try {
+        await $f.write(new TextEncoder().encode(data));
+    } finally {
+        await $f.close();
+    }
+}
+
+/**
+ * Write bytes to a file, replacing any existing contents.
+ *
+ * @param path File path.
+ * @param data Bytes to write.
+ */
+export function writeFile(path: string, data: Uint8Array): Promise<void> {
+    return tjs.writeFile(path, data);
+}
+
+/**
  * List the names of the entries in a directory.
  *
  * @param path Directory path.

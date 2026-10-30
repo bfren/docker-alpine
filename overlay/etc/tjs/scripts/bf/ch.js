@@ -1,99 +1,108 @@
 import * as env from "./env.js";
-import * as exec from "./exec.js";
 import * as fs from "./fs.js";
+import { handle } from "./handle.js";
 import * as _ from "./util.js";
 import * as write from "./write.js";
 /**
- * Filesystem object type for using with find executable.
+ * Apply ownership or permissions values to files and directories.
+ *
+ * @param paths The paths to which to apply ch operations.
+ * @param options Function options.
  */
-export var FindType;
-(function (FindType) {
-    FindType["Unknown"] = "";
-    FindType["File"] = "f";
-    FindType["Directory"] = "d";
-    FindType["Symlink"] = "l";
-})(FindType || (FindType = {}));
-const DEFAULT_APPLY_OPTIONS = {};
-export async function apply(path, owner, options = {}) {
-    // merge default options with whatever has been passed to this function
-    const $opt = { ...DEFAULT_APPLY_OPTIONS, ...options };
-    // grab all promises to run at once
-    const $actions = [];
-    // apply ownership
-    $actions.push(chownR(path, owner));
-    // apply permissions
-    if (_.notEmpty($opt.fmode))
-        $actions.push(chmodFindType(path, FindType.File, $opt.fmode));
-    if (_.notEmpty($opt.dmode))
-        $actions.push(chmodFindType(path, FindType.Directory, $opt.dmode));
-    // run actions and return
-    const $result = await Promise.all($actions);
-    return $result.every(r => r);
+export async function ch(paths, options = {}) {
+    for (const $path of paths) {
+        // if recurse is set, execute chmod / chown on each path with recursion
+        if (options.recurse) {
+            if (options.mode)
+                await modRecurse($path, options.mode);
+            if (options.owner)
+                await ownRecurse($path, options.owner);
+        }
+        // if type is set, find all paths of type within each path and execute chmod / chown on them
+        else if (options.type) {
+            if (options.mode)
+                await modType($path, options.type, options.mode);
+            if (options.owner)
+                await ownType($path, options.type, options.owner);
+        }
+        // otherwise, execute chmod / chown on each path
+        else {
+            if (options.mode)
+                await mod($path, options.mode);
+            if (options.owner)
+                await own($path, options.owner);
+        }
+    }
 }
+/**
+ * Apply permissions for a row in a ch.d file:
+ *   1. file / directory path
+ *   2. owner (for chown)
+ *   3. optional: file mode (for chmod)
+ *   4. optional: directory mode (for chmod)
+ *
+ * @param row Row values - with fewer than two values nothing is done.
+ */
+export async function apply(row) {
+    if (row.length < 2)
+        return;
+    const [$path, $owner, $fmode, $dmode] = row;
+    // apply ownership changes
+    await ownRecurse($path, $owner);
+    // apply mode changes
+    if ($fmode)
+        await modType($path, "f", $fmode);
+    if ($dmode)
+        await modType($path, "d", $dmode);
+}
+/**
+ * Apply each row in a ch.d file (see apply()).
+ *
+ * @param file Path to the file, or the name of a file in BF_ETC_CH_D.
+ */
 export async function applyFile(file) {
-    // get path
-    const $fileInfo = await fs.pathInfo(file);
-    const $path = $fileInfo.isFile ? $fileInfo.path : `${env.get("ETC_CH_D")}/${file}`;
-    const $pathInfo = await fs.pathInfo($path);
-    // ensure permissions file exists
-    if (!$pathInfo.isFile)
-        write.error("ch.applyFile", "Unable to find file '%s'.", file);
-    // split by row and build array of actions
-    write.info("ch.applyFile", "Applying %s.", $pathInfo.path);
-    const $actions = [];
-    _.splitLines(await fs.read($pathInfo)).forEach(line => {
-        const $parts = line.split(" ");
-        if ($parts.length == 2) {
-            $actions.push(apply($parts[0], $parts[1]));
-        }
-        else if ($parts.length == 3) {
-            $actions.push(apply($parts[0], $parts[1], { fmode: $parts[2] }));
-        }
-        else if ($parts.length == 4) {
-            $actions.push(apply($parts[0], $parts[1], { fmode: $parts[2], dmode: $parts[3] }));
-        }
-    });
-    // run actions and return
-    const $result = await Promise.all($actions);
-    return $result.every(r => r);
+    // get path and ensure permissions file exists
+    const $path = (await fs.pathInfo(file)).isFile ? file : `${env.get("ETC_CH_D")}/${file}`;
+    if (await fs.isNotFile($path))
+        write.error("ch/apply_file", "Unable to find file '%s'.", file);
+    write.info("ch/apply_file", "Applying %s.", $path);
+    for (const $line of _.splitLines(await fs.read($path))) {
+        await apply($line.split(" ").filter(($x) => $x != ""));
+    }
 }
-export async function chmodFindType(base, type, mode) {
-    // use system chmod
-    const $result = await exec.run("find", [base, "-type", type.toString(), "-exec", "chmod", mode, "{}", "+"]);
-    // log errors
-    if ($result.status != 0)
-        write.error("ch.chmodFindType", "%s", $result.stderr.trim());
-    // return result
-    return $result.status == 0;
+/**
+ * Run an external command on path, if it exists - an error is thrown if the command fails.
+ *
+ * @param path File / directory path.
+ * @param script Name to use in debug / error output.
+ * @param args Command and arguments.
+ */
+async function onPath(path, script, args) {
+    write.debug(script, " .. %s", args.join(" "));
+    if ((await fs.pathInfo(path)).exists)
+        await handle(args, { script: script, ignoreSuccess: true });
 }
-export async function chmodR(path, mode) {
-    // use system chmod
-    const $result = await exec.run("chmod", ["-R", mode, path]);
-    // log errors
-    if ($result.status != 0)
-        write.error("ch.chmodR", "%s", $result.stderr.trim());
-    // return result
-    return $result.status == 0;
+/** Apply chmod to path. */
+function mod(path, mode) {
+    return onPath(path, "ch/apply_mod", ["chmod", mode, path]);
 }
-export async function chownFindType(base, type, mode) {
-    // use system chmod
-    const $result = await exec.run("find", [base, "-type", type.toString(), "-exec", "chown", mode, "{}", "+"]);
-    // log errors
-    if ($result.status != 0)
-        write.error("ch.chmodFindType", "%s", $result.stderr.trim());
-    // return result
-    return $result.status == 0;
+/** Apply chmod to path recursively. */
+function modRecurse(path, mode) {
+    return onPath(path, "ch/apply_mod_recurse", ["chmod", "-R", mode, path]);
 }
-export async function chownR(path, owner) {
-    // use system chown
-    const $result = await exec.run("chown", ["-R", owner, path]);
-    // log errors
-    if ($result.status != 0)
-        write.error("ch.chownR", "%s", $result.stderr.trim());
-    // return result
-    return $result.status == 0;
+/** Apply chmod to all paths of type under base. */
+function modType(base, type, mode) {
+    return onPath(base, "ch/apply_mod_type", ["busybox", "find", base, "-type", type, "-exec", "chmod", mode, "{}", "+"]);
 }
-function parseFindType(val) {
-    const $reverse = Object.values(FindType).find((v) => v == val);
-    return _.empty($reverse) ? FindType.Unknown : $reverse;
+/** Apply chown to path. */
+function own(path, owner) {
+    return onPath(path, "ch/apply_own", ["chown", owner, path]);
+}
+/** Apply chown to path recursively. */
+function ownRecurse(path, owner) {
+    return onPath(path, "ch/apply_own_recurse", ["chown", "-R", owner, path]);
+}
+/** Apply chown to all paths of type under base. */
+function ownType(base, type, owner) {
+    return onPath(base, "ch/apply_own_type", ["busybox", "find", base, "-type", type, "-exec", "chown", owner, "{}", "+"]);
 }
