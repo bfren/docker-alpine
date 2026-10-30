@@ -17,7 +17,7 @@ export def main [
 }
 
 # Add a nu module so it is loaded by default with all new shells
-export def use [
+export def use_mod [
     name: string    # Module name - contained within /scripts directory
 ]: nothing -> nothing {
     write $"Adding '($name)' module to config.nu." config/use

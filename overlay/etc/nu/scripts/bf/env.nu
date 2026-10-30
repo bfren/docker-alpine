@@ -108,17 +108,21 @@ export def show []: nothing -> nothing {
     $env
         | transpose key value
         | where {|x| $x.key | str starts-with $prefix }
+        | sort --natural
         | transpose -i -r -d
         | print
 }
 
 # Store incoming environment variables
 export def store []: nothing -> string {
-    # these environment variables are reserved, set only by nu
-    const ignore = [
-        CURRENT_FILE
-        FILE_PWD
-        PWD
+    # these environment variables are set by nu for the current process only, so must not be stored
+    let ignore = [
+        "CURRENT_FILE"
+        "FILE_PWD"
+        "LAST_EXIT_CODE"
+        "NU_VERSION"
+        "PROCESS_PATH"
+        "PWD"
     ]
 
     # load incoming environment, parse and save to environment directory

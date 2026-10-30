@@ -1,6 +1,6 @@
-use std assert
-use ../bf fs *
-use ../bf dump *
+use std/assert
+use ../bf/fs.nu *
+use ../bf/dump.nu *
 
 
 #======================================================================================================================
@@ -15,7 +15,7 @@ export def find_name__returns_list_of_matching_files [] {
     cp $file $dir0
     cp $file $dir1
     cp $file $dir2
-    let expect = 3
+    let expect = 4 # the original file in /tmp plus three copies
 
     let result = find_name "/tmp" ($file | path basename) | length
 
@@ -122,6 +122,47 @@ export def find_type_acc__returns_list_of_files [] {
     let result = find_type_acc [ $tmp0 $tmp1 ] "f" | length
 
     assert equal $expect $result
+}
+
+
+#======================================================================================================================
+# is_dir
+#======================================================================================================================
+
+export def is_dir__input_is_dir_returns_true [] {
+    let dir = mktemp --directory
+
+    let result = $dir | is_dir
+
+    assert equal true $result
+}
+
+export def is_dir__input_is_file_returns_false [] {
+    let file = mktemp
+
+    let result = $file | is_dir
+
+    assert equal false $result
+}
+
+export def is_dir__input_is_symlink_to_dir_returns_false [] {
+    let dir = mktemp --directory
+    let link = mktemp
+    rm --force $link
+    ln -s $dir $link
+
+    let result = $link | is_dir
+
+    assert equal false $result
+}
+
+export def is_dir__input_does_not_exist_returns_false [] {
+    let path = mktemp
+    rm --force $path
+
+    let result = $path | is_dir
+
+    assert equal false $result
 }
 
 
@@ -261,6 +302,7 @@ export def read__expands_virtual_filename [] {
     let contents = random chars
     $contents | save --force $file
 
+    cd ($file | path dirname)
     let result = read ($file | path basename)
 
     assert equal $contents $result

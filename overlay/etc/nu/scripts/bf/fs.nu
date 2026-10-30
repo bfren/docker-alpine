@@ -55,14 +55,17 @@ export def find_type_acc [
     $base_paths | each {|x| find_type $x $type } | reduce -f [] {|y, acc| $acc | append $y }
 }
 
+# Returns true if input path exists and is a directory
+export def is_dir []: string -> bool { ($in | path type) == "dir" }
+
 # Returns true unless input path exists and is a directory
-export def is_not_dir []: string -> bool { not ($in | path type | $in == "dir") }
+export def is_not_dir []: string -> bool { ($in | path type) != "dir" }
 
 # Returns true unless input path exists and is a file
-export def is_not_file []: string -> bool { not ($in | path type | $in == "file") }
+export def is_not_file []: string -> bool { ($in | path type) != "file" }
 
 # Returns true unless input path exists and is a symlink
-export def is_not_symlink []: string -> bool { not ($in | path type | $in == "symlink") }
+export def is_not_symlink []: string -> bool { ($in | path type) != "symlink" }
 
 # Make a temporary directory in /tmp
 export def make_temp_dir [

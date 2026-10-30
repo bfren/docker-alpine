@@ -39,9 +39,9 @@ def discover [
         "
     ] | from nuon
 
-    # if no tests are found, exit
+    # if no tests are found, warn loudly (but still exit 0) so an empty suite is not mistaken for a pass
     if ($tests | length) == 0 {
-        write "No tests found." test/discover
+        write warn "No tests found - nothing has been tested." test/discover
         exit
     }
 
@@ -66,10 +66,13 @@ def execute []: list<string> -> any {
         BF_TESTING: "1"
     }
 
+    # make sure tests are really being executed before trusting any results
+    with-env $e { check_canary }
+
     # run tests in parallel
     let results = $in | par-each {|x|
         # capture result
-        let result = with-env $e { ^$nu.current-exe --no-config-file --commands ...["use tests * ; " $x] | complete }
+        let result = with-env $e { run_test $x }
 
         # output result on success
         if $result.exit_code == 0 { $"(ansi gb)OK(ansi reset) ($x)" | print }
@@ -98,4 +101,25 @@ def execute []: list<string> -> any {
         char newline | print
     }
     error make --unspanned {msg: $"($failures | length) of ($results | length) tests failed."}
+}
+
+# Run a test in a new Nushell process, with the tests module loaded - returns the output of complete
+def run_test [
+    test: string    # The test to run (or any Nushell command)
+]: nothing -> record {
+    ^$nu.current-exe --no-config-file --commands $"use tests * ; ($test)" | complete
+}
+
+# Make sure the runner really executes tests: a canary that must fail is run in exactly the same way as a test -
+# if it exits with 0, or fails without its marker (e.g. the tests module did not load), no result can be trusted
+def check_canary []: nothing -> nothing {
+    let marker = "bf-test-canary"
+    let result = run_test $"error make --unspanned {msg: '($marker)'}"
+
+    if $result.exit_code == 0 or not ($result.stderr | str contains $marker) {
+        $"(char newline)#== canary stderr ==#(char newline)($result.stderr)" | print
+        write error "The test runner is not executing tests correctly, so results cannot be trusted." test/check_canary
+    }
+
+    write debug "Canary failed as expected - tests are being executed." test/check_canary
 }
