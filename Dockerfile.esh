@@ -40,7 +40,7 @@ FROM quay.io/bfren-bin/figlet:<%= ${FIGLET_IMAGE} %> AS figlet
 # STAGE 4: install bfren platform
 #======================================================================================================================
 
-FROM alpine:<%= ${ALPINE_VERSION} %> AS install
+FROM quay.io/bfren-bin/alpine:<%= ${ALPINE_VERSION} %> AS install
 COPY --from=build /log /etc/bf/BUILD
 COPY --from=busybox / /bin
 COPY --from=nushell / /
