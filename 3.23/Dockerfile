@@ -4,7 +4,7 @@
 # STAGE 0: store build information
 #======================================================================================================================
 
-FROM --platform=${BUILDPLATFORM} alpine AS build
+FROM --platform=${BUILDPLATFORM} quay.io/bfren-bin/alpine:3.23.7 AS build
 ARG TARGETPLATFORM
 
 RUN \
@@ -40,7 +40,7 @@ FROM quay.io/bfren-bin/figlet:2.2.5-261022 AS figlet
 # STAGE 4: install bfren platform
 #======================================================================================================================
 
-FROM alpine:3.23.7 AS install
+FROM quay.io/bfren-bin/alpine:3.23.7 AS install
 COPY --from=build /log /etc/bf/BUILD
 COPY --from=busybox / /bin
 COPY --from=txikijs / /bin
