@@ -4,7 +4,7 @@
 # STAGE 0: store build information
 #======================================================================================================================
 
-FROM --platform=${BUILDPLATFORM} alpine AS build
+FROM --platform=${BUILDPLATFORM} quay.io/bfren-bin/alpine:3.20.10 AS build
 ARG TARGETPLATFORM
 
 RUN \
