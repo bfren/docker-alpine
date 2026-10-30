@@ -59,6 +59,31 @@ export async function spawn(args) {
     return { status: $result.exit_status, stderr: $stderr, stdout: $stdout };
 }
 /**
+ * Run an executable with stdin / stdout / stderr inherited from this process, and wait for it to finish.
+ *
+ * @param args The executable followed by its arguments.
+ * @param env Optional environment for the executable (replaces this process's environment).
+ * @returns Exit status.
+ */
+export async function run(args, env) {
+    const $p = tjs.spawn(args, env ? { env } : {});
+    return (await $p.wait()).exit_status;
+}
+/**
+ * Get the current working directory.
+ */
+export function cwd() {
+    return tjs.cwd;
+}
+/**
+ * Change the current working directory.
+ *
+ * @param dir New working directory.
+ */
+export function chdir(dir) {
+    tjs.chdir(dir);
+}
+/**
  * Resolve path to an absolute path, following symlinks.
  *
  * @param path Absolute or relative path.

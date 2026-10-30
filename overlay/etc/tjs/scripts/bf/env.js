@@ -126,7 +126,7 @@ export async function set(key, val, options = {}) {
 export function show() {
     const $vars = Object.entries(sys.env)
         .filter(([$key]) => $key.startsWith(PREFIX))
-        .sort(([$a], [$b]) => $a.localeCompare($b, undefined, { numeric: true }));
+        .sort(([$a], [$b]) => _.naturalCompare($a, $b));
     console.log(_.toTable(Object.fromEntries($vars)));
 }
 /**
