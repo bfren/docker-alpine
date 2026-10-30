@@ -1,0 +1,5 @@
+{
+    "imports": {
+        "bf": "/etc/tjs/scripts/bf/index.js"
+    }
+}

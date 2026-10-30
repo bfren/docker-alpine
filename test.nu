@@ -1,13 +1,8 @@
 #!/usr/bin/env -S nu -n
 
-use ../index/test.nu
+use ../../test.nu
 
 const alpine_branches = [
-    "3.15"
-    "3.16"
-    "3.17"
-    "3.18"
-    "3.19"
     "3.20"
     "3.21"
     "3.22"

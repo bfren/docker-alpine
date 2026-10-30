@@ -1,6 +1,0 @@
-#!/usr/bin/nu
-
-use bf
-
-# Run standard installation for the container
-def main []: nothing -> nothing { with-env {BF_DEBUG: 1} { bf install } }
