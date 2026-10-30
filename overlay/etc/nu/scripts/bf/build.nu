@@ -1,6 +1,7 @@
-use bf/env
-use bf/fs
-use bf/string
+use env.nu
+use dump.nu
+use fs.nu
+use string.nu
 
 export const build_file = "BUILD"
 export const log_format = "{k}: {v}"

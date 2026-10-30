@@ -1,7 +1,7 @@
-use bf/dump
-use bf/env
-use bf/fs
-use bf/write
+use dump.nu
+use env.nu
+use fs.nu
+use write.nu
 
 # Apply ownership or permissions values to files and directories matched by glob
 export def main [

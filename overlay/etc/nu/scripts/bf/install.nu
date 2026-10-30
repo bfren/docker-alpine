@@ -1,14 +1,14 @@
-use bf/build
-use bf/ch
-use bf/clean
-use bf/del
-use bf/dump
-use bf/env
-use bf/fs
-use bf/image
-use bf/test
-use bf/write
-use bf/x
+use build.nu
+use ch.nu
+use clean.nu
+use del.nu
+use dump.nu
+use env.nu
+use fs.nu
+use image.nu
+use test.nu
+use write.nu
+use x.nu
 
 # Run standard installation for the container:
 #   - show build information

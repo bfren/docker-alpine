@@ -1,6 +1,6 @@
-use bf/dump
-use bf/fs
-use bf/write
+use dump.nu
+use fs.nu
+use write.nu
 
 # Delete files or directories within root_dir older than $duration
 export def old [

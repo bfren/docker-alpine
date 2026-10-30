@@ -1,5 +1,5 @@
-use bf/dump
-use bf/write
+use dump.nu
+use write.nu
 
 # Handle an operation using `complete`, returning the operation stdout or printing stderr
 #
