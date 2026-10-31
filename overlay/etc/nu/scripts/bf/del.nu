@@ -7,7 +7,7 @@ export def old [
     root_dir: string    # The root directory - files / directories within this will be deleted
     duration: duration  # If a file or directory is older than this duration it will be deleted
     --live              # If not set, the paths to be deleted will be printed but not actually deleted
-    --type (-t): string # The type of path to delete, either 'd' (directory) or 'f' (file)
+    --type (-t): string = "f"   # The type of path to delete, either 'd' (directory) or 'f' (file)
 ]: nothing -> any {
     # throw an error if root directory does not exist
     if ($root_dir | fs is_not_dir) { write error $"Directory ($root_dir) does not exist." del/old }

@@ -4,7 +4,7 @@
 # STAGE 0: store build information
 #======================================================================================================================
 
-FROM --platform=${BUILDPLATFORM} alpine AS build
+FROM --platform=${BUILDPLATFORM} quay.io/bfren-bin/alpine:3.22.7 AS build
 ARG TARGETPLATFORM
 
 RUN \
@@ -40,7 +40,7 @@ FROM quay.io/bfren-bin/figlet:2.2.5-261022 AS figlet
 # STAGE 4: install bfren platform
 #======================================================================================================================
 
-FROM alpine:3.22.7 AS install
+FROM quay.io/bfren-bin/alpine:3.22.7 AS install
 COPY --from=build /log /etc/bf/BUILD
 COPY --from=busybox / /bin
 COPY --from=nushell / /
@@ -66,7 +66,8 @@ ENV \
     # Nushell version string to check against installed verion after installation
     NU_VERSION=0.116.1
 
-COPY --exclude=etc/nu/scripts/tests ./overlay /
+# tests are copied with everything else so bf-install removes them from published images
+COPY ./overlay /
 COPY ./3.22/overlay /
 
 RUN \
@@ -76,8 +77,6 @@ RUN \
     apk add --no-cache ca-certificates && \
     # run standard bf installation executable
     chmod +x /usr/bin/bf/bf-install && /usr/bin/bf/bf-install
-
-COPY ./overlay/etc/nu/scripts/tests /etc/nu/scripts/tests
 
 
 #======================================================================================================================

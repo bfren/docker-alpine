@@ -17,13 +17,7 @@ export def main []: nothing -> nothing {
     let version = fs read VERSION
 
     # output a border above and below the image information
-    let border = {||
-        let s = "="
-        0..116
-            | reduce -f "" {|x, acc| $acc + $s }
-            | $"(char newline)#($in)#(char newline)"
-            | print
-    }
+    let border = {|| "" | fill --character "=" --width 117 | $"(char newline)#($in)#(char newline)" | print }
 
     # output image info
     do $border

@@ -36,9 +36,12 @@ export def main [
 # Adds the BF_ prefix to $key
 def add_prefix [key: string]: nothing -> string { $prefix + $key }
 
-# Apply permissions for the environment variables directory -
+# Apply permissions for the environment variables directory - everyone can read it, only root can write to it, because
+# root scripts load it into their environment (a writable store would let any user set PATH for root) -
 # we do this using the external chmod so the env.nu submodule can be used in ch.nu
-export def apply_perms []: nothing -> string { { ^chmod -R a+rwX $env_dir } | handle -i }
+export def apply_perms [
+    dir: string = $env_dir  # Directory to apply permissions to (can be overridden for testing)
+]: nothing -> string { { ^chmod -R a+rX,go-w $dir } | handle -i }
 
 # Returns true if $key exists in the environment and is equal to 1
 export def check [
@@ -125,9 +128,10 @@ export def store []: nothing -> string {
         "PWD"
     ]
 
-    # load incoming environment, parse and save to environment directory
-    ^env
-        | lines
+    # load incoming environment, parse and save to environment directory - env -0 separates variables with NUL, so
+    # values can contain newlines (envdir loads the first line)
+    ^env -0
+        | split row (char nul)
         | parse "{key}={val}"
         | each {|x| if $x.key not-in $ignore { $x.val | save --force $"($env_dir)/($x.key)" } }
         | ignore

@@ -42,3 +42,22 @@ export def format__throws_error_with_unmatched_placeholders [] {
 
     assert error $result $expect
 }
+
+export def format__allows_values_containing_braces [] {
+    let values = {a: '{"b":1}'}
+    let unformatted = "a = {a}"
+    let expect = 'a = {"b":1}'
+
+    let result = format $unformatted $values
+
+    assert equal $expect $result
+}
+
+export def format__throws_error_with_unmatched_placeholder_containing_hyphen [] {
+    let unformatted = "a = {sub-domain}"
+    let expect = $"($unformatted) contains unmatched placeholders: {sub-domain}."
+
+    let result = {|| format $unformatted {} }
+
+    assert error $result $expect
+}
