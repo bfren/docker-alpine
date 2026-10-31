@@ -65,6 +65,24 @@ export def main__no_value__with_safe__returns_safe_string [] {
 
 
 #======================================================================================================================
+# apply_perms
+#======================================================================================================================
+
+export def apply_perms__makes_store_readable_but_only_writable_by_owner [] {
+    let dir = mktemp --directory --tmpdir
+    let file = $"($dir)/(random chars)"
+    random chars | save $file
+    ^chmod -R 0777 $dir
+
+    apply_perms $dir
+    let result = ls --long --directory $dir $file | get mode
+
+    rm --force --recursive $dir
+    assert equal ["rwxr-xr-x" "rwxr-xr-x"] $result "store is writable by group or others"
+}
+
+
+#======================================================================================================================
 # check
 #======================================================================================================================
 
@@ -173,6 +191,20 @@ export def store__saves_environment_variable [] {
     rm --force $"($store_dir)/($key)"
 
     assert equal $value $result "store does not save environment variable"
+}
+
+export def store__saves_multi_line_value_without_creating_other_variables [] {
+    let key = random chars
+    let fake_key = random chars
+    let value = $"first(char newline)($fake_key)/x=y(char newline)last"
+
+    with-env {$key: $value} { store }
+    let result = open --raw $"($store_dir)/($key)"
+    let fake_saved = $"($store_dir)/($fake_key)" | path exists
+    rm --force $"($store_dir)/($key)"
+
+    assert equal $value $result "store does not save multi-line value"
+    assert equal false $fake_saved "store saves a line of a multi-line value as a variable"
 }
 
 export def store__does_not_save_nushell_process_variables [] {

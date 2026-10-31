@@ -52,7 +52,7 @@ export def find_type_acc [
     base_paths: list<string>    # List of base paths to search
     type: string                # Limit results to paths of this type - supported are directories (d), files (f) or symlinks (l)
 ]: nothing -> list<string> {
-    $base_paths | each {|x| find_type $x $type } | reduce -f [] {|y, acc| $acc | append $y }
+    $base_paths | each {|x| find_type $x $type } | flatten
 }
 
 # Returns true if input path exists and is a directory

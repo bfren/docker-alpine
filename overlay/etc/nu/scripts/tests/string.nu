@@ -42,3 +42,13 @@ export def format__throws_error_with_unmatched_placeholders [] {
 
     assert error $result $expect
 }
+
+export def format__allows_values_containing_braces [] {
+    let values = {a: '{"b":1}'}
+    let unformatted = "a = {a}"
+    let expect = 'a = {"b":1}'
+
+    let result = format $unformatted $values
+
+    assert equal $expect $result
+}

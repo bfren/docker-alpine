@@ -54,3 +54,15 @@ export def old__live_set_deletes_files_older_than_duration [] {
 
     assert equal $newer_file $result
 }
+
+export def old__type_not_set_returns_files [] {
+    let root_dir = mktemp --directory --tmpdir
+    let duration = random int 5..10 | into duration --unit day
+    let older_file = mktemp --tmpdir-path=($root_dir)
+    mkdir $"($root_dir)/(random chars)"
+    touch --timestamp ((date now) - $duration - 1day) $older_file
+
+    let result = old $root_dir $duration | get name
+
+    assert equal [$older_file] $result
+}

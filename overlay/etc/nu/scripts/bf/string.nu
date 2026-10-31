@@ -14,17 +14,22 @@ export def format [
     input: string   # String to format - placeholds should be record keys surrounded by braces, e.g. {a}
     values: record  # Values to use when replacing placeholders
 ]: nothing -> string {
+    # return an error if $input contains placeholders that are not in $values - checked before replacing, so values
+    # can contain braces
+    let unmatched = $input
+        | parse --regex '\{(?<k>\w+)\}'
+        | get k
+        | uniq
+        | where $it not-in ($values | columns)
+    if ($unmatched | is-not-empty) {
+        write error $"($input) contains unmatched placeholders: ($unmatched | each { $'{($in)}' } | str join ', ')."
+    }
+
     # replace values
     write debug $"Using ($values) to replace placeholders in ($input)." str/format
     let result = $values
         | transpose k v
         | reduce -f $input {|x, acc| $acc | str replace --all $"{($x.k)}" $x.v }
-
-    # return an error if the result still contains unmatched palceholders
-    let unmatched = $result
-        | split row " "
-        | find --regex "{.*}"
-    if ($unmatched | length) > 0 { write error $"($input) contains unmatched placeholders: ($unmatched | str join ', ')." }
 
     # return formatted string
     $result
