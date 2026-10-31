@@ -319,7 +319,7 @@ export def load__loads_stored_variables_into_environment [] {
     assert equal $value $result "load does not load stored variable into environment"
 }
 
-export def load__loads_multi_line_value [] {
+export def load__loads_first_line_of_multi_line_value [] {
     let key = random chars
     let value = $"first(char newline)second"
     let prefixed = $prefix + $key
@@ -329,7 +329,19 @@ export def load__loads_multi_line_value [] {
     let result = $env | get --optional $prefixed
     rm --force $"($store_dir)/($prefixed)"
 
-    assert equal $value $result "load does not load all lines of a stored variable"
+    assert equal "first" $result "load does not load the first line of a stored variable"
+}
+
+export def load__removes_trailing_whitespace [] {
+    let key = random chars
+    let prefixed = $prefix + $key
+
+    $"1 (char newline)" | save --force $"($store_dir)/($prefixed)"
+    load
+    let result = check $key
+    rm --force $"($store_dir)/($prefixed)"
+
+    assert equal true $result "load does not remove trailing whitespace from a stored variable"
 }
 
 

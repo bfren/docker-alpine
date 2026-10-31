@@ -24,8 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `/etc/nu` is no longer world-writable - files are now `0644` and directories `0755`.
 - Tests are no longer copied back into the image after `bf-install` removes them.
 - Environment variables with several lines (e.g. a certificate) no longer stop the container starting, or create
-  extra variables from their lines. `bf env load` and the shell prompt now load every line - shell scripts run with
-  `withenv` still get only the first line.
+  extra variables from their lines. They are saved in full, but loaded as their first line, as before.
 - `bf string format` no longer gives an "unmatched placeholders" error when a value contains braces.
 
 ### Security
