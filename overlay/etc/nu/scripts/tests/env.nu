@@ -196,7 +196,7 @@ export def store__saves_environment_variable [] {
 export def store__saves_multi_line_value_without_creating_other_variables [] {
     let key = random chars
     let fake_key = random chars
-    let value = $"first(char newline)($fake_key)/x=y(char newline)last"
+    let value = $"first(char newline)($fake_key)=y(char newline)a/b=c(char newline)last"
 
     with-env {$key: $value} { store }
     let result = open --raw $"($store_dir)/($key)"
@@ -317,6 +317,19 @@ export def load__loads_stored_variables_into_environment [] {
     rm --force $"($store_dir)/($prefixed)"
 
     assert equal $value $result "load does not load stored variable into environment"
+}
+
+export def load__loads_multi_line_value [] {
+    let key = random chars
+    let value = $"first(char newline)second"
+    let prefixed = $prefix + $key
+
+    $value | save --force $"($store_dir)/($prefixed)"
+    load
+    let result = $env | get --optional $prefixed
+    rm --force $"($store_dir)/($prefixed)"
+
+    assert equal $value $result "load does not load all lines of a stored variable"
 }
 
 

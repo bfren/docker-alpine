@@ -52,3 +52,12 @@ export def format__allows_values_containing_braces [] {
 
     assert equal $expect $result
 }
+
+export def format__throws_error_with_unmatched_placeholder_containing_hyphen [] {
+    let unformatted = "a = {sub-domain}"
+    let expect = $"($unformatted) contains unmatched placeholders: {sub-domain}."
+
+    let result = {|| format $unformatted {} }
+
+    assert error $result $expect
+}

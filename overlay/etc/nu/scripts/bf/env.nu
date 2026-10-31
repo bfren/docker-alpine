@@ -68,12 +68,14 @@ export def --env load [
     x_prefix?: string       # If $set_executable is added, $prefix will be added before the name of the current script
     --set-executable (-x)   # Whether or not to set BF_X to the current script
 ]: nothing -> nothing {
-    # load environment variables from shared directory
-    let loaded = { ^bf-withenv env }
-        | handle env/load
-        | lines
-        | parse "{key}={val}"
-        | transpose -i -r -d
+    # load environment variables from shared directory - the files are read directly (not using envdir, which only
+    # keeps the first line) so values can contain newlines, and empty files are skipped (as envdir does)
+    let loaded = ls $env_dir
+        | where type == file
+        | reduce -f {} {|x, acc|
+            let val = open --raw $x.name
+            if ($val | is-empty) { $acc } else { $acc | insert ($x.name | path basename) $val }
+        }
     try { load-env $loaded }
 
     # set current script

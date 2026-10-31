@@ -24,12 +24,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `/etc/nu` is no longer world-writable - files are now `0644` and directories `0755`.
 - Tests are no longer copied back into the image after `bf-install` removes them.
 - Environment variables with several lines (e.g. a certificate) no longer stop the container starting, or create
-  extra variables from their lines.
+  extra variables from their lines. `bf env load` and the shell prompt now load every line - shell scripts run with
+  `withenv` still get only the first line.
 - `bf string format` no longer gives an "unmatched placeholders" error when a value contains braces.
 
 ### Security
 
 - The environment store `/etc/bf/env.d` is no longer writable by every user - only root can write to it. Before, any
   user could set a variable such as `PATH` that root scripts then loaded.
+- **Breaking:** `bf env set` must now run as root, because only root can write to the environment store.
 
 [4.0.0]: https://github.com/bfren/docker-alpine/compare/v3.5.3...v4.0.0

@@ -17,7 +17,7 @@ export def format [
     # return an error if $input contains placeholders that are not in $values - checked before replacing, so values
     # can contain braces
     let unmatched = $input
-        | parse --regex '\{(?<k>\w+)\}'
+        | parse --regex '\{(?<k>[^{}\s]+)\}'
         | get k
         | uniq
         | where $it not-in ($values | columns)
