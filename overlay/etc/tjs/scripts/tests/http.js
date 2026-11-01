@@ -4,7 +4,8 @@ import * as sys from "../bf/sys.js";
 import { randomChars, runScript } from "./lib/capture.js";
 const { assert } = sys;
 const URL = "https://github.com/bfren/docker-alpine.git";
-/** Returns the results of fn for each of from..to (inclusive), with up to 50 running at once - all at once is flaky. */
+/** Returns the results of fn for each of from..to (inclusive), with up to 10 running at once - txiki.js 26.11 drops
+ * connections ("closed before established") with more. */
 async function range(from, to, fn) {
     const $results = [];
     let $next = from;
@@ -12,7 +13,7 @@ async function range(from, to, fn) {
         const $x = $next++;
         $results[$x - from] = await fn($x);
     } };
-    await Promise.all(Array.from({ length: 50 }, worker));
+    await Promise.all(Array.from({ length: 10 }, worker));
     return $results;
 }
 //======================================================================================================================
@@ -45,7 +46,13 @@ export async function get_status__invalid_url__returns_400() {
 // test
 //======================================================================================================================
 export async function test__valid_status__returns_true() {
-    const $result = await range(200, 399, ($x) => test(`https://bfren.dev/status/${$x}`));
+    // a dropped connection reads as 400, so try up to three times - txiki.js 26.11 drops some under the suite's load
+    const $result = await range(200, 399, async ($x) => {
+        for (let $i = 0; $i < 3; $i++)
+            if (await test(`https://bfren.dev/status/${$x}`))
+                return true;
+        return false;
+    });
     assert.equal($result.every(($x) => $x), true, "test does not return true for all valid statuses");
 }
 export async function test__invalid_status__returns_false() {

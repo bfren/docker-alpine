@@ -1,6 +1,7 @@
 import * as env from "./env.js";
 import * as fs from "./fs.js";
 import { handle } from "./handle.js";
+import * as pkg from "./pkg.js";
 import * as sys from "./sys.js";
 import * as write from "./write.js";
 /**
@@ -9,7 +10,7 @@ import * as write from "./write.js";
  * @param options Function options.
  */
 export async function clean(options = {}) {
-    const { caches = ["/var/cache/apk/*"], tmpdirs = ["/tmp/*"], root = "/", sources = ["/etc/tjs", "/usr/bin/bf"] } = options;
+    const { caches = pkg.CACHES, tmpdirs = ["/tmp/*"], root = "/", sources = ["/etc/tjs", "/usr/bin/bf"] } = options;
     // delete caches and temporary files - globs end /* so the directories themselves are kept
     const $globs = [...caches, ...tmpdirs];
     if ($globs.length > 0) {

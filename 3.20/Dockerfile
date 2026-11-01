@@ -12,7 +12,7 @@ RUN \
     echo "Platform: ${TARGETPLATFORM}" >> /log && \
     echo "Alpine: 3.20.10" >> /log && \
     echo "Busybox: 1.37.0" >> /log && \
-    echo "txiki.js: 26.6.0" >> /log
+    echo "txiki.js: 26.11.0" >> /log
 
 
 #======================================================================================================================
@@ -26,7 +26,7 @@ FROM quay.io/bfren-bin/busybox:1.37.0-261022 AS busybox
 # STAGE 2: load txikijs
 #======================================================================================================================
 
-FROM quay.io/bfren-bin/txikijs:26.6.0-261030 AS txikijs
+FROM quay.io/bfren-bin/txikijs:26.11.0-261101 AS txikijs
 
 
 #======================================================================================================================
@@ -64,7 +64,7 @@ ENV \
     #   1: yes
     BF_UPGRADE_PACKAGES=1 \
     # txiki.js version string to check against installed version after installation
-    TJS_VERSION=26.6.0
+    TJS_VERSION=26.11.0
 
 # tests are copied with everything else so bf-install removes them from published images (BF_PUBLISHING=1)
 COPY ./overlay /

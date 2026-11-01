@@ -1,6 +1,7 @@
 import * as env from "./env.ts";
 import * as fs from "./fs.ts";
 import { handle } from "./handle.ts";
+import * as pkg from "./pkg.ts";
 import * as sys from "./sys.ts";
 import * as write from "./write.ts";
 
@@ -8,7 +9,7 @@ import * as write from "./write.ts";
  * Options for clean() function.
  */
 export interface CleanOptions {
-    /** Globs of cache files to delete. */
+    /** Globs of cache files to delete - defaults to the package manager's caches. */
     caches?: string[];
     /** Globs of temporary files to delete. */
     tmpdirs?: string[];
@@ -24,7 +25,7 @@ export interface CleanOptions {
  * @param options Function options.
  */
 export async function clean(options: CleanOptions = {}): Promise<void> {
-    const { caches = ["/var/cache/apk/*"], tmpdirs = ["/tmp/*"], root = "/", sources = ["/etc/tjs", "/usr/bin/bf"] } = options;
+    const { caches = pkg.CACHES, tmpdirs = ["/tmp/*"], root = "/", sources = ["/etc/tjs", "/usr/bin/bf"] } = options;
 
     // delete caches and temporary files - globs end /* so the directories themselves are kept
     const $globs = [...caches, ...tmpdirs];

@@ -1,6 +1,9 @@
 import { handle } from "./handle.ts";
 import * as write from "./write.ts";
 
+/** Globs of the package manager's caches, deleted by clean(). */
+export const CACHES = ["/var/cache/apk/*"];
+
 /**
  * Perform a package action, outputting any errors.
  *
