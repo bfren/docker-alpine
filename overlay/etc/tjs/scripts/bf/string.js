@@ -21,13 +21,14 @@ export function quote(input) {
  * @returns Formatted string.
  */
 export function format(input, values) {
+    // return an error if input contains placeholders that are not in values - checked before replacing, so values can
+    // contain braces
+    const $keys = new Set([...input.matchAll(/\{([^{}\s]+)\}/g)].map(($m) => $m[1]));
+    const $unmatched = [...$keys].filter(($k) => !Object.hasOwn(values, $k));
+    if ($unmatched.length > 0) {
+        write.error("", "%s contains unmatched placeholders: %s.", input, $unmatched.map(($k) => `{${$k}}`).join(", "));
+    }
     // replace values
     write.debug("str/format", "Using %o to replace placeholders in %s.", values, input);
-    const $result = Object.entries(values).reduce(($acc, [$k, $v]) => $acc.replaceAll(`{${$k}}`, $v), input);
-    // return an error if the result still contains unmatched placeholders
-    const $unmatched = $result.split(" ").filter(($x) => /\{.*\}/.test($x));
-    if ($unmatched.length > 0)
-        write.error("", "%s contains unmatched placeholders: %s.", input, $unmatched.join(", "));
-    // return formatted string
-    return $result;
+    return Object.entries(values).reduce(($acc, [$k, $v]) => $acc.replaceAll(`{${$k}}`, $v), input);
 }

@@ -1,5 +1,6 @@
-import { check, debug, empty, ENV_DIR, get, PREFIX, set, unset, xSet } from "../bf/env.ts";
-import { pathInfo } from "../bf/fs.ts";
+import { applyPerms, check, debug, empty, ENV_DIR, get, PREFIX, set, unset, xSet } from "../bf/env.ts";
+import { makeTempDir, pathInfo } from "../bf/fs.ts";
+import { handle } from "../bf/handle.ts";
 import * as sys from "../bf/sys.ts";
 import { randomChars, runScript, withEnv } from "./lib/capture.ts";
 
@@ -150,6 +151,23 @@ export function empty__value_is_not_empty__returns_false() {
 
 
 //======================================================================================================================
+// apply_perms
+//======================================================================================================================
+
+export async function apply_perms__makes_store_readable_but_only_writable_by_owner() {
+    const $dir = await makeTempDir();
+    const $file = `${$dir}/${randomChars()}`;
+    await sys.writeTextFile($file, randomChars());
+    await handle(["chmod", "-R", "0777", $dir]);
+
+    await applyPerms($dir);
+    const $result = await handle(["stat", "-c", "%a", $dir, $file]) ?? "";
+
+    assert.deepEqual($result.split("\n"), ["755", "755"], "store is writable by group or others");
+}
+
+
+//======================================================================================================================
 // store - run in a child process as store saves the whole environment
 //======================================================================================================================
 
@@ -164,6 +182,20 @@ export async function store__saves_environment_variable() {
     await rmStored($key);
 
     assert.equal($result, $value, "store does not save environment variable");
+}
+
+export async function store__saves_multi_line_value_without_creating_other_variables() {
+    const $key = randomChars();
+    const $fakeKey = randomChars();
+    const $value = `first\n${$fakeKey}=y\na/b=c\nlast`;
+
+    await runScript(STORE, { [$key]: $value, PATH: sys.env.PATH });
+    const $result = await sys.readTextFile(`${ENV_DIR}/${$key}`);
+    const $fakeSaved = await stored($fakeKey);
+    await rmStored($key);
+
+    assert.equal($result, $value, "store does not save multi-line value");
+    assert.equal($fakeSaved, false, "store saves a line of a multi-line value as a variable");
 }
 
 export async function store__does_not_save_process_variables() {
@@ -269,6 +301,27 @@ export async function load__loads_stored_variables_into_environment() {
     await rmStored($prefixed);
 
     assert.equal($result, $value, "load does not load stored variable into environment");
+}
+
+export async function load__loads_first_line_of_multi_line_value() {
+    const $prefixed = PREFIX + randomChars();
+
+    await sys.writeTextFile(`${ENV_DIR}/${$prefixed}`, "first\nsecond");
+    const $result = await runScript(`import * as bf from "bf";\nawait bf.env.load();\nconsole.log(bf.sys.env.${$prefixed} ?? "");\n`);
+    await rmStored($prefixed);
+
+    assert.equal($result, "first", "load does not load the first line of a stored variable");
+}
+
+export async function load__removes_trailing_whitespace() {
+    const $key = randomChars();
+    const $prefixed = PREFIX + $key;
+
+    await sys.writeTextFile(`${ENV_DIR}/${$prefixed}`, "1 \n");
+    const $result = await runScript(`import * as bf from "bf";\nawait bf.env.load();\nconsole.log(bf.env.check("${$key}"));\n`);
+    await rmStored($prefixed);
+
+    assert.equal($result, "true", "load does not remove trailing whitespace from a stored variable");
 }
 
 

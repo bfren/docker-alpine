@@ -47,3 +47,11 @@ export async function old__live_set_deletes_files_older_than_duration() {
     const $left = (await sys.readDir($rootDir)).map(($x) => `${$rootDir}/${$x}`);
     assert.deepEqual($left, [$newer]);
 }
+export async function old__type_not_set_returns_files() {
+    const $rootDir = await makeTempDir();
+    const $duration = (5 + Math.floor(Math.random() * 6)) * DAY;
+    const $older = await fileAt($rootDir, Date.now() - $duration - DAY);
+    await handle(["mkdir", `${$rootDir}/${randomChars()}`]);
+    const $result = await old($rootDir, $duration);
+    assert.deepEqual($result, [$older]);
+}

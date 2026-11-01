@@ -8,7 +8,7 @@ import * as write from "./write.ts";
 export interface OldOptions {
     /** If not set, the paths to be deleted will be returned but not actually deleted. */
     live?: boolean;
-    /** The type of path to delete, either 'd' (directory) or 'f' (file). */
+    /** The type of path to delete, either 'd' (directory) or 'f' (file) - defaults to 'f'. */
     type?: string;
 }
 
@@ -25,16 +25,17 @@ export async function old(rootDir: string, duration: number, options: OldOptions
     if (await fs.isNotDir(rootDir)) write.error("del/old", "Directory %s does not exist.", rootDir);
 
     // ensure only valid types are used
+    const $type = options.type ?? "f";
     const $isType = ({
         d: ($i: fs.PathInfo) => $i.isDirectory,
         f: ($i: fs.PathInfo) => $i.isFile,
-    } as Record<string, (i: fs.PathInfo) => boolean>)[options.type ?? ""];
-    if (!$isType) write.error("del/old", "Unknown type: %s.", options.type);
+    } as Record<string, (i: fs.PathInfo) => boolean>)[$type];
+    if (!$isType) write.error("del/old", "Unknown type: %s.", $type);
 
     // find paths of type modified before expiry
     const $expiry = new Date(Date.now() - duration);
     const $root = rootDir.replace(/\/+$/, "");
-    write.debug("del/old", "Removing %ss older than %s.", options.type == "d" ? "dir" : "file", $expiry.toISOString());
+    write.debug("del/old", "Removing %ss older than %s.", $type == "d" ? "dir" : "file", $expiry.toISOString());
 
     const $old: string[] = [];
     for (const $name of await sys.readDir($root)) {

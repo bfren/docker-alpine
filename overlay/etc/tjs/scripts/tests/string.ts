@@ -36,3 +36,17 @@ export function format__throws_error_with_unmatched_placeholders() {
 
     assert.equal($result, `${$unformatted} contains unmatched placeholders: {b}, {c}.`);
 }
+
+export function format__allows_values_containing_braces() {
+    const $result = format("a = {a}", { a: '{"b":1}' });
+
+    assert.equal($result, 'a = {"b":1}');
+}
+
+export function format__throws_error_with_unmatched_placeholder_containing_hyphen() {
+    const $unformatted = "a = {sub-domain}";
+
+    const $result = (() => { try { format($unformatted, {}); return "no error"; } catch ($e) { return ($e as Error).message; } })();
+
+    assert.equal($result, `${$unformatted} contains unmatched placeholders: {sub-domain}.`);
+}

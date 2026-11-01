@@ -14,16 +14,17 @@ export async function old(rootDir, duration, options = {}) {
     if (await fs.isNotDir(rootDir))
         write.error("del/old", "Directory %s does not exist.", rootDir);
     // ensure only valid types are used
+    const $type = options.type ?? "f";
     const $isType = {
         d: ($i) => $i.isDirectory,
         f: ($i) => $i.isFile,
-    }[options.type ?? ""];
+    }[$type];
     if (!$isType)
-        write.error("del/old", "Unknown type: %s.", options.type);
+        write.error("del/old", "Unknown type: %s.", $type);
     // find paths of type modified before expiry
     const $expiry = new Date(Date.now() - duration);
     const $root = rootDir.replace(/\/+$/, "");
-    write.debug("del/old", "Removing %ss older than %s.", options.type == "d" ? "dir" : "file", $expiry.toISOString());
+    write.debug("del/old", "Removing %ss older than %s.", $type == "d" ? "dir" : "file", $expiry.toISOString());
     const $old = [];
     for (const $name of await sys.readDir($root)) {
         const $info = await fs.pathInfo(`${$root}/${$name}`, { followSymlinks: false });

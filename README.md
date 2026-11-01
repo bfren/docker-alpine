@@ -137,7 +137,7 @@ import * as bf from "bf";
 bf.write.info("greet", "The greeting is %s.", bf.env.get("GREETING"));
 ```
 
-`bf.env.get("GREETING")` reads `BF_GREETING` - the `BF_` prefix is added for you. `await bf.env.set("NAME", "value")` saves `BF_NAME` for every later script.
+`bf.env.get("GREETING")` reads `BF_GREETING` - the `BF_` prefix is added for you. `await bf.env.set("NAME", "value")` saves `BF_NAME` for every later script - it must run as root, because only root can write to the environment store (`/etc/bf/env.d`).
 
 Shell scripts can run commands with a *clean* environment loaded from `/etc/bf/env.d` using `withenv`, e.g. `withenv my-command`.
 

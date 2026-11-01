@@ -46,11 +46,15 @@ export async function get_status__invalid_url__returns_400() {
 // test
 //======================================================================================================================
 export async function test__valid_status__returns_true() {
-    // a dropped connection reads as 400, so try up to three times - txiki.js 26.11 drops some under the suite's load
+    // a dropped connection reads as 400, so try up to three times, pausing first as drops come in bursts - txiki.js
+    // 26.11 drops a few percent of connections under the suite's load
     const $result = await range(200, 399, async ($x) => {
-        for (let $i = 0; $i < 3; $i++)
+        for (let $i = 0; $i < 3; $i++) {
+            if ($i > 0)
+                await new Promise(($r) => setTimeout($r, 500));
             if (await test(`https://bfren.dev/status/${$x}`))
                 return true;
+        }
         return false;
     });
     assert.equal($result.every(($x) => $x), true, "test does not return true for all valid statuses");

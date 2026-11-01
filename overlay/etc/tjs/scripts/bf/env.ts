@@ -69,10 +69,13 @@ export function get(key: string, options: GetOptions = {}): string {
 }
 
 /**
- * Apply permissions for the environment variables directory.
+ * Apply permissions for the environment variables directory - everyone can read it, only root can write to it, because
+ * root scripts load it into their environment (a writable store would let any user set PATH for root).
+ *
+ * @param dir Directory to apply permissions to (can be overridden for testing).
  */
-export async function applyPerms(): Promise<void> {
-    await handle(["chmod", "-R", "a+rwX", ENV_DIR], { ignoreError: true });
+export async function applyPerms(dir: string = ENV_DIR): Promise<void> {
+    await handle(["chmod", "-R", "a+rX,go-w", dir], { ignoreError: true });
 }
 
 /**
