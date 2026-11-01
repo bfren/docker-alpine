@@ -2,6 +2,9 @@ use dump.nu
 use handle.nu
 use write.nu
 
+# Package manager cache directories, deleted by clean
+export const caches = ["/var/cache/apk/*"]
+
 # Perform a package action, capturing result and outputting any errors
 def action [
     name: string        # Name of the action
