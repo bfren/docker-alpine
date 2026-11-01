@@ -51,8 +51,8 @@ ARG BF_PUBLISHING
 ARG BF_VERSION
 
 RUN \
-    # install busybox
-    busybox --install
+    # install busybox applets as symlinks - unlike hard links they cannot be split from /bin/busybox when layers are copied or cached
+    busybox --install -s
 
 ENV \
     # path to bf configuration - installation script requires this

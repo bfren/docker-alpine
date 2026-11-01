@@ -50,3 +50,13 @@ export def secure_system_dirs__skips_symlinks_and_missing_directories [] {
 
     assert equal "755" (mode $"($root)/usr/bin")
 }
+
+
+#======================================================================================================================
+# busybox
+#======================================================================================================================
+
+export def busybox__applets_are_symlinks_not_hard_links [] {
+    # hard links can be split from /bin/busybox when layers are copied or cached, leaving a second copy in the image
+    assert equal "1" (^stat -c "%h" /bin/busybox | str trim) "/bin/busybox should have no hard links"
+}
