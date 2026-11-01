@@ -1,1 +1,1 @@
-@../index/CLAUDE.md
+@../../CLAUDE.md

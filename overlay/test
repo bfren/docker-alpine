@@ -1,2 +1,2 @@
 #!/bin/sh
-env -i nu -c "use bf ; bf test"
+exec env -i /usr/bin/bf/bf-test
