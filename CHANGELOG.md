@@ -27,7 +27,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Tests are no longer copied back into the image after `bf-install` removes them.
 - Environment variables with several lines (e.g. a certificate) no longer stop the container starting, or create
   extra variables from their lines. They are saved in full, but loaded as their first line, as before.
-- `bf string format` no longer gives an "unmatched placeholders" error when a value contains braces.
+- `bf string format` no longer gives an "unmatched placeholders" error when a value contains braces, and no longer
+  replaces placeholders inside values it has already inserted. It now uses Nushell's `format pattern`, so braces in
+  the template that are not part of a placeholder give an error.
+- `bf del old` no longer gives an error when the directory is empty. As before, it never deletes hidden files or
+  directories.
+- `SHLVL` is no longer saved to the environment store - it is set by the shell running `/init`.
 
 ### Security
 

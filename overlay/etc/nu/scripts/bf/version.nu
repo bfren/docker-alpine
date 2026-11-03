@@ -1,5 +1,3 @@
-use dump.nu
-
 # Returns true if version is at least equal to minimum
 export def is_at_least [
     minimum: string # The minimum version required

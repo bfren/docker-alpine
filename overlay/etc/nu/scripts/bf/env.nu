@@ -1,4 +1,3 @@
-use dump.nu
 use handle.nu
 use write.nu
 
@@ -118,7 +117,7 @@ export def show []: nothing -> nothing {
 
 # Store incoming environment variables
 export def store []: nothing -> string {
-    # these environment variables are set by nu for the current process only, so must not be stored
+    # these environment variables are set by the shell or by nu for the current process only, so must not be stored
     let ignore = [
         "CURRENT_FILE"
         "FILE_PWD"
@@ -126,6 +125,7 @@ export def store []: nothing -> string {
         "NU_VERSION"
         "PROCESS_PATH"
         "PWD"
+        "SHLVL"
     ]
 
     # load incoming environment, parse and save to environment directory - env -0 separates variables with NUL, so

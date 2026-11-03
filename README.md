@@ -147,6 +147,9 @@ def main [] {
 
 Shell scripts can run commands with a *clean* environment loaded from `/etc/bf/env.d` using `withenv`, e.g. `withenv my-command`. Interactive `nu` shells reload the environment before each prompt.
 
+> [!WARNING]
+> Every user in the container can read `/etc/bf/env.d`, so a password passed with `-e` can be read by any process - including an application running as its own user. Pass passwords and keys as files instead (e.g. [Docker secrets](https://docs.docker.com/engine/swarm/secrets/) or a mounted file) and give the file only the permissions it needs.
+
 ### The `bf` module
 
 | Submodule    | Use                                                                          |
@@ -155,7 +158,7 @@ Shell scripts can run commands with a *clean* environment loaded from `/etc/bf/e
 | `bf ch`      | Set ownership and permissions on files and directories                       |
 | `bf clean`   | Remove temporary files, package caches and `.empty` placeholders             |
 | `bf config`  | Add lines and modules to the shared Nushell config                           |
-| `bf del`     | Delete files or directories older than a given age                           |
+| `bf del`     | Delete files or directories older than a given age - hidden ones are kept    |
 | `bf dump`    | Print a value when debug output is enabled, then pass it on                  |
 | `bf env`     | Get, set, check, load and store environment variables                        |
 | `bf esh`     | Generate output from an esh template                                         |
@@ -191,6 +194,10 @@ Many of these have executable helpers on the `PATH` for shell scripts. For examp
 ### The container exits straight away
 
 The image has no default command. Give it one, e.g. `docker run --rm -it bfren/alpine nu`.
+
+### The container fails with "can't open '/init': Permission denied"
+
+The container must start as root - `/init` can only be run by root, because it saves the environment to `/etc/bf/env.d`, which only root can write to. Remove `--user` (or `user:` in Compose, `runAsUser` in Kubernetes).
 
 ### The build fails with "Unable to get environment variable BF_IMAGE"
 

@@ -208,7 +208,7 @@ export def store__saves_multi_line_value_without_creating_other_variables [] {
 }
 
 export def store__does_not_save_nushell_process_variables [] {
-    let ignored = [ "CURRENT_FILE" "FILE_PWD" "LAST_EXIT_CODE" "NU_VERSION" "PROCESS_PATH" "PWD" ]
+    let ignored = [ "CURRENT_FILE" "FILE_PWD" "LAST_EXIT_CODE" "NU_VERSION" "PROCESS_PATH" "PWD" "SHLVL" ]
     $ignored | each {|x| rm --force $"($store_dir)/($x)" }
 
     ^true

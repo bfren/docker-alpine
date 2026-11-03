@@ -1,8 +1,8 @@
-use dump.nu
 use fs.nu
 use write.nu
 
-# Delete files or directories within root_dir older than $duration
+# Delete files or directories within root_dir older than $duration - hidden files and directories (names starting
+# with '.') are never deleted, so markers such as Syncthing's .stfolder or a NAS's .snapshot are kept
 export def old [
     root_dir: string    # The root directory - files / directories within this will be deleted
     duration: duration  # If a file or directory is older than this duration it will be deleted
@@ -21,11 +21,12 @@ export def old [
 
     # process input values to use in query
     let expiry = (date now) - $duration
-    let use_root_dir = $root_dir | str trim --char "/" --right | $"($in)/*" | into glob
 
     # perform deletion
     write debug $"Removing ($use_type)s older than ($expiry)." del/old
-    let files_to_delete = ls $use_root_dir | where type == $use_type and modified < $expiry
+    # list the directory itself (not a glob) so an empty directory gives no rows instead of an error - without --all,
+    # so hidden files and directories are never deleted
+    let files_to_delete = ls $root_dir | where type == $use_type and modified < $expiry
     if $live {
         $files_to_delete | each {|x|
              write debug $" .. ($x.name)" del/old

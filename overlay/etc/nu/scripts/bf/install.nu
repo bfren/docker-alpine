@@ -2,7 +2,6 @@ use build.nu
 use ch.nu
 use clean.nu
 use del.nu
-use dump.nu
 use env.nu
 use fs.nu
 use image.nu
