@@ -11,6 +11,7 @@ export def is_at_least [
 
 # Bump the patch number of the specified version (e.g. 1.2.10 -> 1.2.11)
 export def bump []: string -> string {
-    $in | split row "."
+    $in
+        | split row "."
         | $"($in.0).($in.1).($in.2 | into int | $in + 1)"
 }

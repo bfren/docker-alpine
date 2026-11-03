@@ -19,7 +19,9 @@ export def debug [
     script?: string # The name of the calling script or executable
 ]: nothing -> nothing {
     if ($env | get --optional BF_DEBUG) == "1" {
-        fmt $text $colour_debug $script | $"(ansi $colour_debug)($in)(ansi reset)" | print
+        fmt $text $colour_debug $script
+            | $"(ansi $colour_debug)($in)(ansi reset)"
+            | print
     }
 }
 

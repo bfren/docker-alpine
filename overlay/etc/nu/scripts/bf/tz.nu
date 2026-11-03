@@ -60,7 +60,9 @@ export def clean [
         return
     }
 
-    echo $"($dir)/*" | into glob | rm --force --recursive $in
+    echo $"($dir)/*"
+        | into glob
+        | rm --force --recursive $in
 }
 
 # Return the name of the current timezone

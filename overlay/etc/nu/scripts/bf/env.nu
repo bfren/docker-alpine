@@ -130,10 +130,15 @@ export def store []: nothing -> string {
 
     # load incoming environment, parse and save to environment directory - env -0 separates variables with NUL, so
     # values can contain newlines (envdir loads the first line)
+    let save = {|x: record<key: string, val: string>|
+        if $x.key not-in $ignore {
+            $x.val | save --force $"($env_dir)/($x.key)"
+        }
+    }
     ^env -0
         | split row (char nul)
         | parse "{key}={val}"
-        | each {|x| if $x.key not-in $ignore { $x.val | save --force $"($env_dir)/($x.key)" } }
+        | each $save
         | ignore
 
     # apply permissions to files

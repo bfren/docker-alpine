@@ -24,9 +24,17 @@ export def find_name [
     check_type $type
 
     # use posix find to search for items of a type, and split by lines into a list
+    let txt = $"Find ($name) in ($base_path)."
     let on_failure = {|code, err| [] }
     let on_success = {|out| $out | lines }
-    { ^busybox find $base_path -xdev -name $name -type $type } | handle -d $"Find ($name) in ($base_path)." -f $on_failure -s $on_success fs/find_name
+    let args = [
+        "find"
+        $base_path
+        "-xdev"
+        "-name" $name
+        "-type" $type
+    ]
+    { ^busybox ...$args } | handle -d $txt -f $on_failure -s $on_success fs/find_name
 }
 
 # Find all paths that are $type in $base_path
@@ -41,9 +49,16 @@ export def find_type [
     check_type $type
 
     # use posix find to search for items of a type, and split by lines into a list
+    let txt = $"Find type ($type) in ($base_path)."
     let on_failure = {|code, err| [] }
     let on_success = {|out| $out | lines }
-    { ^busybox find $base_path -xdev -type $type } | handle -d $"Find type ($type) in ($base_path)." -f $on_failure -s $on_success fs/find_type
+    let args = [
+        "find"
+        $base_path
+        "-xdev"
+        "-type" $type
+    ]
+    { ^busybox ...$args } | handle -d $txt -f $on_failure -s $on_success fs/find_type
 }
 
 # Find all paths that are $type in $base_paths

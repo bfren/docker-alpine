@@ -13,7 +13,9 @@ export def main [
         if ($text | is-not-empty) { $"(char newline)#== ($text) ==#" | print --stderr=($stderr) }
 
         # output as an expanded table
-        $input | table --expand | print --stderr=($stderr)
+        $input
+            | table --expand
+            | print --stderr=($stderr)
     }
 
     # return the original input unchanged
