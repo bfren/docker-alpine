@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [4.0.0] - Unreleased
+## [4.0.0] - 2026-11-05
 
 ### Changed
 
@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `bf del old --type` now defaults to `f` (files) - before, leaving it out gave an `Unknown type` error.
 - `bf clean` takes its default cache directories from `bf pkg caches`, so an image with another package manager only
   needs its own `pkg.nu`.
+- BusyBox applets are installed as symlinks instead of hard links, so they cannot be split from `/bin/busybox` when
+  layers are copied or cached.
 
 ### Removed
 
