@@ -4,13 +4,13 @@
 # STAGE 0: store build information
 #======================================================================================================================
 
-FROM --platform=${BUILDPLATFORM} quay.io/bfren-bin/alpine:3.23.7 AS build
+FROM --platform=${BUILDPLATFORM} quay.io/bfren-bin/alpine:3.23.8 AS build
 ARG TARGETPLATFORM
 
 RUN \
     # save platform and version information to log
     echo "Platform: ${TARGETPLATFORM}" >> /log && \
-    echo "Alpine: 3.23.7" >> /log && \
+    echo "Alpine: 3.23.8" >> /log && \
     echo "Busybox: 1.37.0" >> /log && \
     echo "Nushell: 0.116.1" >> /log
 
@@ -40,7 +40,7 @@ FROM quay.io/bfren-bin/figlet:2.2.5-261022 AS figlet
 # STAGE 4: install bfren platform
 #======================================================================================================================
 
-FROM quay.io/bfren-bin/alpine:3.23.7 AS install
+FROM quay.io/bfren-bin/alpine:3.23.8 AS install
 COPY --from=build /log /etc/bf/BUILD
 COPY --from=busybox / /bin
 COPY --from=nushell / /
