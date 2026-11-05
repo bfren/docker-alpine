@@ -1,6 +1,5 @@
 use fs.nu
 use del.nu
-use dump.nu
 use handle.nu
 use pkg.nu
 use write.nu
@@ -61,7 +60,9 @@ export def clean [
         return
     }
 
-    echo $"($dir)/*" | into glob | rm --force --recursive $in
+    echo $"($dir)/*"
+        | into glob
+        | rm --force --recursive $in
 }
 
 # Return the name of the current timezone

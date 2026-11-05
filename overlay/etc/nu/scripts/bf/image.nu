@@ -1,5 +1,4 @@
 use build.nu
-use dump.nu
 use env.nu
 use fs.nu
 
@@ -18,9 +17,8 @@ export def main []: nothing -> nothing {
 
     # output a border above and below the image information
     let border = {||
-        let s = "="
-        0..116
-            | reduce -f "" {|x, acc| $acc + $s }
+        ""
+            | fill --character "=" --width 117
             | $"(char newline)#($in)#(char newline)"
             | print
     }

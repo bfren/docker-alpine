@@ -54,3 +54,41 @@ export def old__live_set_deletes_files_older_than_duration [] {
 
     assert equal $newer_file $result
 }
+
+export def old__type_not_set_returns_files [] {
+    let root_dir = mktemp --directory --tmpdir
+    let duration = random int 5..10 | into duration --unit day
+    let older_file = mktemp --tmpdir-path=($root_dir)
+    mkdir $"($root_dir)/(random chars)"
+    touch --timestamp ((date now) - $duration - 1day) $older_file
+
+    let result = old $root_dir $duration | get name
+
+    assert equal [$older_file] $result
+}
+
+export def old__empty_directory_returns_nothing [] {
+    let root_dir = mktemp --directory --tmpdir
+    let duration = random int 5..10 | into duration --unit day
+
+    let result = old $root_dir $duration
+
+    assert equal [] $result
+}
+
+export def old__live_set_keeps_hidden_files_and_directories [] {
+    let root_dir = mktemp --directory --tmpdir
+    let duration = random int 5..10 | into duration --unit day
+    let timestamp = (date now) - $duration - 1day
+    let hidden_file = $"($root_dir)/.(random chars)"
+    let hidden_dir = $"($root_dir)/.(random chars)"
+    touch --timestamp $timestamp $hidden_file
+    mkdir $hidden_dir
+    touch --timestamp $timestamp $hidden_dir
+
+    old --live --type "f" $root_dir $duration
+    old --live --type "d" $root_dir $duration
+    let result = [$hidden_file $hidden_dir] | all { path exists }
+
+    assert equal true $result "old deletes hidden files or directories"
+}

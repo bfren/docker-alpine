@@ -1,4 +1,3 @@
-use dump.nu
 use handle.nu
 use write.nu
 
@@ -34,10 +33,20 @@ export def add_user_and_group [
     gid: int        # The group's GID
 ] {
     # explicitly use busybox executables to support both Alpine and Debian
-    {
-        ^busybox addgroup --gid $gid $name
-        ^busybox adduser --uid $uid --home $home --disabled-password --ingroup $name $name
-    } | handle user/add
+    let args_group = [
+        "addgroup"
+        "--gid" $gid
+        $name
+    ]
+    let args_user = [
+        "adduser"
+        "--uid" $uid
+        "--home" $home
+        "--disabled-password"
+        "--ingroup" $name
+        $name
+    ]
+    { ^busybox ...$args_group ; ^busybox ...$args_user } | handle user/add
 }
 
 # Create links between shared Nushell config and a user's config
@@ -55,9 +64,24 @@ export def create_nushell_links [
     { ^chown $"($name):($name)" $user_nu } | handle user/create_nushell_links
 
     # link the shared Nushell files and directories to the user's config directory
-    { ^ln -sf $"($shared_nu)/config.nu" $"($user_nu)/config.nu" }  | handle user/create_nushell_links
-    { ^ln -sf $"($shared_nu)/env.nu" $"($user_nu)/env.nu" } | handle user/create_nushell_links
-    { ^ln -sf $"($shared_nu)/scripts" $"($user_nu)/scripts" } | handle user/create_nushell_links
+    let config_args = [
+        "-sf"
+        $"($shared_nu)/config.nu"
+        $"($user_nu)/config.nu"
+    ]
+    let env_args = [
+        "-sf"
+         $"($shared_nu)/env.nu"
+         $"($user_nu)/env.nu"
+    ]
+    let scripts_args = [
+        "-sf"
+        $"($shared_nu)/scripts"
+        $"($user_nu)/scripts"
+    ]
+    { ^ln ...$config_args }  | handle user/create_nushell_links
+    { ^ln ...$env_args } | handle user/create_nushell_links
+    { ^ln ...$scripts_args } | handle user/create_nushell_links
 
     return
 }
@@ -66,5 +90,9 @@ export def create_nushell_links [
 export def exists [
     name: string    # The user name
 ]: nothing -> bool {
-    { ^getent passwd $name } | handle -c user/exists | $in == 0
+    let args = [
+        "passwd"
+        $name
+    ]
+    ({ ^getent ...$args } | handle -c user/exists) == 0
 }

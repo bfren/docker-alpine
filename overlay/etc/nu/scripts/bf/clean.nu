@@ -1,13 +1,18 @@
 use env.nu
 use fs.nu
+use pkg.nu
 use write.nu
 
 # clean temporary directories, caches and installation files
 export def main [
-    --caches: list<string> = [ "/var/cache/apk/*" ]   # list of cache directories to clean
-    --tmpdirs: list<string> = [ "/tmp/*" ]            # list of temporary directories to clean
-    --root: string = "/"                              # directory to search for .empty files
+    --caches: list<string>                  # list of cache directories to clean (default: the package manager's)
+    --tmpdirs: list<string> = [ "/tmp/*" ]  # list of temporary directories to clean
+    --root: string = "/"                    # directory to search for .empty files
 ]: nothing -> nothing {
+    # the package manager's caches come from pkg.nu, so Debian only replaces that file - a module constant does not
+    # work as a flag default
+    let caches = $caches | default $pkg.caches
+
     # create a merged list of places to clean -
     # appending /* to each so we don't delete the actual directories
     let ensure_glob = $caches

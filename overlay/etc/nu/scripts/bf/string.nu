@@ -1,4 +1,3 @@
-use dump.nu
 use write.nu
 
 # Add double quotes to the input string and return.
@@ -9,23 +8,15 @@ export def quote []: string -> string { $"\"($in)\"" }
 #   - and $input = "this contains {a} and {b}"
 #   - the result will be "this contains one and two"
 #   - placeholders can be used multiple times
-# There will be an error if there are any unmatched placeholders.
+# There will be an error if there are any unmatched placeholders, or braces that are not part of a placeholder.
 export def format [
-    input: string   # String to format - placeholds should be record keys surrounded by braces, e.g. {a}
+    input: string   # String to format - placeholders should be record keys surrounded by braces, e.g. {a}
     values: record  # Values to use when replacing placeholders
 ]: nothing -> string {
-    # replace values
-    write debug $"Using ($values) to replace placeholders in ($input)." str/format
-    let result = $values
-        | transpose k v
-        | reduce -f $input {|x, acc| $acc | str replace --all $"{($x.k)}" $x.v }
-
-    # return an error if the result still contains unmatched palceholders
-    let unmatched = $result
-        | split row " "
-        | find --regex "{.*}"
-    if ($unmatched | length) > 0 { write error $"($input) contains unmatched placeholders: ($unmatched | str join ', ')." }
-
-    # return formatted string
-    $result
+    # format pattern replaces every placeholder in one pass, so values can contain braces
+    try {
+        $values | format pattern $input
+    } catch {|e|
+        write error $"Unable to format ($input): ($e.msg)." str/format
+    }
 }

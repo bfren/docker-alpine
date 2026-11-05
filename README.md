@@ -1,6 +1,6 @@
 # Alpine
 
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/bfren/docker-alpine) ![Docker Pulls](https://img.shields.io/endpoint?url=https%3A%2F%2Fbfren.dev%2Fdocker%2Fpulls%2Falpine) ![Docker Image Size](https://img.shields.io/endpoint?url=https%3A%2F%2Fbfren.dev%2Fdocker%2Fsize%2Falpine) ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/bfren/docker-alpine/dev.yml?branch=main)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/bfren/docker-alpine) ![Docker Pulls](https://img.shields.io/endpoint?url=https%3A%2F%2Fbfren.dev%2Fdocker%2Fpulls%2Falpine) ![Docker Image Size](https://img.shields.io/endpoint?url=https%3A%2F%2Fbfren.dev%2Fdocker%2Fsize%2Falpine) ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/bfren/docker-alpine/build.yml?branch=main)
 
 [Docker Hub](https://hub.docker.com/r/bfren/alpine) - [Quay.io](https://quay.io/repository/bfren/alpine) - [bfren ecosystem](https://github.com/bfren/docker)
 
@@ -32,7 +32,7 @@ my-image/
 `Dockerfile`:
 
 ```dockerfile
-FROM quay.io/bfren/alpine:alpine3.24-3.5
+FROM quay.io/bfren/alpine:alpine3.24-4.0
 
 ARG BF_IMAGE=my-image
 ARG BF_VERSION=1.0.0
@@ -65,7 +65,7 @@ Inside the container, `bf image` shows the image name and version.
 
 ## Features
 
-* 🐧 Alpine 3.15 to 3.24 - choose with the image tag
+* 🐧 Alpine 3.20 to 3.24 - choose with the image tag
 * 🐚 Nushell, with the `bf` module loaded in every shell
 * 🧱 `bf-install` - one standard build step for every image
 * 🌍 Container environment saved at start-up and available to every script
@@ -81,12 +81,12 @@ Images are published to Docker Hub (`bfren/alpine`) and Quay.io (`quay.io/bfren/
 | Tag                           | Example              | Use when                                              |
 | ----------------------------- | -------------------- | ----------------------------------------------------- |
 | `alpineX.Y`                   | `alpine3.24`         | You want the latest image for an Alpine version       |
-| `alpineX.Y-MAJOR`             | `alpine3.24-3`       | You want updates, but not breaking changes            |
-| `alpineX.Y-MINOR`             | `alpine3.24-3.5`     | You want fixes only - **recommended for building on** |
-| `alpineX.Y-VERSION`           | `alpine3.24-3.5.0`   | You want to pin this image exactly                    |
-| `alpineX.Y.Z`                 | `alpine3.24.2`       | You want an exact Alpine release                      |
-| `alpineX.Y.Z-VERSION`         | `alpine3.24.2-3.5.0` | You want to pin both                                  |
-| `latest`, `3`, `3.5`, `3.5.0` |                      | As above, on the newest Alpine version                |
+| `alpineX.Y-MAJOR`             | `alpine3.24-4`       | You want updates, but not breaking changes            |
+| `alpineX.Y-MINOR`             | `alpine3.24-4.0`     | You want fixes only - **recommended for building on** |
+| `alpineX.Y-VERSION`           | `alpine3.24-4.0.0`   | You want to pin this image exactly                    |
+| `alpineX.Y.Z`                 | `alpine3.24.3`       | You want an exact Alpine release                      |
+| `alpineX.Y.Z-VERSION`         | `alpine3.24.3-4.0.0` | You want to pin both                                  |
+| `latest`, `4`, `4.0`, `4.0.0` |                      | As above, on the newest Alpine version                |
 
 | Alpine | Security support ends |
 | ------ | --------------------- |
@@ -95,11 +95,6 @@ Images are published to Docker Hub (`bfren/alpine`) and Quay.io (`quay.io/bfren/
 | 3.22   | 2027-05-01            |
 | 3.21   | 2026-11-01            |
 | 3.20   | ended 2026-04-01      |
-| 3.19   | ended 2025-11-01      |
-| 3.18   | ended 2025-05-09      |
-| 3.17   | ended 2024-11-22      |
-| 3.16   | ended 2024-05-23      |
-| 3.15   | ended 2023-11-01      |
 
 Images for unsupported Alpine versions are still built, but no longer receive Alpine security fixes - avoid them for anything new.
 
@@ -152,6 +147,9 @@ def main [] {
 
 Shell scripts can run commands with a *clean* environment loaded from `/etc/bf/env.d` using `withenv`, e.g. `withenv my-command`. Interactive `nu` shells reload the environment before each prompt.
 
+> [!WARNING]
+> Every user in the container can read `/etc/bf/env.d`, so a password passed with `-e` can be read by any process - including an application running as its own user. Pass passwords and keys as files instead (e.g. [Docker secrets](https://docs.docker.com/engine/swarm/secrets/) or a mounted file) and give the file only the permissions it needs.
+
 ### The `bf` module
 
 | Submodule    | Use                                                                          |
@@ -160,7 +158,7 @@ Shell scripts can run commands with a *clean* environment loaded from `/etc/bf/e
 | `bf ch`      | Set ownership and permissions on files and directories                       |
 | `bf clean`   | Remove temporary files, package caches and `.empty` placeholders             |
 | `bf config`  | Add lines and modules to the shared Nushell config                           |
-| `bf del`     | Delete files or directories older than a given age                           |
+| `bf del`     | Delete files or directories older than a given age - hidden ones are kept    |
 | `bf dump`    | Print a value when debug output is enabled, then pass it on                  |
 | `bf env`     | Get, set, check, load and store environment variables                        |
 | `bf esh`     | Generate output from an esh template                                         |
@@ -196,6 +194,10 @@ Many of these have executable helpers on the `PATH` for shell scripts. For examp
 ### The container exits straight away
 
 The image has no default command. Give it one, e.g. `docker run --rm -it bfren/alpine nu`.
+
+### The container fails with "can't open '/init': Permission denied"
+
+The container must start as root - `/init` can only be run by root, because it saves the environment to `/etc/bf/env.d`, which only root can write to. Remove `--user` (or `user:` in Compose, `runAsUser` in Kubernetes).
 
 ### The build fails with "Unable to get environment variable BF_IMAGE"
 

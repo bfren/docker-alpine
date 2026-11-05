@@ -1,6 +1,8 @@
-use dump.nu
 use handle.nu
 use write.nu
+
+# Package manager cache directories, deleted by clean
+export const caches = ["/var/cache/apk/*"]
 
 # Perform a package action, capturing result and outputting any errors
 def action [
@@ -15,7 +17,9 @@ def action [
     # use shell to run apk
     let joined = $args | str join " "
     write debug $"($description): ($joined)." $script
-    let on_failure = {|code, err| write error $"Error ($code) ($description | str lowercase) packages: ($joined).\n($err)" $script }
+    let on_failure = {|code, err|
+        write error $"Error ($code) ($description | str lowercase) packages: ($joined).\n($err)" $script
+    }
     { ^apk $cmd --no-cache ...$args } | handle -d $"($description) packages" -f $on_failure $script
 
     return

@@ -2,7 +2,6 @@ use build.nu
 use ch.nu
 use clean.nu
 use del.nu
-use dump.nu
 use env.nu
 use fs.nu
 use image.nu
@@ -49,7 +48,7 @@ export def main []: nothing -> nothing {
     secure_system_dirs
     env apply_perms
     let root = "root:root"
-    ["/etc/nu" $root "0666" "0777"] | ch apply
+    ["/etc/nu" $root "0644" "0755"] | ch apply
     ["/init" $root "0500"] | ch apply
     ["/test" $root "0500"] | ch apply
     ["/tmp" $root "1777" "1777"] | ch apply
