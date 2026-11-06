@@ -4,13 +4,13 @@
 # STAGE 0: store build information
 #======================================================================================================================
 
-FROM --platform=${BUILDPLATFORM} quay.io/bfren-bin/alpine:3.24.3 AS build
+FROM --platform=${BUILDPLATFORM} quay.io/bfren-bin/alpine:3.24.4 AS build
 ARG TARGETPLATFORM
 
 RUN \
     # save platform and version information to log
     echo "Platform: ${TARGETPLATFORM}" >> /log && \
-    echo "Alpine: 3.24.3" >> /log && \
+    echo "Alpine: 3.24.4" >> /log && \
     echo "Busybox: 1.37.0" >> /log && \
     echo "Nushell: 0.116.1" >> /log
 
@@ -19,28 +19,28 @@ RUN \
 # STAGE 1: load busybox
 #======================================================================================================================
 
-FROM quay.io/bfren-bin/busybox:1.37.0-261022 AS busybox
+FROM quay.io/bfren-bin/busybox:1.37.0-261106.3 AS busybox
 
 
 #======================================================================================================================
 # STAGE 2: load nushell
 #======================================================================================================================
 
-FROM quay.io/bfren-bin/nushell:0.116.1-alpine-261014 AS nushell
+FROM quay.io/bfren-bin/nushell:0.116.1-alpine-261106.3 AS nushell
 
 
 #======================================================================================================================
 # STAGE 3: load figlet
 #======================================================================================================================
 
-FROM quay.io/bfren-bin/figlet:2.2.5-261022 AS figlet
+FROM quay.io/bfren-bin/figlet:2.2.5-261106.3 AS figlet
 
 
 #======================================================================================================================
 # STAGE 4: install bfren platform
 #======================================================================================================================
 
-FROM quay.io/bfren-bin/alpine:3.24.3 AS install
+FROM quay.io/bfren-bin/alpine:3.24.4 AS install
 COPY --from=build /log /etc/bf/BUILD
 COPY --from=busybox / /bin
 COPY --from=nushell / /

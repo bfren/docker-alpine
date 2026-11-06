@@ -5,11 +5,11 @@ set -euo pipefail
 docker pull bfren/alpine
 
 BUSYBOX_VERSION="1.37.0"
-BUSYBOX_BUILD="261022"
+BUSYBOX_BUILD="261106.3"
 FIGLET_VERSION="2.2.5"
-FIGLET_BUILD="261022"
+FIGLET_BUILD="261106.3"
 NU_VERSION="0.116.1"
-NU_BUILD="261014"
+NU_BUILD="261106.3"
 ALPINE_EDITIONS="3.20 3.21 3.22 3.23 3.24"
 
 for E in ${ALPINE_EDITIONS} ; do
@@ -51,5 +51,4 @@ for E in ${ALPINE_EDITIONS} ; do
 
 done
 
-#docker system prune -f
 echo "Done."
