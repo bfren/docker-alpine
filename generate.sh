@@ -51,5 +51,4 @@ for E in ${ALPINE_EDITIONS} ; do
 
 done
 
-#docker system prune -f
 echo "Done."
