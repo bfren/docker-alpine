@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.0.1] - 2026-11-06
+
+### Changed
+
+- BusyBox, figlet and Nushell are rebuilt (build `261106.3`) on Alpine 3.24.4. Their versions are unchanged
+  (BusyBox 1.37.0, figlet 2.2.5, Nushell 0.116.1), and so are BusyBox's applets and Alpine patches - the patches
+  are now stored with the build instead of downloaded during it.
+
+### Deprecated
+
+- Alpine 3.21 reached the end of its support on 2026-11-01. Its images are still built, but no longer receive Alpine
+  security fixes - avoid them for anything new.
+
+### Security
+
+- Alpine is updated to 3.21.10, 3.22.8, 3.23.8 and 3.24.4 (3.20 stays at 3.20.10), which include security fixes - see
+  the [Alpine release notes](https://alpinelinux.org/posts/alpine-3.21.10-3.22.8-3.23.8-3.24.4-released/).
+
 ## [4.0.0] - 2026-11-05
 
 ### Changed
@@ -42,4 +60,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   user could set a variable such as `PATH` that root scripts then loaded.
 - **Breaking:** `bf env set` must now run as root, because only root can write to the environment store.
 
+[4.0.1]: https://github.com/bfren/docker-alpine/compare/v4.0.0...v4.0.1
 [4.0.0]: https://github.com/bfren/docker-alpine/compare/v3.5.3...v4.0.0
