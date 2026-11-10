@@ -26,7 +26,7 @@ export def old [
     write debug $"Removing ($use_type)s older than ($expiry)." del/old
     # list the directory itself (not a glob) so an empty directory gives no rows instead of an error - without --all,
     # so hidden files and directories are never deleted
-    let files_to_delete = ls $root_dir | where type == $use_type and modified < $expiry
+    let files_to_delete = ls $root_dir | where type == $use_type and modified older-than $duration
     if $live {
         $files_to_delete | each {|x|
              write debug $" .. ($x.name)" del/old

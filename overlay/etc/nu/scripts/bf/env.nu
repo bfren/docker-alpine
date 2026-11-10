@@ -108,10 +108,8 @@ export def --env set [
 # Show all bfren platform environment variables
 export def show []: nothing -> nothing {
     $env
-        | transpose key value
-        | where {|x| $x.key | str starts-with $prefix }
+        | record where key starts-with $prefix
         | sort --natural
-        | transpose -i -r -d
         | print
 }
 

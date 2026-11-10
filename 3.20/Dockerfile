@@ -12,7 +12,7 @@ RUN \
     echo "Platform: ${TARGETPLATFORM}" >> /log && \
     echo "Alpine: 3.20.10" >> /log && \
     echo "Busybox: 1.37.0" >> /log && \
-    echo "Nushell: 0.116.1" >> /log
+    echo "Nushell: 0.117.0" >> /log
 
 
 #======================================================================================================================
@@ -26,7 +26,7 @@ FROM quay.io/bfren-bin/busybox:1.37.0-261106.3 AS busybox
 # STAGE 2: load nushell
 #======================================================================================================================
 
-FROM quay.io/bfren-bin/nushell:0.116.1-alpine-261106.3 AS nushell
+FROM quay.io/bfren-bin/nushell:0.117.0-alpine-261110.2 AS nushell
 
 
 #======================================================================================================================
@@ -64,7 +64,7 @@ ENV \
     #   1: yes
     BF_UPGRADE_PACKAGES=1 \
     # Nushell version string to check against installed verion after installation
-    NU_VERSION=0.116.1
+    NU_VERSION=0.117.0
 
 # tests are copied with everything else so bf-install removes them from published images
 COPY ./overlay /
