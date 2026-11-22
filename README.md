@@ -196,7 +196,7 @@ Many of these have executable helpers on the `PATH` for shell scripts. For examp
 
 ### The container exits straight away
 
-The image has no default command. Give it one, e.g. `docker run --rm -it bfren/alpine nu`.
+The image has no default command. Give it one, e.g. `docker run --rm -it quay.io/bfren/alpine nu`.
 
 ### The container fails with "can't open '/init': Permission denied"
 

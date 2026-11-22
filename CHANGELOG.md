@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - README: the Quickstart is now numbered steps, and says that `bf-install` deletes the installation script after running
   it.
+- README: the `docker run` example now uses the Quay.io image, like the rest of the examples.
 
 ## [4.0.2] - 2026-11-10
 
