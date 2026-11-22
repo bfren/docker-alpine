@@ -21,6 +21,8 @@ Use it as the `FROM` line for images that run a single command or tool. For imag
 
 ## Quickstart
 
+1. Create a folder for your image with this layout - everything in `overlay` is copied into the image:
+
 ```plain
 my-image/
 ├── Dockerfile
@@ -29,7 +31,7 @@ my-image/
         └── install
 ```
 
-`Dockerfile`:
+2. Write the `Dockerfile`:
 
 ```dockerfile
 FROM quay.io/bfren/alpine:alpine3.24-4.0
@@ -41,7 +43,7 @@ COPY ./overlay /
 RUN bf-install
 ```
 
-`overlay/tmp/install` - your installation script, run by `bf-install`:
+3. Write your installation script, `overlay/tmp/install`. `bf-install` runs it during the build, then deletes it:
 
 ```nu
 #!/usr/bin/nu
@@ -55,10 +57,11 @@ def main [] {
 }
 ```
 
-Build it and open a shell:
+4. Build the image and open a shell in it:
 
 ```sh
-docker build -t my-image . && docker run --rm -it my-image nu
+docker build -t my-image .
+docker run --rm -it my-image nu
 ```
 
 Inside the container, `bf image` shows the image name and version.
@@ -83,10 +86,10 @@ Images are published to Docker Hub (`bfren/alpine`) and Quay.io (`quay.io/bfren/
 | `alpineX.Y`                   | `alpine3.24`         | You want the latest image for an Alpine version       |
 | `alpineX.Y-MAJOR`             | `alpine3.24-4`       | You want updates, but not breaking changes            |
 | `alpineX.Y-MINOR`             | `alpine3.24-4.0`     | You want fixes only - **recommended for building on** |
-| `alpineX.Y-VERSION`           | `alpine3.24-4.0.2`   | You want to pin this image exactly                    |
+| `alpineX.Y-VERSION`           | `alpine3.24-4.0.3`   | You want to pin this image exactly                    |
 | `alpineX.Y.Z`                 | `alpine3.24.4`       | You want an exact Alpine release                      |
-| `alpineX.Y.Z-VERSION`         | `alpine3.24.4-4.0.2` | You want to pin both                                  |
-| `latest`, `4`, `4.0`, `4.0.2` |                      | As above, on the newest Alpine version                |
+| `alpineX.Y.Z-VERSION`         | `alpine3.24.4-4.0.3` | You want to pin both                                  |
+| `latest`, `4`, `4.0`, `4.0.3` |                      | As above, on the newest Alpine version                |
 
 | Alpine | Security support ends |
 | ------ | --------------------- |

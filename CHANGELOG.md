@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.0.3] - Unreleased
+
+### Fixed
+
+- README: the Quickstart is now numbered steps, and says that `bf-install` deletes the installation script after running
+  it.
+
 ## [4.0.2] - 2026-11-10
 
 ### Changed
@@ -70,6 +77,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   user could set a variable such as `PATH` that root scripts then loaded.
 - **Breaking:** `bf env set` must now run as root, because only root can write to the environment store.
 
+[4.0.3]: https://github.com/bfren/docker-alpine/compare/v4.0.2...v4.0.3
 [4.0.2]: https://github.com/bfren/docker-alpine/compare/v4.0.1...v4.0.2
 [4.0.1]: https://github.com/bfren/docker-alpine/compare/v4.0.0...v4.0.1
 [4.0.0]: https://github.com/bfren/docker-alpine/compare/v3.5.3...v4.0.0
