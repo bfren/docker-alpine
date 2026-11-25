@@ -5,7 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [4.0.3] - Unreleased
+## [4.0.3] - 2026-11-25
+
+### Changed
+
+- BusyBox, figlet and Nushell are rebuilt (build `261125`) on Alpine 3.24.4. Their versions are unchanged -
+  [BusyBox 1.37.0](https://github.com/bfren/busybox/releases/tag/v261125),
+  [figlet 2.2.5](https://github.com/bfren/figlet/releases/tag/v261125) and
+  [Nushell 0.117.0](https://github.com/bfren/nushell/releases/tag/v261125).
 
 ### Fixed
 
